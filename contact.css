@@ -1,0 +1,137 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    padding-top: 80px; 
+}
+
+header {
+    background: #333;
+    color: white;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 10px 0; 
+}
+
+.container {
+    width: 80%;
+    margin: 10px auto; 
+    overflow: hidden;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.logo {
+    float: left;
+    padding: 10px 0;
+}
+
+.logo img {
+    height: 50px;
+}
+
+.menu {
+    float: right;
+    margin-top: 20px;
+}
+
+.menu a {
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 15px;
+    margin: 0 10px;
+    background-color: #444;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.menu a:hover {
+    background-color: #555;
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+
+    .menu {
+        float: none;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .menu a {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .logo {
+        float: none;
+        text-align: center;
+    }
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+    margin-top: 50px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: border-color 0.3s; 
+}
+
+textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+input[type="text"]:hover,
+input[type="email"]:hover,
+textarea:hover {
+    border-color: #999; 
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #45a049;
+}
