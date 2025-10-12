@@ -1,6 +1,6 @@
 # Shahanur Alam
 
-![Portfolio Banner](https://via.placeholder.com/1200x400/4F46E5/FFFFFF?text=Shahanur+Alam) <!-- Optional: Banner image URL যোগ করো -->
+![Portfolio Banner](https://github.com/shahanuralamofficial/shahanuralam/blob/eaf3bd06a1de3c9649902072b30977de5cb24094/image.png) 
 
 Hi! I'm **Shahanur Alam**, a motivated Computer Science undergraduate from Rajshahi, Bangladesh. Passionate about mobile app development using Java and Flutter. I build practical, localized apps for real users—like agriculture tools and management systems.
 
