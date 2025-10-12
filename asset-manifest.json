@@ -1,15 +1,16 @@
 {
   "files": {
     "main.css": "/shahanuralam/static/css/main.9e7988de.css",
-    "main.js": "/shahanuralam/static/js/main.3722c40e.js",
+    "main.js": "/shahanuralam/static/js/main.6208f61d.js",
+    "static/media/CV.pdf": "/shahanuralam/static/media/CV.fd6198e52d0cbe5b37ef.pdf",
     "static/media/logo-icon.png": "/shahanuralam/static/media/logo-icon.f6d98c00f65b4d2c342a.png",
     "static/media/ShahanurAlam.jpg": "/shahanuralam/static/media/ShahanurAlam.fd9d362abae98f5b2f2f.jpg",
     "index.html": "/shahanuralam/index.html",
     "main.9e7988de.css.map": "/shahanuralam/static/css/main.9e7988de.css.map",
-    "main.3722c40e.js.map": "/shahanuralam/static/js/main.3722c40e.js.map"
+    "main.6208f61d.js.map": "/shahanuralam/static/js/main.6208f61d.js.map"
   },
   "entrypoints": [
     "static/css/main.9e7988de.css",
-    "static/js/main.3722c40e.js"
+    "static/js/main.6208f61d.js"
   ]
 }
