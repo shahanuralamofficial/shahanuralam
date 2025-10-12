@@ -77,13 +77,13 @@ export default function ShahanurPortfolio() {
               Hi — I’m <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600">Shahanur</span>.
             </h2>
             <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
-              Motivated computer science undergraduate from Rajshahi, Bangladesh specializing in mobile app development using Java and Flutter. I build localized, practical apps with real users in mind from agriculture tools to management systems.
+              Motivated computer science undergraduate from Rajshahi, Bangladesh specializing in mobile app development using Java and Flutter. I build localized, practical apps with real users in mind — from agriculture tools to management systems.
             </p>
 
             <div className="flex flex-wrap gap-2 sm:gap-3">
               <a href="#projects" className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 text-sm font-medium">View Projects</a>
               <a href="#contact" className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 border-2 border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 hover:border-indigo-500 transform hover:-translate-y-0.5 transition-all duration-300 text-sm font-medium">Contact Me</a>
-              <a href="/my-portfolio.zip" download className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-1.5 sm:gap-2 text-sm font-medium"><Download size={14} /> Download Full Portfolio</a>
+              <a href="/Shahanur_Alam.pdf" download className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-1.5 sm:gap-2 text-sm font-medium"><Download size={14} /> Download CV</a>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-sm">
