@@ -1,5 +1,6 @@
 import profileImg from "./assets/ShahanurAlam.jpg";
 import logoIcon from "./assets/logo-icon.png";
+import cvPdf from './assets/CV.pdf';
 
 import { Github, Linkedin, Mail, MapPin, Download, Facebook } from "lucide-react";
 
@@ -84,7 +85,7 @@ export default function ShahanurPortfolio() {
               <a href="#projects" className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 text-sm font-medium">View Projects</a>
               <a href="#contact" className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 border-2 border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 hover:border-indigo-500 transform hover:-translate-y-0.5 transition-all duration-300 text-sm font-medium">Contact Me</a>
               <a
-                href="/CV.pdf"
+                href={cvPdf}
                 download="Shahanur-Alam-CV.pdf"
                 className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-1.5 sm:gap-2 text-sm font-medium"
               >
