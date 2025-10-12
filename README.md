@@ -16,9 +16,9 @@ Hi! I'm **Shahanur Alam**, a motivated Computer Science undergraduate from Rajsh
 - **Tech Stack**: Flutter, Dart, PHP, MySQL
 - **[View Project](#)** | **[Source Code](https://github.com/shahanuralamofficial/Ukil)**
 
-### HostelMate — Hostel Management (Android Java)
+### HostelMate — Hostel Management (Flutter)
 - **Description**: Role-based system for owners/managers/members with leave requests and notices.
-- **Tech Stack**: Java, Android, PHP, MySQL
+- **Tech Stack**: Flutter, Dart, PHP, MySQL
 - **[View Project](#)** | **[Source Code](https://github.com/shahanuralamofficial/HostelMate)**
 
 ## 🛠 Skills & Tools
