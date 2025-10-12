@@ -19,10 +19,10 @@ const projects = [
     link: "#",
   },
   {
-    title: "HostelMate — Hostel Management (Android Java)",
+    title: "HostelMate — Hostel Management (Flutter)",
     description:
-      "Role-based hostel management system supporting owners, managers, and members, with leave requests, notices and profile control. Java Android front-end and PHP+MySQL backend.",
-    stack: ["Java", "Android", "PHP", "MySQL"],
+      "Role-based hostel management system supporting owners, managers, and members, with leave requests, notices and profile control. Flutter front-end and PHP+MySQL backend.",
+    stack: ["Flutter", "Dart", "PHP", "MySQL"],
     link: "#",
   },
 ];
