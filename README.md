@@ -43,8 +43,3 @@ Hi! I'm **Shahanur Alam**, a motivated Computer Science undergraduate from Rajsh
 
 ## 📁 Deployment
 This portfolio is built with **React & Tailwind CSS**. Deployed on GitHub Pages.
-
----
-
-⭐ **Star this repo if you like it!** Feel free to fork and contribute.  
-![Footer Image](https://via.placeholder.com/1200x200/4F46E5/FFFFFF?text=Thanks+for+visiting!) <!-- Optional footer -->
