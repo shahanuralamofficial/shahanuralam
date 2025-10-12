@@ -1,4 +1,5 @@
 {
+  "name": "my-portfolio-react",
   "homepage": "https://shahanuralamofficial.github.io/shahanuralam",
   "scripts": {
     "start": "react-scripts start",
