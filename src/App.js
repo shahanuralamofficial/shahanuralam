@@ -2,6 +2,7 @@ import profileImg from "./assets/ShahanurAlam.jpg";
 import logoIcon from "./assets/logo-icon.png";
 import cvPdf from './assets/CV.pdf';
 
+
 import { Github, Linkedin, Mail, MapPin, Download, Facebook } from "lucide-react";
 
 const projects = [
