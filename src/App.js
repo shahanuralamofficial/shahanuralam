@@ -2,38 +2,41 @@ import profileImg from "./assets/ShahanurAlam.jpg";
 import logoIcon from "./assets/logo-icon.png";
 import cvPdf from './assets/CV.pdf';
 
-
 import { Github, Linkedin, Mail, MapPin, Download, Facebook } from "lucide-react";
 
+// Projects array updated with demoLink and sourceLink
 const projects = [
   {
     title: "AgriCare — Smart Agriculture (Android Java)",
     description:
       "Smart agriculture Android app with disease detection (Teachable Machine + TFLite), weather-based recommendations, and a Bangla UI targeted for local farmers.",
     stack: ["Java", "Android", "TFLite", "Firebase"],
-    link: "#",
+    demoLink: "https://play.google.com/store/apps/details?id=com.example.agricare",
+    sourceLink: "https://github.com/shahanuralamofficial/agricare",
   },
   {
     title: "Ukil — Lawyer Finder (Flutter)",
     description:
       "Lawyer directory app with category search, filters, lawyer profiles, client-lawyer interactions and a PHP+MySQL backend (XAMPP).",
     stack: ["Flutter", "Dart", "PHP", "MySQL"],
-    link: "https://github.com/shahanuralamofficial/ukil.git",
+    demoLink: "#", // live/demo not available
+    sourceLink: "https://github.com/shahanuralamofficial/ukil.git",
   },
   {
     title: "HostelMate — Hostel Management (Flutter)",
     description:
       "Role-based hostel management system supporting owners, managers, and members, with leave requests, notices and profile control. Flutter front-end and PHP+MySQL backend.",
     stack: ["Flutter", "Dart", "PHP", "MySQL"],
-    link: "#",
+    demoLink: "#",
+    sourceLink: "https://github.com/shahanuralamofficial/hostelmate",
   },
-
   {
     title: "Task Manager — Task Management (Flutter)",
     description:
       "A Flutter-based productivity app that helps users efficiently manage their tasks. Features include creating, updating, and tracking tasks across different statuses—New, In Progress, Completed, and Cancelled. The app provides real-time task counts, intuitive UI with provider-based state management, and smooth task updates, making task organization simple and efficient.",
     stack: ["Flutter", "Dart", "OpenApi"],
-    link: "https://github.com/shahanuralamofficial/task-manager.git",
+    demoLink: "#",
+    sourceLink: "https://github.com/shahanuralamofficial/task-manager.git",
   },
 ];
 
@@ -168,6 +171,7 @@ export default function ShahanurPortfolio() {
           </aside>
         </section>
 
+        {/* Projects Section */}
         <section id="projects" className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mt-8 sm:mt-10">
           <h3 className="text-xl sm:text-2xl font-bold mb-6 border-b border-indigo-200 pb-3">Selected Projects</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -181,14 +185,19 @@ export default function ShahanurPortfolio() {
                   ))}
                 </div>
                 <div className="flex gap-4 sm:gap-6 items-center">
-                  <a href={p.link} className="text-indigo-600 hover:text-indigo-800 font-semibold text-sm transition-colors">View Project →</a>
-                  <a href="https://github.com/shahanuralamofficial" target="_blank" rel="noreferrer" className="text-gray-500 hover:text-gray-700 text-sm transition-colors">View Source</a>
+                  <a href={p.demoLink} target="_blank" rel="noreferrer" className="text-indigo-600 hover:text-indigo-800 font-semibold text-sm transition-colors">
+                    View Project →
+                  </a>
+                  <a href={p.sourceLink} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-gray-700 text-sm transition-colors">
+                    View Source
+                  </a>
                 </div>
               </div>
             ))}
           </div>
         </section>
 
+        {/* Contact Section */}
         <section id="contact" className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mt-8 sm:mt-10 bg-gradient-to-br from-white to-indigo-50 p-6 sm:p-8 rounded-2xl shadow-xl">
           <h3 className="text-xl sm:text-2xl font-bold mb-4 text-center">Contact</h3>
           <p className="text-gray-600 text-sm sm:text-base mb-6 text-center leading-relaxed max-w-md mx-auto">I'm open to internships, freelance or junior developer roles. Send me a message and I will reply as soon as I can.</p>
@@ -243,7 +252,6 @@ export default function ShahanurPortfolio() {
               <button type="button" className="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold text-xs sm:text-sm hover:from-indigo-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
                 Send Message
               </button>
-              {/* <p className="text-xs text-gray-500 italic text-center">This is a placeholder form. Replace with your preferred contact handling.</p> */}
             </form>
           </div>
         </section>
