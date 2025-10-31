@@ -18,7 +18,7 @@ const projects = [
     description:
       "Lawyer directory app with category search, filters, lawyer profiles, client-lawyer interactions and a PHP+MySQL backend (XAMPP).",
     stack: ["Flutter", "Dart", "PHP", "MySQL"],
-    link: "#",
+    link: "https://github.com/shahanuralamofficial/ukil.git",
   },
   {
     title: "HostelMate — Hostel Management (Flutter)",
@@ -26,6 +26,14 @@ const projects = [
       "Role-based hostel management system supporting owners, managers, and members, with leave requests, notices and profile control. Flutter front-end and PHP+MySQL backend.",
     stack: ["Flutter", "Dart", "PHP", "MySQL"],
     link: "#",
+  },
+
+  {
+    title: "Task Manager — Task Management (Flutter)",
+    description:
+      "A Flutter-based productivity app that helps users efficiently manage their tasks. Features include creating, updating, and tracking tasks across different statuses—New, In Progress, Completed, and Cancelled. The app provides real-time task counts, intuitive UI with provider-based state management, and smooth task updates, making task organization simple and efficient.",
+    stack: ["Flutter", "Dart", "OpenApi"],
+    link: "https://github.com/shahanuralamofficial/task-manager.git",
   },
 ];
 
