@@ -111,15 +111,15 @@ export default function ShahanurPortfolio() {
           </div>
 
           <div className="flex flex-col items-center space-y-2 sm:space-y-3">
-            <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-xl overflow-hidden border-2 border-white shadow-xl flex-shrink-0 transform hover:scale-105 transition-transform duration-300">
+            <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-3xl overflow-hidden border-4 border-yellow-400/50 shadow-2xl shadow-yellow-500/30 flex-shrink-0 transform hover:scale-105 transition-transform duration-300 bg-gradient-to-br from-yellow-400/20 to-amber-400/20">
               <img src={profileImg} alt="Shahanur Alam" className="w-full h-full object-cover" loading="lazy" />
             </div>
-            <div className="text-center text-xs sm:text-sm text-gray-600 space-y-1.5">
-              <div className="font-medium">Quick links</div>
+            <div className="text-center text-xs sm:text-sm text-white/70 space-y-1.5">
+              <div className="font-medium text-yellow-200/80">Quick links</div>
               <div className="flex gap-2 sm:gap-3 justify-center">
-                <a href="https://github.com/shahanuralamofficial" target="_blank" rel="noreferrer" className="hover:underline hover:text-indigo-600 transition-colors text-xs font-medium">GitHub</a>
-                <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" rel="noreferrer" className="hover:underline hover:text-blue-600 transition-colors text-xs font-medium">LinkedIn</a>
-                <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" rel="noreferrer" className="hover:underline hover:text-blue-800 transition-colors text-xs font-medium">Facebook</a>
+                <a href="https://github.com/shahanuralamofficial" target="_blank" rel="noreferrer" className="hover:text-yellow-400 transition-colors text-xs font-medium">GitHub</a>
+                <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" rel="noreferrer" className="hover:text-blue-400 transition-colors text-xs font-medium">LinkedIn</a>
+                <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" rel="noreferrer" className="hover:text-blue-500 transition-colors text-xs font-medium">Facebook</a>
               </div>
             </div>
           </div>
