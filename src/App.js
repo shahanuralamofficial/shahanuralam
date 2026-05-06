@@ -127,20 +127,20 @@ export default function ShahanurPortfolio() {
 
         <section className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           <article className="lg:col-span-2 space-y-6">
-            <h3 className="text-xl sm:text-2xl font-bold border-b border-indigo-200 pb-3">About Me</h3>
-            <p className="text-gray-600 text-sm sm:text-base leading-relaxed">I am a motivated and self-driven computer science undergraduate passionate about mobile app development. Proficient in Java and Flutter, with hands-on experience building real-world Android and cross-platform apps. Eager to contribute to innovative projects and gain practical experience through internships or entry-level roles.</p>
+            <h3 className="text-xl sm:text-2xl font-bold border-b border-yellow-400/30 pb-3 text-yellow-200">About Me</h3>
+            <p className="text-white/80 text-sm sm:text-base leading-relaxed">I am a motivated and self-driven computer science undergraduate passionate about mobile app development. Proficient in Java and Flutter, with hands-on experience building real-world Android and cross-platform apps. Eager to contribute to innovative projects and gain practical experience through internships or entry-level roles.</p>
 
             <div className="space-y-6">
               <div className="space-y-3">
-                <h4 className="text-base font-semibold text-gray-800 border-l-4 border-indigo-500 pl-3">Education</h4>
-                <div className="text-gray-700 text-sm sm:text-base">B.Sc. in Computer Science & Engineering — Varendra University, Rajshahi (Expected graduation: 2026)</div>
+                <h4 className="text-base font-semibold text-yellow-200 border-l-4 border-yellow-400 pl-3">Education</h4>
+                <div className="text-white/90 text-sm sm:text-base bg-black/20 p-4 rounded-xl border border-white/10 backdrop-blur-sm">B.Sc. in Computer Science & Engineering — Varendra University, Rajshahi (Expected graduation: 2026)</div>
               </div>
 
               <div className="space-y-3">
-                <h4 className="text-base font-semibold text-gray-800 border-l-4 border-purple-500 pl-3">Achievements</h4>
-                <ul className="mt-2 space-y-2 text-gray-700 text-sm sm:text-base">
+                <h4 className="text-base font-semibold text-yellow-200 border-l-4 border-amber-400 pl-3">Achievements</h4>
+                <ul className="mt-2 space-y-2 text-white/90 text-sm sm:text-base bg-black/20 p-4 rounded-xl border border-white/10 backdrop-blur-sm">
                   <li className="flex items-start gap-2">
-                    <span className="w-2 h-2 bg-green-500 rounded-full mt-1.5 flex-shrink-0"></span>
+                    <span className="w-2 h-2 bg-yellow-400 rounded-full mt-1.5 flex-shrink-0"></span>
                     Winner — University Innovation Hub Competition (led a team project for mobile app development)
                   </li>
                 </ul>
