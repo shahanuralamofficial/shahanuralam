@@ -15,6 +15,14 @@ const projects = [
     sourceLink: "https://github.com/shahanuralamofficial/agricare",
   },
   {
+    title: "Blood Donate — Donor Matching (Android)",
+    description:
+      "Blood donation app for connecting donors and recipients, with search by blood group, location-based matching, and direct contact options. Built for fast access to urgent blood needs.",
+    stack: ["Java", "Android", "Firebase"],
+    demoLink: "https://play.google.com/store/apps/details?id=com.blood_donate_app.bd",
+    sourceLink: "#",
+  },
+  {
     title: "Ukil — Lawyer Finder (Flutter)",
     description:
       "Lawyer directory app with category search, filters, lawyer profiles, client-lawyer interactions and a PHP+MySQL backend (XAMPP).",
