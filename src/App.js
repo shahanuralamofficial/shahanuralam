@@ -1,5 +1,7 @@
 import profileImg from "./assets/ShahanurAlam.jpg";
 import logoIcon from "./assets/logo-icon.png";
+import bloodDonateLogo from "./assets/blood_donate.png";
+import badalgachiLogo from "./assets/Badalgachi Net.png";
 import cvPdf from './assets/CV.pdf';
 
 import { Github, Linkedin, Mail, MapPin, Download, Facebook } from "lucide-react";
@@ -10,9 +12,19 @@ const projects = [
     title: "Blood Donate — Donor Matching (Android)",
     description:
       "Blood donation app for connecting donors and recipients, with search by blood group, location-based matching, and direct contact options. Built for fast access to urgent blood needs.",
-    stack: ["Java", "Android", "Firebase"],
+    stack: ["Flutter", "Android", "Firebase"],
     demoLink: "https://play.google.com/store/apps/details?id=com.blood_donate_app.bd",
     sourceLink: "#",
+    logo: bloodDonateLogo,
+  },
+  {
+    title: "Badalgachi Net — ISP App (Android)",
+    description:
+      "ISP app for managing customers, billing, and internet service support. Designed for easy account access, package details, and contact tools for local ISP users.",
+    stack: ["Java", "Android", "Firebase"],
+    demoLink: "https://play.google.com/store/apps/details?id=com.careconnectstudio.badalgachinet",
+    sourceLink: "#",
+    logo: badalgachiLogo,
   },
 ];
 
@@ -30,29 +42,33 @@ const skills = [
 
 export default function ShahanurPortfolio() {
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 to-blue-50 text-gray-800 antialiased">
-      <header className="w-full p-3 sm:p-4 lg:p-6 border-b border-indigo-100/50 backdrop-blur-sm bg-white/80 sticky top-0 z-50">
+    <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white antialiased relative overflow-hidden">
+      {/* Luxury background elements */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(120,119,198,0.3),transparent_50%)] pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,215,0,0.1),transparent_50%)] pointer-events-none"></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-transparent to-black/20 pointer-events-none"></div>
+      <header className="w-full p-3 sm:p-4 lg:p-6 border-b border-gold-400/20 backdrop-blur-xl bg-black/20 sticky top-0 z-50 shadow-2xl shadow-black/50">
         <nav className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
           <div className="flex items-center gap-2 sm:gap-3 order-1 sm:order-1 w-full sm:w-auto justify-start sm:justify-start">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-indigo-500 to-sky-400 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-lg">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-yellow-400 via-yellow-500 to-amber-600 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-xl shadow-yellow-500/50 border-2 border-yellow-300/50">
               <img src={logoIcon} alt="Shahanur Alam Icon" className="w-full h-full object-cover rounded-full transition-transform hover:scale-110" loading="lazy" />
             </div>
             <div className="text-left">
-              <h1 className="text-base sm:text-lg font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">Shahanur Alam</h1>
-              <p className="text-xs sm:text-sm text-gray-600 font-medium">Mobile App Developer • Java & Flutter</p>
+              <h1 className="text-base sm:text-lg font-bold bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-300 bg-clip-text text-transparent">Shahanur Alam</h1>
+              <p className="text-xs sm:text-sm text-yellow-200/80 font-medium">Mobile App Developer • Java & Flutter</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap order-2 sm:order-2 justify-center sm:justify-end">
-            <a href="https://github.com/shahanuralamofficial" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm hover:underline hover:text-indigo-600 transition-colors">
+            <a href="https://github.com/shahanuralamofficial" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm hover:text-yellow-400 transition-all duration-300 hover:scale-105 text-white/80">
               <Github size={12} className="sm:w-3.5 sm:h-3.5" /> GitHub
             </a>
-            <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm hover:underline hover:text-blue-600 transition-colors">
+            <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm hover:text-blue-400 transition-all duration-300 hover:scale-105 text-white/80">
               <Linkedin size={12} className="sm:w-3.5 sm:h-3.5" /> LinkedIn
             </a>
-            <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm hover:underline hover:text-blue-800 transition-colors">
+            <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm hover:text-blue-500 transition-all duration-300 hover:scale-105 text-white/80">
               <Facebook size={12} className="sm:w-3.5 sm:h-3.5" /> Facebook
             </a>
-            <a href="mailto:shahanuralam.dev@gmail.com" className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm hover:underline hover:text-red-500 transition-colors">
+            <a href="mailto:shahanuralam.dev@gmail.com" className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm hover:text-red-400 transition-all duration-300 hover:scale-105 text-white/80">
               <Mail size={12} className="sm:w-3.5 sm:h-3.5" /> Email
             </a>
           </div>
@@ -60,36 +76,36 @@ export default function ShahanurPortfolio() {
       </header>
 
       <main className="w-full py-6 sm:py-8 lg:py-10">
-        <section className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 items-start md:items-center bg-white/80 backdrop-blur-sm my-3 sm:my-4 lg:my-6 p-4 sm:p-5 lg:p-6 rounded-2xl shadow-lg border border-indigo-100 animate-fade-in">
+        <section className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 items-start md:items-center bg-black/20 backdrop-blur-xl my-3 sm:my-4 lg:my-6 p-4 sm:p-5 lg:p-6 rounded-3xl shadow-2xl shadow-black/50 border border-white/10 animate-fade-in">
           <div className="md:col-span-2 space-y-3 sm:space-y-4">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
-              Hi — I’m <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600">Shahanur</span>.
+              Hi — I’m <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-300">Shahanur</span>.
             </h2>
-            <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+            <p className="text-white/80 text-sm sm:text-base leading-relaxed">
               Motivated computer science undergraduate from Rajshahi, Bangladesh specializing in mobile app development using Java and Flutter. I build localized, practical apps with real users in mind — from agriculture tools to management systems.
             </p>
 
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              <a href="#projects" className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 text-sm font-medium">View Projects</a>
-              <a href="#contact" className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 border-2 border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 hover:border-indigo-500 transform hover:-translate-y-0.5 transition-all duration-300 text-sm font-medium">Contact Me</a>
+              <a href="#projects" className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black rounded-xl shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 text-sm font-bold border border-yellow-400/50">View Projects</a>
+              <a href="#contact" className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 border-2 border-yellow-400/50 text-yellow-400 rounded-xl hover:bg-yellow-400/10 transform hover:-translate-y-1 transition-all duration-300 text-sm font-bold">Contact Me</a>
               <a
                 href={cvPdf}
                 download="Shahanur-Alam-CV.pdf"
-                className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-1.5 sm:gap-2 text-sm font-medium"
+                className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-xl shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 flex items-center gap-1.5 sm:gap-2 text-sm font-bold"
               >
                 <Download size={14} /> Download CV
               </a>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-sm">
-              <div className="p-3 sm:p-4 rounded-lg bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-200">
-                <div className="text-xs font-medium text-gray-500">Location</div>
-                <div className="flex items-center gap-2 mt-1 text-gray-700 font-medium"><MapPin size={14} />Rajshahi, Bangladesh</div>
+              <div className="p-3 sm:p-4 rounded-xl bg-black/30 border border-white/10 backdrop-blur-sm">
+                <div className="text-xs font-medium text-yellow-200/60">Location</div>
+                <div className="flex items-center gap-2 mt-1 text-white/90 font-medium"><MapPin size={14} className="text-yellow-400" />Rajshahi, Bangladesh</div>
               </div>
 
-              <div className="p-3 sm:p-4 rounded-lg bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200">
-                <div className="text-xs font-medium text-gray-500">Open to</div>
-                <div className="mt-1 text-gray-700 font-medium">Internships • Junior Developer • Freelance</div>
+              <div className="p-3 sm:p-4 rounded-xl bg-black/30 border border-white/10 backdrop-blur-sm">
+                <div className="text-xs font-medium text-yellow-200/60">Open to</div>
+                <div className="mt-1 text-white/90 font-medium">Internships • Junior Developer • Freelance</div>
               </div>
             </div>
           </div>
@@ -153,7 +169,14 @@ export default function ShahanurPortfolio() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {projects.map((p) => (
               <div key={p.title} className="group bg-white rounded-xl p-4 sm:p-5 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
-                <h4 className="text-base sm:text-lg font-bold text-gray-800 mb-2">{p.title}</h4>
+                <div className="flex items-center gap-3 mb-4">
+                  {p.logo ? (
+                    <img src={p.logo} alt={`${p.title} logo`} className="w-12 h-12 rounded-2xl object-cover border border-gray-200 shadow-sm" loading="lazy" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-gray-200 flex items-center justify-center text-indigo-600 font-semibold">APP</div>
+                  )}
+                  <h4 className="text-base sm:text-lg font-bold text-gray-800">{p.title}</h4>
+                </div>
                 <p className="text-gray-600 text-xs sm:text-sm mb-3 leading-relaxed">{p.description}</p>
                 <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4">
                   {p.stack.map((t) => (
