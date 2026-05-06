@@ -7,44 +7,12 @@ import { Github, Linkedin, Mail, MapPin, Download, Facebook } from "lucide-react
 // Projects array updated with demoLink and sourceLink
 const projects = [
   {
-    title: "AgriCare — Smart Agriculture (Android Java)",
-    description:
-      "Smart agriculture Android app with disease detection (Teachable Machine + TFLite), weather-based recommendations, and a Bangla UI targeted for local farmers.",
-    stack: ["Java", "Android", "TFLite", "Firebase"],
-    demoLink: "https://play.google.com/store/apps/details?id=com.example.agricare",
-    sourceLink: "https://github.com/shahanuralamofficial/agricare",
-  },
-  {
     title: "Blood Donate — Donor Matching (Android)",
     description:
       "Blood donation app for connecting donors and recipients, with search by blood group, location-based matching, and direct contact options. Built for fast access to urgent blood needs.",
     stack: ["Java", "Android", "Firebase"],
     demoLink: "https://play.google.com/store/apps/details?id=com.blood_donate_app.bd",
     sourceLink: "#",
-  },
-  {
-    title: "Ukil — Lawyer Finder (Flutter)",
-    description:
-      "Lawyer directory app with category search, filters, lawyer profiles, client-lawyer interactions and a PHP+MySQL backend (XAMPP).",
-    stack: ["Flutter", "Dart", "PHP", "MySQL"],
-    demoLink: "#", // live/demo not available
-    sourceLink: "https://github.com/shahanuralamofficial/ukil.git",
-  },
-  {
-    title: "HostelMate — Hostel Management (Flutter)",
-    description:
-      "Role-based hostel management system supporting owners, managers, and members, with leave requests, notices and profile control. Flutter front-end and PHP+MySQL backend.",
-    stack: ["Flutter", "Dart", "PHP", "MySQL"],
-    demoLink: "#",
-    sourceLink: "https://github.com/shahanuralamofficial/hostelmate",
-  },
-  {
-    title: "Task Manager — Task Management (Flutter)",
-    description:
-      "A Flutter-based productivity app that helps users efficiently manage their tasks. Features include creating, updating, and tracking tasks across different statuses—New, In Progress, Completed, and Cancelled. The app provides real-time task counts, intuitive UI with provider-based state management, and smooth task updates, making task organization simple and efficient.",
-    stack: ["Flutter", "Dart", "OpenApi"],
-    demoLink: "#",
-    sourceLink: "https://github.com/shahanuralamofficial/task-manager.git",
   },
 ];
 
