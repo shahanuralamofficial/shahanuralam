@@ -149,45 +149,45 @@ export default function ShahanurPortfolio() {
           </article>
 
           <aside className="space-y-6">
-            <h3 className="text-lg sm:text-xl font-bold border-b border-indigo-200 pb-3">Skills</h3>
+            <h3 className="text-lg sm:text-xl font-bold border-b border-yellow-400/30 pb-3 text-yellow-200">Skills</h3>
             <div className="grid grid-cols-2 gap-2">
               {skills.map((s) => (
-                <span key={s} className="px-2.5 py-1.5 sm:px-3 sm:py-2 bg-gradient-to-r from-indigo-100 to-blue-100 rounded-lg text-xs sm:text-sm font-medium border border-indigo-200 hover:bg-indigo-200 transition-colors cursor-pointer">{s}</span>
+                <span key={s} className="px-2.5 py-1.5 sm:px-3 sm:py-2 bg-gradient-to-r from-yellow-400/20 to-amber-400/20 rounded-xl text-xs sm:text-sm font-medium border border-yellow-400/30 hover:bg-yellow-400/30 transition-all duration-300 cursor-pointer text-white/90 hover:text-yellow-100 shadow-lg hover:shadow-yellow-500/20">{s}</span>
               ))}
             </div>
 
             <div>
-              <h4 className="text-base font-semibold text-gray-800 border-b border-indigo-200 pb-2 mb-3">Tools & Frameworks</h4>
-              <div className="text-gray-700 text-sm sm:text-base">Flutter, Android Studio, Firebase, MySQL, XAMPP, Git & GitHub</div>
+              <h4 className="text-base font-semibold text-yellow-200 border-b border-yellow-400/30 pb-2 mb-3">Tools & Frameworks</h4>
+              <div className="text-white/80 text-sm sm:text-base bg-black/20 p-4 rounded-xl border border-white/10 backdrop-blur-sm">Flutter, Android Studio, Firebase, MySQL, XAMPP, Git & GitHub</div>
             </div>
           </aside>
         </section>
 
         {/* Projects Section */}
         <section id="projects" className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mt-8 sm:mt-10">
-          <h3 className="text-xl sm:text-2xl font-bold mb-6 border-b border-indigo-200 pb-3">Selected Projects</h3>
+          <h3 className="text-xl sm:text-2xl font-bold mb-6 border-b border-yellow-400/30 pb-3 text-yellow-200">Selected Projects</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {projects.map((p) => (
-              <div key={p.title} className="group bg-white rounded-xl p-4 sm:p-5 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
+              <div key={p.title} className="group bg-black/20 backdrop-blur-xl rounded-3xl p-4 sm:p-5 shadow-2xl hover:shadow-yellow-500/20 transition-all duration-500 transform hover:-translate-y-2 border border-white/10 hover:border-yellow-400/30">
                 <div className="flex items-center gap-3 mb-4">
                   {p.logo ? (
-                    <img src={p.logo} alt={`${p.title} logo`} className="w-12 h-12 rounded-2xl object-cover border border-gray-200 shadow-sm" loading="lazy" />
+                    <img src={p.logo} alt={`${p.title} logo`} className="w-12 h-12 rounded-2xl object-cover border-2 border-yellow-400/50 shadow-lg shadow-yellow-500/30" loading="lazy" />
                   ) : (
-                    <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-gray-200 flex items-center justify-center text-indigo-600 font-semibold">APP</div>
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-400/20 to-amber-400/20 border-2 border-yellow-400/50 flex items-center justify-center text-yellow-400 font-bold shadow-lg">APP</div>
                   )}
-                  <h4 className="text-base sm:text-lg font-bold text-gray-800">{p.title}</h4>
+                  <h4 className="text-base sm:text-lg font-bold text-white">{p.title}</h4>
                 </div>
-                <p className="text-gray-600 text-xs sm:text-sm mb-3 leading-relaxed">{p.description}</p>
+                <p className="text-white/70 text-xs sm:text-sm mb-3 leading-relaxed">{p.description}</p>
                 <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4">
                   {p.stack.map((t) => (
-                    <span key={t} className="px-2 py-1 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full text-xs sm:text-sm font-medium text-blue-700">{t}</span>
+                    <span key={t} className="px-2 py-1 bg-gradient-to-r from-yellow-400/20 to-amber-400/20 rounded-full text-xs sm:text-sm font-medium text-yellow-200 border border-yellow-400/30">{t}</span>
                   ))}
                 </div>
                 <div className="flex gap-4 sm:gap-6 items-center">
-                  <a href={p.demoLink} target="_blank" rel="noreferrer" className="text-indigo-600 hover:text-indigo-800 font-semibold text-sm transition-colors">
+                  <a href={p.demoLink} target="_blank" rel="noreferrer" className="text-yellow-400 hover:text-yellow-300 font-semibold text-sm transition-all duration-300 hover:scale-105">
                     View Project →
                   </a>
-                  <a href={p.sourceLink} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-gray-700 text-sm transition-colors">
+                  <a href={p.sourceLink} target="_blank" rel="noreferrer" className="text-white/60 hover:text-yellow-400 text-sm transition-all duration-300 hover:scale-105">
                     View Source
                   </a>
                 </div>
@@ -197,36 +197,36 @@ export default function ShahanurPortfolio() {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mt-8 sm:mt-10 bg-gradient-to-br from-white to-indigo-50 p-6 sm:p-8 rounded-2xl shadow-xl">
-          <h3 className="text-xl sm:text-2xl font-bold mb-4 text-center">Contact</h3>
-          <p className="text-gray-600 text-sm sm:text-base mb-6 text-center leading-relaxed max-w-md mx-auto">I'm open to internships, freelance or junior developer roles. Send me a message and I will reply as soon as I can.</p>
+        <section id="contact" className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mt-8 sm:mt-10 bg-black/20 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-2xl shadow-black/50 border border-white/10">
+          <h3 className="text-xl sm:text-2xl font-bold mb-4 text-center text-yellow-200">Contact</h3>
+          <p className="text-white/70 text-sm sm:text-base mb-6 text-center leading-relaxed max-w-md mx-auto">I'm open to internships, freelance or junior developer roles. Send me a message and I will reply as soon as I can.</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             <div className="space-y-4">
-              <h4 className="text-base font-semibold text-gray-800 border-l-4 border-indigo-500 pl-3">Reach me</h4>
-              <div className="space-y-3 text-xs sm:text-sm text-gray-700">
+              <h4 className="text-base font-semibold text-yellow-200 border-l-4 border-yellow-400 pl-3">Reach me</h4>
+              <div className="space-y-3 text-xs sm:text-sm text-white/80">
                 <div className="flex items-center gap-2">
-                  <Mail size={16} className="text-indigo-500" />
-                  <a href="mailto:shahanuralam.dev@gmail.com" className="hover:text-indigo-600 font-medium transition-colors">shahanuralam.dev@gmail.com</a>
+                  <Mail size={16} className="text-yellow-400" />
+                  <a href="mailto:shahanuralam.dev@gmail.com" className="hover:text-yellow-300 font-medium transition-colors">shahanuralam.dev@gmail.com</a>
                 </div>
                 <div className="flex items-center gap-2">
-                  <MapPin size={16} className="text-green-500" />
-                  <a href="tel:+8801518939114" className="hover:text-green-600 font-medium transition-colors">+8801518939114</a>
+                  <MapPin size={16} className="text-green-400" />
+                  <a href="tel:+8801518939114" className="hover:text-green-300 font-medium transition-colors">+8801518939114</a>
                 </div>
                 <div className="flex items-center gap-2">
-                  <MapPin size={16} className="text-gray-500" />
+                  <MapPin size={16} className="text-white/60" />
                   <span>Rajshahi, Bangladesh</span>
                 </div>
               </div>
 
               <div className="flex gap-2 sm:gap-3 flex-wrap">
-                <a href="https://github.com/shahanuralamofficial" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition-all duration-300 text-xs sm:text-sm font-medium">
+                <a href="https://github.com/shahanuralamofficial" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-2 border-2 border-white/20 rounded-xl hover:border-yellow-400/50 hover:bg-yellow-400/10 transition-all duration-300 text-xs sm:text-sm font-medium text-white/80 hover:text-yellow-200">
                   <Github size={14} /> GitHub
                 </a>
-                <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-300 text-xs sm:text-sm font-medium">
+                <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-2 border-2 border-white/20 rounded-xl hover:border-blue-400/50 hover:bg-blue-400/10 transition-all duration-300 text-xs sm:text-sm font-medium text-white/80 hover:text-blue-300">
                   <Linkedin size={14} /> LinkedIn
                 </a>
-                <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-blue-800 hover:bg-blue-50 transition-all duration-300 text-xs sm:text-sm font-medium">
+                <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-2 border-2 border-white/20 rounded-xl hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300 text-xs sm:text-sm font-medium text-white/80 hover:text-blue-400">
                   <Facebook size={14} /> Facebook
                 </a>
               </div>
@@ -234,28 +234,28 @@ export default function ShahanurPortfolio() {
 
             <form className="space-y-3 sm:space-y-4">
               <div>
-                <label className="text-xs sm:text-sm text-gray-600 block mb-1.5 font-medium">Name</label>
-                <input className="w-full p-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-xs sm:text-sm transition-all" placeholder="Your name" />
+                <label className="text-xs sm:text-sm text-yellow-200/80 block mb-1.5 font-medium">Name</label>
+                <input className="w-full p-3 rounded-xl border border-white/20 bg-black/20 backdrop-blur-sm focus:border-yellow-400/50 focus:ring-1 focus:ring-yellow-400/30 text-xs sm:text-sm transition-all text-white placeholder-white/50" placeholder="Your name" />
               </div>
 
               <div>
-                <label className="text-xs sm:text-sm text-gray-600 block mb-1.5 font-medium">Email</label>
-                <input className="w-full p-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-xs sm:text-sm transition-all" placeholder="you@example.com" />
+                <label className="text-xs sm:text-sm text-yellow-200/80 block mb-1.5 font-medium">Email</label>
+                <input className="w-full p-3 rounded-xl border border-white/20 bg-black/20 backdrop-blur-sm focus:border-yellow-400/50 focus:ring-1 focus:ring-yellow-400/30 text-xs sm:text-sm transition-all text-white placeholder-white/50" placeholder="you@example.com" />
               </div>
 
               <div>
-                <label className="text-xs sm:text-sm text-gray-600 block mb-1.5 font-medium">Message</label>
-                <textarea className="w-full p-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-xs sm:text-sm transition-all resize-none" rows={4} placeholder="Brief message..." />
+                <label className="text-xs sm:text-sm text-yellow-200/80 block mb-1.5 font-medium">Message</label>
+                <textarea className="w-full p-3 rounded-xl border border-white/20 bg-black/20 backdrop-blur-sm focus:border-yellow-400/50 focus:ring-1 focus:ring-yellow-400/30 text-xs sm:text-sm transition-all resize-none text-white placeholder-white/50" rows={4} placeholder="Brief message..." />
               </div>
 
-              <button type="button" className="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold text-xs sm:text-sm hover:from-indigo-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+              <button type="button" className="w-full px-6 py-3 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black rounded-xl font-bold text-xs sm:text-sm hover:from-yellow-400 hover:to-amber-400 transform hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-yellow-500/50 border border-yellow-400/50">
                 Send Message
               </button>
             </form>
           </div>
         </section>
 
-        <footer className="w-full mt-8 sm:mt-12 py-4 sm:py-6 text-center text-xs sm:text-sm text-gray-500 bg-white/50 backdrop-blur-sm border-t border-indigo-100">
+        <footer className="w-full mt-8 sm:mt-12 py-4 sm:py-6 text-center text-xs sm:text-sm text-white/50 bg-black/30 backdrop-blur-xl border-t border-yellow-400/20">
           © {new Date().getFullYear()} Shahanur Alam — Built with React & Tailwind
         </footer>
       </main>
