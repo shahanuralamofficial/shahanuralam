@@ -6,20 +6,15 @@ Hi! I'm **Shahanur Alam**, a motivated Computer Science undergraduate from Rajsh
 
 ## 🚀 Featured Projects
 
-### AgriCare — Smart Agriculture (Android Java)
-- **Description**: Smart agriculture app with disease detection (Teachable Machine + TFLite), weather recommendations, and Bangla UI for local farmers.
-- **Tech Stack**: Java, Android, TFLite, Firebase
-- **[View Project](#)** | **[Source Code](https://github.com/shahanuralamofficial/AgriCare)**
+### Blood Donate — Donor Matching (Android)
+- **Description**: Blood donation app for connecting donors and recipients, with search by blood group, location-based matching, and direct contact options. Built for fast access to urgent blood needs.
+- **Tech Stack**: Flutter, Android, Firebase
+- **[View on Play Store](https://play.google.com/store/apps/details?id=com.blood_donate_app.bd)** | **[Source Code](#)**
 
-### Ukil — Lawyer Finder (Flutter)
-- **Description**: Lawyer directory with search, filters, profiles, and PHP+MySQL backend.
-- **Tech Stack**: Flutter, Dart, PHP, MySQL
-- **[View Project](#)** | **[Source Code](https://github.com/shahanuralamofficial/Ukil)**
-
-### HostelMate — Hostel Management (Flutter)
-- **Description**: Role-based system for owners/managers/members with leave requests and notices.
-- **Tech Stack**: Flutter, Dart, PHP, MySQL
-- **[View Project](#)** | **[Source Code](https://github.com/shahanuralamofficial/HostelMate)**
+### Badalgachi Net — ISP App (Android)
+- **Description**: ISP app for managing customers, billing, and internet service support. Designed for easy account access, package details, and contact tools for local ISP users.
+- **Tech Stack**: Java, Android, Firebase
+- **[View on Play Store](https://play.google.com/store/apps/details?id=com.careconnectstudio.badalgachinet)** | **[Source Code](#)**
 
 ## 🛠 Skills & Tools
 - **Languages**: Java (Android), Dart (Flutter), C++, PHP, HTML & CSS
