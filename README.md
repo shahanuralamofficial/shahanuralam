@@ -41,5 +41,27 @@ Hi! I'm **Shahanur Alam**, a motivated Computer Science undergraduate from Rajsh
 - **GitHub**: [github.com/shahanuralamofficial](https://github.com/shahanuralamofficial)
 - **Facebook**: [facebook.com/ShahanurAlam2k3](https://www.facebook.com/ShahanurAlam2k3)
 
-## 📁 Deployment
+## � Getting Started
+
+To run this portfolio locally:
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/shahanuralamofficial/shahanuralam.git
+   cd shahanuralam
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm start
+   ```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## �📁 Deployment
 This portfolio is built with **React & Tailwind CSS**. Deployed on GitHub Pages.
