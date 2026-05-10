@@ -1,0 +1,37 @@
+{
+  "name": "my-portfolio-react",
+  "homepage": "https://shahanuralamofficial.github.io/shahanuralam",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "gh-pages": "^6.3.0",
+    "lucide-react": "^0.545.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.13"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-scripts": "^5.0.1",
+    "framer-motion": "^11.0.0",
+    "react-simple-code-editor": "^0.13.1",
+    "prismjs": "^1.29.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

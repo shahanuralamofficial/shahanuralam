@@ -1,0 +1,62 @@
+# Shahanur Alam
+
+![Portfolio Banner](https://github.com/shahanuralamofficial/shahanuralam/blob/eaf3bd06a1de3c9649902072b30977de5cb24094/image.png) 
+
+Hi! I'm **Shahanur Alam**, a motivated Computer Science undergraduate from Rajshahi, Bangladesh. Passionate about mobile app development using Java and Flutter. I build practical, localized apps for real users—like agriculture tools and management systems.
+
+## 🚀 Featured Projects
+
+### Blood Donate — Donor Matching (Android)
+- **Description**: Blood donation app for connecting donors and recipients, with search by blood group, location-based matching, and direct contact options. Built for fast access to urgent blood needs.
+- **Tech Stack**: Flutter, Android, Firebase
+- **[View on Play Store](https://play.google.com/store/apps/details?id=com.blood_donate_app.bd)** | **[Source Code](#)**
+
+### Badalgachi Net — ISP App (Android)
+- **Description**: ISP app for managing customers, billing, and internet service support. Designed for easy account access, package details, and contact tools for local ISP users.
+- **Tech Stack**: Java, Android, Firebase
+- **[View on Play Store](https://play.google.com/store/apps/details?id=com.careconnectstudio.badalgachinet)** | **[Source Code](#)**
+
+## 🛠 Skills & Tools
+- **Languages**: Java (Android), Dart (Flutter), C++, PHP, HTML & CSS
+- **Frameworks**: Flutter, Firebase, MySQL
+- **Tools**: Android Studio, XAMPP, Git & GitHub
+
+## 📚 Education
+- **B.Sc. in Computer Science & Engineering**  
+  Varendra University, Rajshahi (Expected: 2026)
+
+## 🏆 Achievements
+- Winner — University Innovation Hub Competition (Led mobile app project team)
+
+## 📞 Contact
+- **Email**: [shahanuralam.dev@gmail.com](mailto:shahanuralam.dev@gmail.com)
+- **Phone**: +8801518939114
+- **Location**: Rajshahi, Bangladesh
+- **LinkedIn**: [linkedin.com/in/shahanur-alam](https://www.linkedin.com/in/shahanur-alam/)
+- **GitHub**: [github.com/shahanuralamofficial](https://github.com/shahanuralamofficial)
+- **Facebook**: [facebook.com/ShahanurAlam2k3](https://www.facebook.com/ShahanurAlam2k3)
+
+## � Getting Started
+
+To run this portfolio locally:
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/shahanuralamofficial/shahanuralam.git
+   cd shahanuralam
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm start
+   ```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## �📁 Deployment
+This portfolio is built with **React & Tailwind CSS**. Deployed on GitHub Pages.
