@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Github, Linkedin, Facebook, Mail, MapPin, Download, Code2 } from 'lucide-react';
+import { Github, Linkedin, Facebook, Mail, MapPin, Download, Code2, Globe } from 'lucide-react';
 import CPPractice from './CPPractice';
 import profileImg from "./assets/ShahanurAlam.jpg";
 import logoIcon from "./assets/logo-icon.png";
@@ -207,8 +207,8 @@ export default function ShahanurPortfolio() {
                   ))}
                 </div>
                 <div className="flex gap-4 sm:gap-6 items-center">
-                  <a href={p.demoLink} target="_blank" rel="noreferrer" className="text-yellow-400 hover:text-yellow-300 font-semibold text-sm transition-all duration-300 hover:scale-105">
-                    View Project →
+                  <a href={p.demoLink} target="_blank" rel="noreferrer" className="text-yellow-400 hover:text-yellow-300 font-semibold text-sm transition-all duration-300 hover:scale-105 flex items-center gap-1.5">
+                    <Globe size={14} /> View Project
                   </a>
                   <a href={p.sourceLink} target="_blank" rel="noreferrer" className="text-white/60 hover:text-yellow-400 text-sm transition-all duration-300 hover:scale-105">
                     View Source
