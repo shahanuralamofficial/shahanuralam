@@ -1,3 +1,6 @@
+import React, { useState } from 'react';
+import { Github, Linkedin, Facebook, Mail, MapPin, Download, Code2 } from 'lucide-react';
+import CPPractice from './CPPractice';
 import profileImg from "./assets/ShahanurAlam.jpg";
 import logoIcon from "./assets/logo-icon.png";
 import bloodDonateLogo from "./assets/blood_donate.png";
@@ -40,6 +43,12 @@ const skills = [
 ];
 
 export default function ShahanurPortfolio() {
+  const [showCP, setShowCP] = useState(false);
+
+  if (showCP) {
+    return <CPPractice onBack={() => setShowCP(false)} />;
+  }
+
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white antialiased relative overflow-hidden">
       {/* Luxury background elements */}
@@ -57,6 +66,10 @@ export default function ShahanurPortfolio() {
               <p className="text-xs sm:text-sm text-yellow-200/80 font-medium">Mobile App Developer • Java & Flutter</p>
             </div>
           </div>
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 order-2 sm:order-2 w-full sm:w-auto justify-start sm:justify-end">
+            <button onClick={() => setShowCP(true)} className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm text-yellow-400 hover:text-white transition-all duration-300 font-bold px-3 py-1.5 rounded-lg bg-yellow-400/10 border border-yellow-400/20">
+              <Code2 size={12} className="sm:w-3.5 sm:h-3.5" /> CP Workspace
+            </button>
             <a href="https://github.com/shahanuralamofficial" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm hover:text-yellow-400 transition-all duration-300 hover:scale-105 text-white/80">
               <Github size={12} className="sm:w-3.5 sm:h-3.5" /> GitHub
             </a>
@@ -84,6 +97,9 @@ export default function ShahanurPortfolio() {
             </p>
 
             <div className="flex flex-wrap gap-2 sm:gap-3">
+              <button onClick={() => setShowCP(true)} className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-white text-black rounded-xl shadow-xl hover:shadow-white/20 transform hover:-translate-y-1 transition-all duration-300 text-sm font-black uppercase flex items-center gap-2">
+                <Code2 size={16} /> CP Workspace
+              </button>
               <a href="#projects" className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black rounded-xl shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 text-sm font-bold border border-yellow-400/50">View Projects</a>
               <a href="#contact" className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 border-2 border-yellow-400/50 text-yellow-400 rounded-xl hover:bg-yellow-400/10 transform hover:-translate-y-1 transition-all duration-300 text-sm font-bold">Contact Me</a>
               <a
