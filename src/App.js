@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
 import profileImg from "./assets/ShahanurAlam.jpg";
 import logoIcon from "./assets/logo-icon.png";
 import bloodDonateLogo from "./assets/blood_donate.png";
 import badalgachiLogo from "./assets/Badalgachi Net.png";
 import cvPdf from './assets/CV.pdf';
-import CPPractice from './CPPractice';
 
-import { Github, Linkedin, Mail, MapPin, Download, Facebook, Code2 } from "lucide-react";
 
 // Projects array updated with demoLink and sourceLink
 const projects = [
@@ -43,12 +40,6 @@ const skills = [
 ];
 
 export default function ShahanurPortfolio() {
-  const [view, setView] = useState('portfolio');
-
-  if (view === 'cp') {
-    return <CPPractice onBack={() => setView('portfolio')} />;
-  }
-
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white antialiased relative overflow-hidden">
       {/* Luxury background elements */}
@@ -66,14 +57,6 @@ export default function ShahanurPortfolio() {
               <p className="text-xs sm:text-sm text-yellow-200/80 font-medium">Mobile App Developer • Java & Flutter</p>
             </div>
           </div>
-          <div className="flex items-center gap-1.5 sm:gap-4 flex-wrap order-2 sm:order-2 justify-center sm:justify-end">
-            <button
-              onClick={() => setView('cp')}
-              className="flex items-center gap-1.5 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-xs sm:text-sm font-bold border border-white/10 transition-all text-yellow-200"
-            >
-              <Code2 size={14} /> CP Practice
-            </button>
-            <div className="h-6 w-px bg-white/10 hidden sm:block"></div>
             <a href="https://github.com/shahanuralamofficial" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm hover:text-yellow-400 transition-all duration-300 hover:scale-105 text-white/80">
               <Github size={12} className="sm:w-3.5 sm:h-3.5" /> GitHub
             </a>
