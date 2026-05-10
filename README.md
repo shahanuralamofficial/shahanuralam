@@ -1,6 +1,6 @@
 # Shahanur Alam | Portfolio & Zen Workspace
 
-![Portfolio Banner](https://github.com/shahanuralamofficial/shahanuralam/blob/eaf3bd06a1de3c9649902072b30977de5cb24094/image.png) 
+![Portfolio Banner](./images.png)
 
 Hi! I'm **Shahanur Alam**, a motivated Computer Science undergraduate from Rajshahi, Bangladesh. I specialize in mobile app development using Java and Flutter, building practical, localized apps for real users.
 
