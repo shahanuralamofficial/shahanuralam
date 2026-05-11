@@ -460,7 +460,8 @@ export default function ShahanurPortfolio() {
               {contactStatus.error && <p className="text-sm text-rose-300 font-medium">{contactStatus.error}</p>}
             </form>
           </div>
-        </section>
+        </div>
+      </section>
 
         <footer className="w-full mt-8 sm:mt-12 py-4 sm:py-6 text-center text-xs sm:text-sm text-stone-600 bg-black/30 backdrop-blur-xl border-t border-amber-500/10">
           © {new Date().getFullYear()} Shahanur Alam — Built with React & Tailwind
