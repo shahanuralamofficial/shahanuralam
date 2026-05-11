@@ -267,10 +267,10 @@ export default function ShahanurPortfolio() {
         <section id="contact" className="contact-panel max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mt-8 sm:mt-10 bg-black/20 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-2xl shadow-black/50 border border-white/10">
           <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr] items-start">
             <div className="space-y-4">
-              <div className="space-y-2">
-                <p className="uppercase tracking-[0.35em] text-[11px] text-yellow-300/80 font-semibold">Get in Touch</p>
-                <h3 className="text-2xl sm:text-3xl font-bold text-white">Contact Me</h3>
-                <p className="text-white/70 text-sm sm:text-base leading-relaxed max-w-xl">
+              <div className="space-y-2 text-center">
+                <p className="uppercase tracking-[0.35em] text-[11px] text-amber-300/90 font-semibold">Get in Touch</p>
+                <h3 className="text-2xl sm:text-3xl font-bold text-amber-100">Contact Me</h3>
+                <p className="text-amber-100/75 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
                   I’m available for internships, freelance projects, and junior roles. Send a note and I will reach out with a tailored reply.
                 </p>
               </div>
@@ -304,7 +304,7 @@ export default function ShahanurPortfolio() {
                 </div>
 
                 <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_80px_rgba(0,0,0,0.25)] backdrop-blur-xl">
-                  <p className="text-sm text-yellow-200 font-semibold mb-4">Social Links</p>
+                  <p className="text-sm text-amber-200 font-semibold mb-4">Social Links</p>
                   <div className="grid gap-3">
                     <a href="https://github.com/shahanuralamofficial" target="_blank" rel="noreferrer" className="contact-social">
                       <Github size={18} /> GitHub
