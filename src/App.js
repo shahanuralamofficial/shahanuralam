@@ -44,6 +44,8 @@ const skills = [
 
 export default function ShahanurPortfolio() {
   const [showCP, setShowCP] = useState(false);
+  const [contactData, setContactData] = useState({ name: '', email: '', message: '' });
+  const [contactStatus, setContactStatus] = useState({ loading: false, success: '', error: '' });
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -53,6 +55,48 @@ export default function ShahanurPortfolio() {
     handleHashChange(); // Check initial hash
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
+
+  useEffect(() => {
+    if (window.emailjs?.init) {
+      window.emailjs.init('lzXCo-rsbVGxeyVKI');
+    }
+  }, []);
+
+  const handleContactChange = (event) => {
+    const { name, value } = event.target;
+    setContactData((prev) => ({ ...prev, [name]: value }));
+    setContactStatus({ loading: false, success: '', error: '' });
+  };
+
+  const handleContactSubmit = async (event) => {
+    event.preventDefault();
+    setContactStatus({ loading: true, success: '', error: '' });
+
+    try {
+      if (!contactData.name || !contactData.email || !contactData.message) {
+        throw new Error('Please complete all fields before sending.');
+      }
+
+      if (!window.emailjs?.send) {
+        throw new Error('EmailJS failed to load. Refresh the page and try again.');
+      }
+
+      await window.emailjs.send('service_olg0zov', 'template_69edrmm', {
+        from_name: contactData.name,
+        from_email: contactData.email,
+        message: contactData.message,
+      });
+
+      setContactStatus({ loading: false, success: 'Message sent successfully! I will reply soon.', error: '' });
+      setContactData({ name: '', email: '', message: '' });
+    } catch (error) {
+      setContactStatus({
+        loading: false,
+        success: '',
+        error: error instanceof Error ? error.message : 'Something went wrong. Please try again later.',
+      });
+    }
+  };
 
   if (showCP) {
     return <CPPractice onBack={() => window.location.hash = ''} />;
@@ -220,60 +264,118 @@ export default function ShahanurPortfolio() {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mt-8 sm:mt-10 bg-black/20 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-2xl shadow-black/50 border border-white/10">
-          <h3 className="text-xl sm:text-2xl font-bold mb-4 text-center text-yellow-200">Contact</h3>
-          <p className="text-white/70 text-sm sm:text-base mb-6 text-center leading-relaxed max-w-md mx-auto">I'm open to internships, freelance or junior developer roles. Send me a message and I will reply as soon as I can.</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+        <section id="contact" className="contact-panel max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mt-8 sm:mt-10 bg-black/20 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-2xl shadow-black/50 border border-white/10">
+          <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr] items-start">
             <div className="space-y-4">
-              <h4 className="text-base font-semibold text-yellow-200 border-l-4 border-yellow-400 pl-3">Reach me</h4>
-              <div className="space-y-3 text-xs sm:text-sm text-white/80">
-                <div className="flex items-center gap-2">
-                  <Mail size={16} className="text-yellow-400" />
-                  <a href="mailto:shahanuralam.dev@gmail.com" className="hover:text-yellow-300 font-medium transition-colors">shahanuralam.dev@gmail.com</a>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MapPin size={16} className="text-green-400" />
-                  <a href="tel:+8801518939114" className="hover:text-green-300 font-medium transition-colors">+8801518939114</a>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MapPin size={16} className="text-white/60" />
-                  <span>Rajshahi, Bangladesh</span>
-                </div>
+              <div className="space-y-2">
+                <p className="uppercase tracking-[0.35em] text-[11px] text-yellow-300/80 font-semibold">Get in Touch</p>
+                <h3 className="text-2xl sm:text-3xl font-bold text-white">Contact Me</h3>
+                <p className="text-white/70 text-sm sm:text-base leading-relaxed max-w-xl">
+                  I’m available for internships, freelance projects, and junior roles. Send a note and I will reach out with a tailored reply.
+                </p>
               </div>
 
-              <div className="flex gap-2 sm:gap-3 flex-wrap">
-                <a href="https://github.com/shahanuralamofficial" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-2 border-2 border-white/20 rounded-xl hover:border-yellow-400/50 hover:bg-yellow-400/10 transition-all duration-300 text-xs sm:text-sm font-medium text-white/80 hover:text-yellow-200">
-                  <Github size={14} /> GitHub
-                </a>
-                <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-2 border-2 border-white/20 rounded-xl hover:border-blue-400/50 hover:bg-blue-400/10 transition-all duration-300 text-xs sm:text-sm font-medium text-white/80 hover:text-blue-300">
-                  <Linkedin size={14} /> LinkedIn
-                </a>
-                <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-2 border-2 border-white/20 rounded-xl hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300 text-xs sm:text-sm font-medium text-white/80 hover:text-blue-400">
-                  <Facebook size={14} /> Facebook
-                </a>
+              <div className="space-y-5">
+                <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_80px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+                  <p className="text-sm text-yellow-200 font-semibold mb-3">Contact Info</p>
+                  <div className="space-y-4 text-white/80 text-sm">
+                    <div className="flex items-center gap-3">
+                      <span className="contact-badge bg-yellow-400/15 text-yellow-300"><Mail size={18} /></span>
+                      <div>
+                        <div className="text-white/80 font-medium">Email</div>
+                        <a href="mailto:shahanuralam.dev@gmail.com" className="text-white/80 hover:text-yellow-300 transition-colors">shahanuralam.dev@gmail.com</a>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="contact-badge bg-violet-500/15 text-violet-300"><MapPin size={18} /></span>
+                      <div>
+                        <div className="text-white/80 font-medium">Phone</div>
+                        <a href="tel:+8801518939114" className="text-white/80 hover:text-yellow-300 transition-colors">+8801518939114</a>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="contact-badge bg-white/10 text-white"><MapPin size={18} /></span>
+                      <div>
+                        <div className="text-white/80 font-medium">Location</div>
+                        <span className="text-white/80">Rajshahi, Bangladesh</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_80px_rgba(0,0,0,0.25)] backdrop-blur-xl">
+                  <p className="text-sm text-yellow-200 font-semibold mb-4">Social Links</p>
+                  <div className="grid gap-3">
+                    <a href="https://github.com/shahanuralamofficial" target="_blank" rel="noreferrer" className="contact-social">
+                      <Github size={18} /> GitHub
+                    </a>
+                    <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" rel="noreferrer" className="contact-social">
+                      <Linkedin size={18} /> LinkedIn
+                    </a>
+                    <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" rel="noreferrer" className="contact-social">
+                      <Facebook size={18} /> Facebook
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <form className="space-y-3 sm:space-y-4">
-              <div>
-                <label className="text-xs sm:text-sm text-yellow-200/80 block mb-1.5 font-medium">Name</label>
-                <input className="w-full p-3 rounded-xl border border-white/20 bg-black/20 backdrop-blur-sm focus:border-yellow-400/50 focus:ring-1 focus:ring-yellow-400/30 text-xs sm:text-sm transition-all text-white placeholder-white/50" placeholder="Your name" />
+            <form onSubmit={handleContactSubmit} className="space-y-4">
+              <div className="grid gap-4">
+                <label className="block text-sm text-yellow-200/80 font-medium">Name</label>
+                <input
+                  name="name"
+                  value={contactData.name}
+                  onChange={handleContactChange}
+                  required
+                  placeholder="Your Name"
+                  className="contact-field w-full p-4 rounded-3xl border border-white/10 bg-black/20 text-white placeholder-white/40 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/25"
+                />
               </div>
 
-              <div>
-                <label className="text-xs sm:text-sm text-yellow-200/80 block mb-1.5 font-medium">Email</label>
-                <input className="w-full p-3 rounded-xl border border-white/20 bg-black/20 backdrop-blur-sm focus:border-yellow-400/50 focus:ring-1 focus:ring-yellow-400/30 text-xs sm:text-sm transition-all text-white placeholder-white/50" placeholder="you@example.com" />
+              <div className="grid gap-4">
+                <label className="block text-sm text-yellow-200/80 font-medium">Email</label>
+                <input
+                  name="email"
+                  type="email"
+                  value={contactData.email}
+                  onChange={handleContactChange}
+                  required
+                  placeholder="you@example.com"
+                  className="contact-field w-full p-4 rounded-3xl border border-white/10 bg-black/20 text-white placeholder-white/40 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/25"
+                />
               </div>
 
-              <div>
-                <label className="text-xs sm:text-sm text-yellow-200/80 block mb-1.5 font-medium">Message</label>
-                <textarea className="w-full p-3 rounded-xl border border-white/20 bg-black/20 backdrop-blur-sm focus:border-yellow-400/50 focus:ring-1 focus:ring-yellow-400/30 text-xs sm:text-sm transition-all resize-none text-white placeholder-white/50" rows={4} placeholder="Brief message..." />
+              <div className="grid gap-4">
+                <label className="block text-sm text-yellow-200/80 font-medium">Message</label>
+                <textarea
+                  name="message"
+                  value={contactData.message}
+                  onChange={handleContactChange}
+                  required
+                  rows={5}
+                  placeholder="Tell me about your project or opportunity"
+                  className="contact-field w-full p-4 rounded-3xl border border-white/10 bg-black/20 text-white placeholder-white/40 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/25 resize-none"
+                />
               </div>
 
-              <button type="button" className="w-full px-6 py-3 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black rounded-xl font-bold text-xs sm:text-sm hover:from-yellow-400 hover:to-amber-400 transform hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-yellow-500/50 border border-yellow-400/50">
-                Send Message
+              <button
+                type="submit"
+                disabled={contactStatus.loading}
+                className={`contact-button relative w-full px-6 py-4 rounded-3xl font-semibold text-sm uppercase tracking-[0.08em] border border-yellow-400/40 transition-all duration-300 shadow-xl shadow-yellow-500/20 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-400 text-slate-950 ${contactStatus.loading ? 'cursor-not-allowed opacity-80' : 'hover:-translate-y-0.5 hover:shadow-yellow-500/40'}`}
+              >
+                {contactStatus.loading ? (
+                  <span className="inline-flex items-center justify-center gap-3">
+                    <span className="button-loader"></span>
+                    Sending...
+                  </span>
+                ) : (
+                  'Send Message'
+                )}
               </button>
+
+              {contactStatus.success && <p className="text-sm text-emerald-300 font-medium">{contactStatus.success}</p>}
+              {contactStatus.error && <p className="text-sm text-rose-300 font-medium">{contactStatus.error}</p>}
             </form>
           </div>
         </section>
