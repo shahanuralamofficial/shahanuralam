@@ -156,14 +156,6 @@ export default function ShahanurPortfolio() {
       </header>
 
       <main className="w-full py-6 sm:py-8 lg:py-10">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mb-8 text-center space-y-2">
-          <p className="uppercase tracking-[0.35em] text-[10px] text-amber-500/80 font-bold">Get in Touch</p>
-          <h3 className="text-2xl sm:text-3xl font-bold text-stone-100">Contact Me</h3>
-          <p className="text-stone-400 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
-            I’m available for internships, freelance projects, and junior roles. Send a note and I will reach out with a tailored reply.
-          </p>
-        </div>
-
         <section className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 items-start md:items-center bg-black/20 backdrop-blur-xl my-3 sm:my-4 lg:my-6 p-4 sm:p-5 lg:p-6 rounded-3xl shadow-2xl shadow-black/50 border border-white/10 animate-fade-in">
           <div className="md:col-span-2 space-y-3 sm:space-y-4">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
@@ -336,8 +328,20 @@ export default function ShahanurPortfolio() {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="contact-panel max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mt-8 sm:mt-10 bg-black/20 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-2xl shadow-black/50 border border-white/10">
-          <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr] items-start">
+        <section id="contact" className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mt-8 sm:mt-12">
+          <h3 className="text-xl sm:text-2xl font-bold mb-6 border-b border-stone-800 pb-3 text-stone-100 flex items-center gap-2">
+            <Mail className="text-amber-500" size={24} /> Contact Me
+          </h3>
+
+          <div className="contact-panel bg-black/20 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-2xl shadow-black/50 border border-white/10">
+            <div className="mb-8">
+              <p className="uppercase tracking-[0.35em] text-[10px] text-amber-500/80 font-bold mb-2">Get in Touch</p>
+              <p className="text-stone-400 text-sm sm:text-base leading-relaxed max-w-xl">
+                I’m available for internships, freelance projects, and junior roles. Send a note and I will reach out with a tailored reply.
+              </p>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr] items-start">
             <div className="space-y-5">
               <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-5 backdrop-blur-md">
                 <p className="text-sm text-stone-400 font-semibold mb-3">Contact Info</p>
