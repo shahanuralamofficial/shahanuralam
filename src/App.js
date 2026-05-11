@@ -1,11 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Github, Linkedin, Facebook, Mail, MapPin, Download, Code2, Globe } from 'lucide-react';
+import { Github, Linkedin, Facebook, Mail, MapPin, Download, Code2, Globe, ExternalLink, Award } from 'lucide-react';
 import CPPractice from './CPPractice';
 import profileImg from "./assets/ShahanurAlam.png";
 import logoIcon from "./assets/logo-icon.png";
 import bloodDonateLogo from "./assets/blood_donate.png";
 import badalgachiLogo from "./assets/Badalgachi Net.png";
 import cvPdf from './assets/CV.pdf';
+
+// Certificates imports
+import flutterCert from "./assets/certificates/Flutter Certificate.pdf";
+import flutterMarkSheet from "./assets/certificates/Flutter Mark Sheet.pdf";
+import java1Cert from "./assets/certificates/Java Certificate Season1.pdf";
+import java2Cert from "./assets/certificates/Java Certificate Season2.pdf";
+import java3Cert from "./assets/certificates/Java Certificate Season3.pdf";
+
+// Certificates array
+const certificates = [
+  { title: "Flutter Certificate", file: flutterCert, provider: "Self-Paced" },
+  { title: "Flutter Mark Sheet", file: flutterMarkSheet, provider: "Self-Paced" },
+  { title: "Java Certificate Season 1", file: java1Cert, provider: "Self-Paced" },
+  { title: "Java Certificate Season 2", file: java2Cert, provider: "Self-Paced" },
+  { title: "Java Certificate Season 3", file: java3Cert, provider: "Self-Paced" },
+];
 
 
 // Projects array updated with demoLink and sourceLink
@@ -103,10 +119,10 @@ export default function ShahanurPortfolio() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-stone-900 via-orange-950 to-stone-900 text-white antialiased relative overflow-hidden">
-      {/* Luxury background elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(251,146,60,0.15),transparent_50%)] pointer-events-none"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,215,0,0.2),transparent_50%)] pointer-events-none"></div>
+    <div className="min-h-screen w-full bg-[#0c0a09] text-stone-200 antialiased relative overflow-hidden">
+      {/* Subtle warm background elements */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(217,119,6,0.03),transparent_50%)] pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(251,191,36,0.03),transparent_50%)] pointer-events-none"></div>
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-transparent to-black/20 pointer-events-none"></div>
       <header className="w-full p-3 sm:p-4 lg:p-6 border-b border-gold-400/20 backdrop-blur-xl bg-black/20 sticky top-0 z-50 shadow-2xl shadow-black/50">
         <nav className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
@@ -115,8 +131,8 @@ export default function ShahanurPortfolio() {
               <img src={logoIcon} alt="Shahanur Alam Icon" className="w-full h-full object-cover rounded-full transition-transform hover:scale-110" loading="lazy" />
             </div>
             <div className="text-left">
-              <h1 className="text-base sm:text-lg font-bold bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-300 bg-clip-text text-transparent">Shahanur Alam</h1>
-              <p className="text-xs sm:text-sm text-yellow-200/80 font-medium">Mobile App Developer • Java & Flutter</p>
+              <h1 className="text-base sm:text-lg font-bold text-stone-100">Shahanur Alam</h1>
+              <p className="text-xs sm:text-sm text-stone-500 font-medium">Mobile App Developer • Java & Flutter</p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-3 sm:gap-4 order-2 sm:order-2 w-full sm:w-auto justify-start sm:justify-end">
@@ -141,9 +157,9 @@ export default function ShahanurPortfolio() {
 
       <main className="w-full py-6 sm:py-8 lg:py-10">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mb-8 text-center space-y-2">
-          <p className="uppercase tracking-[0.35em] text-[11px] text-amber-300/90 font-semibold">Get in Touch</p>
-          <h3 className="text-2xl sm:text-3xl font-bold text-amber-100">Contact Me</h3>
-          <p className="text-amber-100/75 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
+          <p className="uppercase tracking-[0.35em] text-[10px] text-amber-500/80 font-bold">Get in Touch</p>
+          <h3 className="text-2xl sm:text-3xl font-bold text-stone-100">Contact Me</h3>
+          <p className="text-stone-400 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
             I’m available for internships, freelance projects, and junior roles. Send a note and I will reach out with a tailored reply.
           </p>
         </div>
@@ -151,26 +167,36 @@ export default function ShahanurPortfolio() {
         <section className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 items-start md:items-center bg-black/20 backdrop-blur-xl my-3 sm:my-4 lg:my-6 p-4 sm:p-5 lg:p-6 rounded-3xl shadow-2xl shadow-black/50 border border-white/10 animate-fade-in">
           <div className="md:col-span-2 space-y-3 sm:space-y-4">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
-              Hi — I’m <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-300">Shahanur</span>.
+              Hi — I’m <span className="text-amber-500">Shahanur</span>.
             </h2>
-            <p className="text-white/80 text-sm sm:text-base leading-relaxed">
+            <p className="text-stone-400 text-sm sm:text-base leading-relaxed">
               Motivated computer science undergraduate from Rajshahi, Bangladesh specializing in mobile app development using Java and Flutter. I build localized, practical apps with real users in mind — from agriculture tools to management systems.
             </p>
 
-            <div className="flex flex-wrap gap-2 sm:gap-3">
-              <button onClick={() => window.location.hash = 'cp'} className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-white text-black rounded-xl shadow-xl hover:shadow-white/20 transform hover:-translate-y-1 transition-all duration-300 text-sm font-black uppercase flex items-center gap-2">
-                <Code2 size={16} /> CP Workspace
-              </button>
-              <a href="#projects" className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black rounded-xl shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 text-sm font-bold border border-yellow-400/50">View Projects</a>
-              <a href="#contact" className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 border-2 border-yellow-400/50 text-yellow-400 rounded-xl hover:bg-yellow-400/10 transform hover:-translate-y-1 transition-all duration-300 text-sm font-bold">Contact Me</a>
-              <a
-                href={cvPdf}
-                download="Shahanur-Alam-CV.pdf"
-                className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-xl shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 flex items-center gap-1.5 sm:gap-2 text-sm font-bold"
-              >
-                <Download size={14} /> Download CV
-              </a>
-            </div>
+              <div className="flex flex-wrap gap-2 sm:gap-3">
+                <button onClick={() => window.location.hash = 'cp'} className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-white text-black rounded-xl shadow-xl hover:shadow-white/20 transform hover:-translate-y-1 transition-all duration-300 text-sm font-black uppercase flex items-center gap-2">
+                  <Code2 size={16} /> CP Workspace
+                </button>
+                <a href="#projects" className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-amber-500 text-[#0c0a09] rounded-xl shadow-xl hover:bg-amber-400 transform hover:-translate-y-1 transition-all duration-300 text-sm font-bold">View Projects</a>
+                <a href="#contact" className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 border border-stone-700 text-stone-300 rounded-xl hover:bg-white/5 transform hover:-translate-y-1 transition-all duration-300 text-sm font-bold">Contact Me</a>
+                <div className="flex gap-2">
+                  <a
+                    href={cvPdf}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-stone-800 text-stone-200 rounded-xl shadow-xl hover:bg-stone-700 transform hover:-translate-y-1 transition-all duration-300 flex items-center gap-1.5 sm:gap-2 text-sm font-bold border border-white/5"
+                  >
+                    <ExternalLink size={14} /> View CV
+                  </a>
+                  <a
+                    href={cvPdf}
+                    download="Shahanur-Alam-CV.pdf"
+                    className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-xl shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 flex items-center gap-1.5 sm:gap-2 text-sm font-bold"
+                  >
+                    <Download size={14} /> Download CV
+                  </a>
+                </div>
+              </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-sm">
               <div className="p-3 sm:p-4 rounded-xl bg-black/30 border border-white/10 backdrop-blur-sm">
@@ -238,6 +264,44 @@ export default function ShahanurPortfolio() {
           </aside>
         </section>
 
+        {/* Certificates Section */}
+        <section className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mt-8 sm:mt-12">
+          <h3 className="text-xl sm:text-2xl font-bold mb-6 border-b border-stone-800 pb-3 text-stone-100 flex items-center gap-2">
+            <Award className="text-amber-500" size={24} /> Professional Certificates
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {certificates.map((cert, index) => (
+              <div key={index} className="group p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-amber-500/30 transition-all hover:bg-amber-500/[0.02]">
+                <div className="flex justify-between items-start gap-4">
+                  <div>
+                    <h4 className="text-sm font-semibold text-stone-200 group-hover:text-amber-500 transition-colors">{cert.title}</h4>
+                    <p className="text-xs text-stone-500 mt-1">{cert.provider}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <a
+                      href={cert.file}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-lg bg-stone-800 text-stone-400 hover:text-amber-500 hover:bg-amber-500/10 transition-all"
+                      title="View in new tab"
+                    >
+                      <ExternalLink size={14} />
+                    </a>
+                    <a
+                      href={cert.file}
+                      download={`${cert.title}.pdf`}
+                      className="p-2 rounded-lg bg-stone-800 text-stone-400 hover:text-emerald-500 hover:bg-emerald-500/10 transition-all"
+                      title="Download PDF"
+                    >
+                      <Download size={14} />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* Projects Section */}
         <section id="projects" className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mt-8 sm:mt-10">
           <h3 className="text-xl sm:text-2xl font-bold mb-6 border-b border-yellow-400/30 pb-3 text-yellow-200">Selected Projects</h3>
@@ -275,65 +339,65 @@ export default function ShahanurPortfolio() {
         <section id="contact" className="contact-panel max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mt-8 sm:mt-10 bg-black/20 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-2xl shadow-black/50 border border-white/10">
           <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr] items-start">
             <div className="space-y-5">
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_80px_rgba(0,0,0,0.28)] backdrop-blur-xl">
-                <p className="text-sm text-yellow-200 font-semibold mb-3">Contact Info</p>
-                <div className="space-y-4 text-white/80 text-sm">
+              <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-5 backdrop-blur-md">
+                <p className="text-sm text-stone-400 font-semibold mb-3">Contact Info</p>
+                <div className="space-y-4 text-stone-300 text-sm">
                   <div className="flex items-center gap-3">
-                    <span className="contact-badge bg-yellow-400/15 text-yellow-300"><Mail size={18} /></span>
+                    <span className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center border border-amber-500/20"><Mail size={18} /></span>
                     <div>
-                      <div className="text-white/80 font-medium">Email</div>
-                      <a href="mailto:shahanuralam.dev@gmail.com" className="text-white/80 hover:text-yellow-300 transition-colors">shahanuralam.dev@gmail.com</a>
+                      <div className="text-stone-500 text-xs font-medium">Email</div>
+                      <a href="mailto:shahanuralam.dev@gmail.com" className="text-stone-200 hover:text-amber-500 transition-colors">shahanuralam.dev@gmail.com</a>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="contact-badge bg-violet-500/15 text-violet-300"><MapPin size={18} /></span>
+                    <span className="w-10 h-10 rounded-xl bg-stone-500/10 text-stone-400 flex items-center justify-center border border-white/5"><MapPin size={18} /></span>
                     <div>
-                      <div className="text-white/80 font-medium">Phone</div>
-                      <a href="tel:+8801518939114" className="text-white/80 hover:text-yellow-300 transition-colors">+8801518939114</a>
+                      <div className="text-stone-500 text-xs font-medium">Phone</div>
+                      <a href="tel:+8801518939114" className="text-stone-200 hover:text-amber-500 transition-colors">+8801518939114</a>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="contact-badge bg-white/10 text-white"><MapPin size={18} /></span>
+                    <span className="w-10 h-10 rounded-xl bg-stone-500/10 text-stone-400 flex items-center justify-center border border-white/5"><MapPin size={18} /></span>
                     <div>
-                      <div className="text-white/80 font-medium">Location</div>
-                      <span className="text-white/80">Rajshahi, Bangladesh</span>
+                      <div className="text-stone-500 text-xs font-medium">Location</div>
+                      <span className="text-stone-200">Rajshahi, Bangladesh</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_80px_rgba(0,0,0,0.25)] backdrop-blur-xl">
-                <p className="text-sm text-amber-200 font-semibold mb-4">Social Links</p>
+              <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-5 backdrop-blur-md">
+                <p className="text-sm text-stone-400 font-semibold mb-4">Social Links</p>
                 <div className="grid gap-3">
-                  <a href="https://github.com/shahanuralamofficial" target="_blank" rel="noreferrer" className="contact-social">
-                    <Github size={18} /> GitHub
+                  <a href="https://github.com/shahanuralamofficial" target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-amber-500/30 hover:bg-amber-500/5 transition-all group">
+                    <Github size={18} className="text-stone-400 group-hover:text-amber-500" /> <span className="text-sm font-medium">GitHub</span>
                   </a>
-                  <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" rel="noreferrer" className="contact-social">
-                    <Linkedin size={18} /> LinkedIn
+                  <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-amber-500/30 hover:bg-amber-500/5 transition-all group">
+                    <Linkedin size={18} className="text-stone-400 group-hover:text-amber-500" /> <span className="text-sm font-medium">LinkedIn</span>
                   </a>
-                  <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" rel="noreferrer" className="contact-social">
-                    <Facebook size={18} /> Facebook
+                  <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-amber-500/30 hover:bg-amber-500/5 transition-all group">
+                    <Facebook size={18} className="text-stone-400 group-hover:text-amber-500" /> <span className="text-sm font-medium">Facebook</span>
                   </a>
                 </div>
               </div>
             </div>
 
             <form onSubmit={handleContactSubmit} className="space-y-4">
-              <p className="text-sm text-yellow-200 font-semibold mb-3">Contact Form</p>
+              <p className="text-sm text-stone-400 font-semibold mb-3">Contact Form</p>
               <div className="grid gap-4">
-                <label className="block text-sm text-yellow-200/80 font-medium">Name</label>
+                <label className="block text-sm text-stone-500 font-medium">Name</label>
                 <input
                   name="name"
                   value={contactData.name}
                   onChange={handleContactChange}
                   required
                   placeholder="Your Name"
-                  className="contact-field w-full p-4 rounded-3xl border border-white/10 bg-black/20 text-white placeholder-white/40 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/25"
+                  className="contact-field w-full p-4 rounded-3xl border border-white/5 bg-white/[0.02] text-stone-200 placeholder-white/20 focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/10 transition-all outline-none"
                 />
               </div>
 
               <div className="grid gap-4">
-                <label className="block text-sm text-yellow-200/80 font-medium">Email</label>
+                <label className="block text-sm text-stone-500 font-medium">Email</label>
                 <input
                   name="email"
                   type="email"
@@ -341,12 +405,12 @@ export default function ShahanurPortfolio() {
                   onChange={handleContactChange}
                   required
                   placeholder="you@example.com"
-                  className="contact-field w-full p-4 rounded-3xl border border-white/10 bg-black/20 text-white placeholder-white/40 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/25"
+                  className="contact-field w-full p-4 rounded-3xl border border-white/5 bg-white/[0.02] text-stone-200 placeholder-white/20 focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/10 transition-all outline-none"
                 />
               </div>
 
               <div className="grid gap-4">
-                <label className="block text-sm text-yellow-200/80 font-medium">Message</label>
+                <label className="block text-sm text-stone-500 font-medium">Message</label>
                 <textarea
                   name="message"
                   value={contactData.message}
@@ -354,14 +418,14 @@ export default function ShahanurPortfolio() {
                   required
                   rows={5}
                   placeholder="Tell me about your project or opportunity"
-                  className="contact-field w-full p-4 rounded-3xl border border-white/10 bg-black/20 text-white placeholder-white/40 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/25 resize-none"
+                  className="contact-field w-full p-4 rounded-3xl border border-white/5 bg-white/[0.02] text-stone-200 placeholder-white/20 focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/10 transition-all outline-none resize-none"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={contactStatus.loading}
-                className={`contact-button relative w-full px-6 py-4 rounded-3xl font-semibold text-sm uppercase tracking-[0.08em] border border-yellow-400/40 transition-all duration-300 shadow-xl shadow-yellow-500/20 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-400 text-slate-950 ${contactStatus.loading ? 'cursor-not-allowed opacity-80' : 'hover:-translate-y-0.5 hover:shadow-yellow-500/40'}`}
+                className={`w-full px-6 py-4 rounded-3xl font-bold text-sm uppercase tracking-widest transition-all duration-300 ${contactStatus.loading ? 'bg-stone-800 text-stone-500 cursor-not-allowed' : 'bg-amber-500 text-[#0c0a09] hover:bg-amber-400 hover:-translate-y-0.5 shadow-lg shadow-amber-500/20'}`}
               >
                 {contactStatus.loading ? (
                   <span className="inline-flex items-center justify-center gap-3">
