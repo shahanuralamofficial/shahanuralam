@@ -83,8 +83,20 @@
             color: #666;
         }
         @media print {
-            body { padding: 0; }
-            .no-print { display: none; }
+            @page {
+                margin: 0;
+            }
+            body {
+                padding: 1.5cm;
+                background: #fff;
+            }
+            .no-print {
+                display: none !important;
+            }
+            a {
+                text-decoration: none !important;
+                color: #000 !important;
+            }
         }
     </style>
 </head>
@@ -144,12 +156,12 @@
         </div>
         <div class="project">
             <div class="project-title">
-                <span>Competitive Programming Workspace</span>
-                <span class="project-links"><a href="https://shahanuralam.vercel.app/#cp">CP Workspace</a></span>
+                <span>Zen CP Workspace</span>
+                <span class="project-links"><a href="https://shahanuralam.vercel.app/#cp">Live Link</a></span>
             </div>
             <ul>
-                <li>Built a distraction-free web environment using React and Tailwind CSS for solving algorithmic problems.</li>
-                <li>Integrated APIs from Codeforces and AtCoder to fetch and filter 14,000+ problems.</li>
+                <li>Built a high-performance Competitive Programming environment using React and Tailwind CSS.</li>
+                <li>Integrated real-time APIs from Codeforces and AtCoder to fetch and filter 14,000+ problems.</li>
             </ul>
         </div>
     </div>
