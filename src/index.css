@@ -9,8 +9,8 @@ body {
 }
 
 .contact-panel {
-  background: rgba(9, 12, 24, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #291a45;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .contact-field {
@@ -48,16 +48,26 @@ body {
   padding: 1rem 1.1rem;
   border-radius: 1.5rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
+  background: #1a0f35;
   color: #f8fafc;
   font-weight: 600;
-  transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+  transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 }
 
 .contact-social:hover {
   transform: translateY(-2px);
   border-color: rgba(251, 191, 36, 0.45);
   background: rgba(251, 191, 36, 0.08);
+  color: #ffeb99;
+}
+
+.contact-button {
+  background: #fbbf24;
+  color: #060b18;
+}
+
+.contact-button:hover {
+  background: #f7c948;
 }
 
 .button-loader {
