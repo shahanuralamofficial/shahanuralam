@@ -5,7 +5,7 @@ import profileImg from "./assets/ShahanurAlam.png";
 import logoIcon from "./assets/logo-icon.png";
 import bloodDonateLogo from "./assets/applogo/blood_donate.png";
 import badalgachiLogo from "./assets/applogo/Badalgachi Net.png";
-import cvPdf from './assets/CV.pdf';
+import cvPdf from './assets/cv/CV.pdf';
 
 // Certificates imports
 import flutterCert from "./assets/certificates/Flutter Certificate.pdf";
