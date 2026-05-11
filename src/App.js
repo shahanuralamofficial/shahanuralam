@@ -27,6 +27,15 @@ const certificates = [
 // Projects array updated with demoLink and sourceLink
 const projects = [
   {
+    title: "Zen CP Workspace",
+    description:
+      "A high-performance Competitive Programming environment with real-time problem aggregation from Codeforces and AtCoder (14,000+ problems). Includes an integrated IDE and smart filters.",
+    stack: ["React", "Tailwind CSS", "API Integration"],
+    demoLink: "https://shahanuralam.vercel.app/#cp",
+    sourceLink: "https://github.com/shahanuralamofficial/zen-cp-workspace.git",
+    logo: "icon:code",
+  },
+  {
     title: "Blood Donate — Donor Matching (Android)",
     description:
       "Blood donation app for connecting donors and recipients, with search by blood group, location-based matching, and direct contact options. Built for fast access to urgent blood needs.",
@@ -302,7 +311,13 @@ export default function ShahanurPortfolio() {
               <div key={p.title} className="group bg-black/20 backdrop-blur-xl rounded-3xl p-4 sm:p-5 shadow-2xl hover:shadow-yellow-500/20 transition-all duration-500 transform hover:-translate-y-2 border border-white/10 hover:border-yellow-400/30">
                 <div className="flex items-center gap-3 mb-4">
                   {p.logo ? (
-                    <img src={p.logo} alt={`${p.title} logo`} className="w-12 h-12 rounded-2xl object-cover border-2 border-yellow-400/50 shadow-lg shadow-yellow-500/30" loading="lazy" />
+                    p.logo === "icon:code" ? (
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 border-2 border-amber-500/50 flex items-center justify-center text-amber-500 shadow-lg shadow-amber-500/20">
+                        <Code2 size={24} />
+                      </div>
+                    ) : (
+                      <img src={p.logo} alt={`${p.title} logo`} className="w-12 h-12 rounded-2xl object-cover border-2 border-yellow-400/50 shadow-lg shadow-yellow-500/30" loading="lazy" />
+                    )
                   ) : (
                     <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-400/20 to-amber-400/20 border-2 border-yellow-400/50 flex items-center justify-center text-yellow-400 font-bold shadow-lg">APP</div>
                   )}
