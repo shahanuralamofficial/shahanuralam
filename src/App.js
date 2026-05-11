@@ -344,14 +344,14 @@ export default function ShahanurPortfolio() {
 
         {/* Contact Section */}
         <section id="contact" className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mt-8 sm:mt-12">
-          <h3 className="text-xl sm:text-2xl font-bold mb-6 border-b border-stone-800 pb-3 text-stone-100 flex items-center gap-2">
+          <h3 className="text-xl sm:text-2xl font-bold mb-6 border-b border-yellow-400/30 pb-3 text-yellow-200 flex items-center gap-2">
             <Mail className="text-amber-500" size={24} /> Contact Me
           </h3>
 
           <div className="contact-panel bg-black/20 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-2xl shadow-black/50 border border-white/10">
             <div className="mb-8">
               <p className="uppercase tracking-[0.35em] text-[10px] text-amber-500/80 font-bold mb-2">Get in Touch</p>
-              <p className="text-stone-400 text-sm sm:text-base leading-relaxed max-w-xl">
+              <p className="text-white/80 text-sm sm:text-base leading-relaxed max-w-xl">
                 I’m available for internships, freelance projects, and junior roles. Send a note and I will reach out with a tailored reply.
               </p>
             </div>
