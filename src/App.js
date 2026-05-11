@@ -103,10 +103,10 @@ export default function ShahanurPortfolio() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white antialiased relative overflow-hidden">
+    <div className="min-h-screen w-full bg-gradient-to-br from-stone-900 via-orange-950 to-stone-900 text-white antialiased relative overflow-hidden">
       {/* Luxury background elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(120,119,198,0.3),transparent_50%)] pointer-events-none"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,215,0,0.1),transparent_50%)] pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(251,146,60,0.15),transparent_50%)] pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,215,0,0.2),transparent_50%)] pointer-events-none"></div>
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-transparent to-black/20 pointer-events-none"></div>
       <header className="w-full p-3 sm:p-4 lg:p-6 border-b border-gold-400/20 backdrop-blur-xl bg-black/20 sticky top-0 z-50 shadow-2xl shadow-black/50">
         <nav className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
@@ -140,6 +140,14 @@ export default function ShahanurPortfolio() {
       </header>
 
       <main className="w-full py-6 sm:py-8 lg:py-10">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mb-8 text-center space-y-2">
+          <p className="uppercase tracking-[0.35em] text-[11px] text-amber-300/90 font-semibold">Get in Touch</p>
+          <h3 className="text-2xl sm:text-3xl font-bold text-amber-100">Contact Me</h3>
+          <p className="text-amber-100/75 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
+            I’m available for internships, freelance projects, and junior roles. Send a note and I will reach out with a tailored reply.
+          </p>
+        </div>
+
         <section className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 items-start md:items-center bg-black/20 backdrop-blur-xl my-3 sm:my-4 lg:my-6 p-4 sm:p-5 lg:p-6 rounded-3xl shadow-2xl shadow-black/50 border border-white/10 animate-fade-in">
           <div className="md:col-span-2 space-y-3 sm:space-y-4">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
@@ -266,61 +274,52 @@ export default function ShahanurPortfolio() {
         {/* Contact Section */}
         <section id="contact" className="contact-panel max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 mt-8 sm:mt-10 bg-black/20 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-2xl shadow-black/50 border border-white/10">
           <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr] items-start">
-            <div className="space-y-4">
-              <div className="space-y-2 text-center">
-                <p className="uppercase tracking-[0.35em] text-[11px] text-amber-300/90 font-semibold">Get in Touch</p>
-                <h3 className="text-2xl sm:text-3xl font-bold text-amber-100">Contact Me</h3>
-                <p className="text-amber-100/75 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
-                  I’m available for internships, freelance projects, and junior roles. Send a note and I will reach out with a tailored reply.
-                </p>
-              </div>
-
-              <div className="space-y-5">
-                <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_80px_rgba(0,0,0,0.28)] backdrop-blur-xl">
-                  <p className="text-sm text-yellow-200 font-semibold mb-3">Contact Info</p>
-                  <div className="space-y-4 text-white/80 text-sm">
-                    <div className="flex items-center gap-3">
-                      <span className="contact-badge bg-yellow-400/15 text-yellow-300"><Mail size={18} /></span>
-                      <div>
-                        <div className="text-white/80 font-medium">Email</div>
-                        <a href="mailto:shahanuralam.dev@gmail.com" className="text-white/80 hover:text-yellow-300 transition-colors">shahanuralam.dev@gmail.com</a>
-                      </div>
+            <div className="space-y-5">
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_80px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+                <p className="text-sm text-yellow-200 font-semibold mb-3">Contact Info</p>
+                <div className="space-y-4 text-white/80 text-sm">
+                  <div className="flex items-center gap-3">
+                    <span className="contact-badge bg-yellow-400/15 text-yellow-300"><Mail size={18} /></span>
+                    <div>
+                      <div className="text-white/80 font-medium">Email</div>
+                      <a href="mailto:shahanuralam.dev@gmail.com" className="text-white/80 hover:text-yellow-300 transition-colors">shahanuralam.dev@gmail.com</a>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="contact-badge bg-violet-500/15 text-violet-300"><MapPin size={18} /></span>
-                      <div>
-                        <div className="text-white/80 font-medium">Phone</div>
-                        <a href="tel:+8801518939114" className="text-white/80 hover:text-yellow-300 transition-colors">+8801518939114</a>
-                      </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="contact-badge bg-violet-500/15 text-violet-300"><MapPin size={18} /></span>
+                    <div>
+                      <div className="text-white/80 font-medium">Phone</div>
+                      <a href="tel:+8801518939114" className="text-white/80 hover:text-yellow-300 transition-colors">+8801518939114</a>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="contact-badge bg-white/10 text-white"><MapPin size={18} /></span>
-                      <div>
-                        <div className="text-white/80 font-medium">Location</div>
-                        <span className="text-white/80">Rajshahi, Bangladesh</span>
-                      </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="contact-badge bg-white/10 text-white"><MapPin size={18} /></span>
+                    <div>
+                      <div className="text-white/80 font-medium">Location</div>
+                      <span className="text-white/80">Rajshahi, Bangladesh</span>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_80px_rgba(0,0,0,0.25)] backdrop-blur-xl">
-                  <p className="text-sm text-amber-200 font-semibold mb-4">Social Links</p>
-                  <div className="grid gap-3">
-                    <a href="https://github.com/shahanuralamofficial" target="_blank" rel="noreferrer" className="contact-social">
-                      <Github size={18} /> GitHub
-                    </a>
-                    <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" rel="noreferrer" className="contact-social">
-                      <Linkedin size={18} /> LinkedIn
-                    </a>
-                    <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" rel="noreferrer" className="contact-social">
-                      <Facebook size={18} /> Facebook
-                    </a>
-                  </div>
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_20px_80px_rgba(0,0,0,0.25)] backdrop-blur-xl">
+                <p className="text-sm text-amber-200 font-semibold mb-4">Social Links</p>
+                <div className="grid gap-3">
+                  <a href="https://github.com/shahanuralamofficial" target="_blank" rel="noreferrer" className="contact-social">
+                    <Github size={18} /> GitHub
+                  </a>
+                  <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" rel="noreferrer" className="contact-social">
+                    <Linkedin size={18} /> LinkedIn
+                  </a>
+                  <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" rel="noreferrer" className="contact-social">
+                    <Facebook size={18} /> Facebook
+                  </a>
                 </div>
               </div>
             </div>
 
             <form onSubmit={handleContactSubmit} className="space-y-4">
+              <p className="text-sm text-yellow-200 font-semibold mb-3">Contact Form</p>
               <div className="grid gap-4">
                 <label className="block text-sm text-yellow-200/80 font-medium">Name</label>
                 <input
