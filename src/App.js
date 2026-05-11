@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Github, Linkedin, Facebook, Mail, MapPin, Download, Code2, Globe } from 'lucide-react';
 import CPPractice from './CPPractice';
-import profileImg from "./assets/ShahanurAlam.HEIC";
+import profileImg from "./assets/ShahanurAlam.png";
 import logoIcon from "./assets/logo-icon.png";
 import bloodDonateLogo from "./assets/blood_donate.png";
 import badalgachiLogo from "./assets/Badalgachi Net.png";
