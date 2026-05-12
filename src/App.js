@@ -63,7 +63,7 @@ const skills = ["Java (Android)", "Dart (Flutter)", "C++", "PHP", "HTML & CSS", 
 
 const LoadingScreen = () => (
   <div className="min-h-screen bg-[#0c0a09] flex items-center justify-center">
-    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-amber-500"></div>
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-orange-600"></div>
   </div>
 );
 
@@ -108,25 +108,25 @@ export default function ShahanurPortfolio() {
   return (
     <div className={`min-h-screen w-full transition-colors duration-500 antialiased relative overflow-x-hidden ${darkMode ? 'bg-[#0c0a09] text-stone-200' : 'bg-[#fcfaf9] text-stone-900'}`}>
       <div className={`absolute inset-0 transition-opacity duration-1000 pointer-events-none ${darkMode ? 'opacity-100' : 'opacity-30'}`}>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(217,119,6,0.03),transparent_50%)] pointer-events-none"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(251,191,36,0.03),transparent_50%)] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(234,88,12,0.03),transparent_50%)] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(249,115,22,0.03),transparent_50%)] pointer-events-none"></div>
       </div>
 
       <header className={`w-full p-4 border-b sticky top-0 z-50 backdrop-blur-xl ${darkMode ? 'border-white/5 bg-black/40' : 'border-stone-200 bg-white/70 shadow-sm'}`}>
         <nav className="max-w-6xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full border-2 border-amber-500/50 overflow-hidden shadow-lg shadow-amber-900/20">
+            <div className="w-10 h-10 rounded-full border-2 border-orange-600/50 overflow-hidden shadow-lg shadow-orange-900/20">
               <img src={profileImg} alt="Shahanur" className="w-full h-full object-cover scale-110" />
             </div>
             <div className="hidden sm:block text-left">
                <h1 className="text-lg font-bold">Shahanur Alam</h1>
-               <p className="text-[10px] text-amber-500 font-black uppercase">Mobile Developer</p>
+               <p className="text-[10px] text-orange-600 font-black uppercase">Mobile Developer</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-xl border border-white/10">{darkMode ? <Sun size={18} /> : <Moon size={18} />}</button>
-            <button onClick={() => window.location.hash = '#cp'} className="hidden md:flex items-center gap-2 px-3 py-1.5 text-xs font-bold border border-white/10 rounded-lg transition-colors hover:border-amber-500/50">
-              <Code2 size={14} className="text-amber-500" />
+            <button onClick={() => window.location.hash = '#cp'} className="hidden md:flex items-center gap-2 px-3 py-1.5 text-xs font-bold border border-white/10 rounded-lg transition-colors hover:border-orange-600/50">
+              <Code2 size={14} className="text-orange-600" />
               CP Workspace
             </button>
             <button onClick={() => window.location.hash = '#visualizers'} className="hidden lg:flex items-center gap-2 px-3 py-1.5 text-xs font-bold border border-white/10 rounded-lg transition-colors hover:border-orange-500/50">
@@ -143,7 +143,7 @@ export default function ShahanurPortfolio() {
         <section className={`p-8 sm:p-12 rounded-[3rem] border transition-all ${darkMode ? 'bg-black/20 border-white/5 shadow-2xl' : 'bg-white border-stone-200 shadow-xl'}`}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
             <div className="lg:col-span-2 space-y-6">
-              <h2 className="text-4xl md:text-5xl lg:text-7xl font-black tracking-tighter whitespace-nowrap">Hi — I’m <span className="text-amber-500">Shahanur Alam</span>.</h2>
+              <h2 className="text-4xl md:text-5xl lg:text-7xl font-black tracking-tighter whitespace-nowrap">Hi — I’m <span className="text-orange-600">Shahanur Alam</span>.</h2>
               <p className="text-xl text-stone-400">Mobile App Developer specializing in Java & Flutter.</p>
               <div className="flex flex-wrap gap-4 pt-4">
                 <button onClick={() => {
@@ -154,12 +154,12 @@ export default function ShahanurPortfolio() {
                 <a href={cvPdf} download onClick={() => update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => {})} className="px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-500 transition-all flex items-center gap-2"><Download size={18}/> Download</a>
               </div>
               <div className="flex items-center gap-6 text-sm text-stone-500 pt-6">
-                 <span className="flex items-center gap-2"><MapPin size={14} className="text-amber-500"/> Rajshahi, BD</span>
-                 <span className="flex items-center gap-2"><Award size={14} className="text-amber-500"/> Open to Internships</span>
+                 <span className="flex items-center gap-2"><MapPin size={14} className="text-orange-600"/> Rajshahi, BD</span>
+                 <span className="flex items-center gap-2"><Award size={14} className="text-orange-600"/> Open to Internships</span>
               </div>
             </div>
             <div className="flex justify-center lg:justify-end">
-              <div className={`w-56 h-56 rounded-[3.5rem] overflow-hidden border-4 border-amber-500/20 shadow-2xl transition-all duration-700 hover:scale-105 lg:translate-x-3`}>
+              <div className={`w-56 h-56 rounded-[3.5rem] overflow-hidden border-4 border-orange-600/20 shadow-2xl transition-all duration-700 hover:scale-105 lg:translate-x-3`}>
                 <img src={profileImg} alt="Profile" className="w-full h-full object-cover" />
               </div>
             </div>
@@ -169,7 +169,7 @@ export default function ShahanurPortfolio() {
         {/* About & Skills */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           <div className="space-y-6">
-            <h3 className="text-2xl font-bold text-amber-500 border-l-4 border-amber-500 pl-4">About Me</h3>
+            <h3 className="text-2xl font-bold text-orange-600 border-l-4 border-orange-600 pl-4">About Me</h3>
             <p className="text-stone-400 leading-relaxed text-lg">I am a motivated computer science undergraduate passionate about mobile development. Proficient in Java and Flutter, with hands-on experience building real-world Android apps.</p>
             <div className="p-6 bg-white/[0.02] border border-white/5 rounded-3xl">
                <h4 className="font-bold text-stone-100">Education</h4>
@@ -181,9 +181,9 @@ export default function ShahanurPortfolio() {
             </div>
           </div>
           <div className="space-y-6">
-            <h3 className="text-2xl font-bold text-amber-500 border-l-4 border-amber-500 pl-4">Skills & Tools</h3>
+            <h3 className="text-2xl font-bold text-orange-600 border-l-4 border-orange-600 pl-4">Skills & Tools</h3>
             <div className="flex flex-wrap gap-3">
-              {skills.map(s => <span key={s} className="px-4 py-2 bg-stone-800 rounded-xl text-xs font-bold border border-white/5 text-stone-300 transition-all hover:border-amber-500/50">{s}</span>)}
+              {skills.map(s => <span key={s} className="px-4 py-2 bg-stone-800 rounded-xl text-xs font-bold border border-white/5 text-stone-300 transition-all hover:border-orange-600/50">{s}</span>)}
             </div>
             <div className="mt-8 pt-8 border-t border-white/5">
                <h4 className="text-sm font-bold text-stone-500 mb-3">Other Technologies</h4>
@@ -194,14 +194,14 @@ export default function ShahanurPortfolio() {
 
         {/* Certificates */}
         <section>
-          <h3 className="text-2xl font-bold text-amber-500 border-l-4 border-amber-500 pl-4 mb-8">Professional Certificates</h3>
+          <h3 className="text-2xl font-bold text-orange-600 border-l-4 border-orange-600 pl-4 mb-8">Professional Certificates</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {certificates.map((cert, i) => (
-              <div key={i} className={`p-6 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:border-amber-500/30 transition-all group`}>
+              <div key={i} className={`p-6 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:border-orange-600/30 transition-all group`}>
                 <div className="flex justify-between items-start mb-6">
-                   <FileText size={24} className="text-stone-500 group-hover:text-amber-500 transition-all duration-500 group-hover:scale-110"/>
+                   <FileText size={24} className="text-stone-500 group-hover:text-orange-600 transition-all duration-500 group-hover:scale-110"/>
                    <div className="flex gap-2">
-                      <a href={cert.file} target="_blank" title="View Certificate" className="p-2 rounded-lg bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-black transition-all duration-300 hover:scale-110 active:scale-90 shadow-lg shadow-amber-500/5"><ExternalLink size={16}/></a>
+                      <a href={cert.file} target="_blank" title="View Certificate" className="p-2 rounded-lg bg-orange-600/10 text-orange-600 hover:bg-orange-600 hover:text-black transition-all duration-300 hover:scale-110 active:scale-90 shadow-lg shadow-orange-600/5"><ExternalLink size={16}/></a>
                       <a href={cert.file} download title="Download Certificate" className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all duration-300 hover:scale-110 active:scale-90 shadow-lg shadow-emerald-500/5"><Download size={16}/></a>
                    </div>
                 </div>
@@ -214,17 +214,17 @@ export default function ShahanurPortfolio() {
 
         {/* Selected Projects */}
         <section id="projects">
-           <h3 className="text-2xl font-bold text-amber-500 border-l-4 border-amber-500 pl-4 mb-12">Selected Projects</h3>
+           <h3 className="text-2xl font-bold text-orange-600 border-l-4 border-orange-600 pl-4 mb-12">Selected Projects</h3>
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {projects.map((p, i) => (
-                <div key={i} className={`p-8 bg-white/[0.02] border border-white/5 rounded-[3rem] hover:border-amber-500/20 transition-all`}>
+                <div key={i} className={`p-8 bg-white/[0.02] border border-white/5 rounded-[3rem] hover:border-orange-600/20 transition-all`}>
                    <div className="flex items-center gap-4 mb-6">
-                      {p.logo === "icon:code" ? <Code2 className="text-amber-500" size={32}/> : <img src={p.logo} className="w-14 h-14 rounded-2xl shadow-lg" alt="logo"/>}
+                      {p.logo === "icon:code" ? <Code2 className="text-orange-600" size={32}/> : <img src={p.logo} className="w-14 h-14 rounded-2xl shadow-lg" alt="logo"/>}
                       <h4 className="text-xl font-bold">{p.title}</h4>
                    </div>
                    <p className="text-stone-400 text-sm mb-8 leading-relaxed">{p.description}</p>
                    <div className="flex gap-6">
-                      <a href={p.demoLink} target="_blank" className="text-amber-500 font-bold flex items-center gap-2 text-sm uppercase tracking-widest hover:text-amber-400 hover:scale-105 transition-all duration-300">Live Demo <Globe size={16}/></a>
+                      <a href={p.demoLink} target="_blank" className="text-orange-600 font-bold flex items-center gap-2 text-sm uppercase tracking-widest hover:text-orange-500 hover:scale-105 transition-all duration-300">Live Demo <Globe size={16}/></a>
                       <a href={p.sourceLink} target="_blank" className="text-stone-500 font-bold text-sm uppercase tracking-widest underline underline-offset-8 hover:text-stone-300 hover:scale-105 transition-all duration-300">Source</a>
                    </div>
                 </div>
@@ -234,36 +234,36 @@ export default function ShahanurPortfolio() {
 
         {/* Contact Section */}
         <section id="contact">
-          <h3 className="text-2xl font-bold text-amber-500 border-l-4 border-amber-500 pl-4 mb-8">Contact Me</h3>
+          <h3 className="text-2xl font-bold text-orange-600 border-l-4 border-orange-600 pl-4 mb-8">Contact Me</h3>
           <div className={`p-10 sm:p-16 rounded-[4rem] border transition-all ${darkMode ? 'bg-black/40 border-white/5 shadow-2xl' : 'bg-white border-stone-200 shadow-xl'}`}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               <div className="space-y-8">
-                <h3 className="text-5xl font-black">Get in <span className="text-amber-500">Touch</span></h3>
+                <h3 className="text-5xl font-black">Get in <span className="text-orange-600">Touch</span></h3>
                 <p className="text-stone-400 text-lg leading-relaxed">I’m available for internships, freelance projects, and junior roles. Send a note and I will reach out with a tailored reply.</p>
                 <div className="space-y-4 pt-4">
-                  <a href="mailto:shahanuralam.dev@gmail.com" className="flex items-center gap-4 text-stone-300 font-medium hover:text-amber-500 transition-colors">
-                    <Mail className="text-amber-500" size={20}/> shahanuralam.dev@gmail.com
+                  <a href="mailto:shahanuralam.dev@gmail.com" className="flex items-center gap-4 text-stone-300 font-medium hover:text-orange-600 transition-colors">
+                    <Mail className="text-orange-600" size={20}/> shahanuralam.dev@gmail.com
                   </a>
-                  <a href="tel:+8801518939114" className="flex items-center gap-4 text-stone-300 font-medium hover:text-amber-500 transition-colors">
-                    <Phone className="text-amber-500" size={20}/> +880 1518-939114
+                  <a href="tel:+8801518939114" className="flex items-center gap-4 text-stone-300 font-medium hover:text-orange-600 transition-colors">
+                    <Phone className="text-orange-600" size={20}/> +880 1518-939114
                   </a>
                   <div className="flex items-center gap-4 text-stone-300 font-medium">
-                    <MapPin className="text-amber-500" size={20}/> Rajshahi, Bangladesh
+                    <MapPin className="text-orange-600" size={20}/> Rajshahi, Bangladesh
                   </div>
                 </div>
                 <div className="flex gap-4 pt-6">
-                   <a href="https://github.com/shahanuralamofficial" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-black transition-all"><Github size={20}/></a>
+                   <a href="https://github.com/shahanuralamofficial" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-orange-600 hover:text-black transition-all"><Github size={20}/></a>
                    <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-blue-500 transition-all"><Linkedin size={20}/></a>
                    <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-blue-600 transition-all"><Facebook size={20}/></a>
                 </div>
               </div>
               <form onSubmit={handleContactSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                   <input name="name" value={contactData.name} onChange={e => setContactData({...contactData, name: e.target.value})} placeholder="Full Name" className={`w-full p-5 rounded-2xl outline-none border transition-all ${darkMode ? 'bg-black/40 border-white/10 focus:border-amber-500' : 'bg-stone-50 border-stone-200 focus:border-amber-500'}`} required />
-                   <input name="email" value={contactData.email} onChange={e => setContactData({...contactData, email: e.target.value})} placeholder="Email Address" className={`w-full p-5 rounded-2xl outline-none border transition-all ${darkMode ? 'bg-black/40 border-white/10 focus:border-amber-500' : 'bg-stone-50 border-stone-200 focus:border-amber-500'}`} required />
+                   <input name="name" value={contactData.name} onChange={e => setContactData({...contactData, name: e.target.value})} placeholder="Full Name" className={`w-full p-5 rounded-2xl outline-none border transition-all ${darkMode ? 'bg-black/40 border-white/10 focus:border-orange-600' : 'bg-stone-50 border-stone-200 focus:border-orange-600'}`} required />
+                   <input name="email" value={contactData.email} onChange={e => setContactData({...contactData, email: e.target.value})} placeholder="Email Address" className={`w-full p-5 rounded-2xl outline-none border transition-all ${darkMode ? 'bg-black/40 border-white/10 focus:border-orange-600' : 'bg-stone-50 border-stone-200 focus:border-orange-600'}`} required />
                 </div>
-                <textarea name="message" value={contactData.message} onChange={e => setContactData({...contactData, message: e.target.value})} placeholder="Tell me about your project..." rows={6} className={`w-full p-5 rounded-2xl outline-none border transition-all resize-none ${darkMode ? 'bg-black/40 border-white/10 focus:border-amber-500' : 'bg-stone-50 border-stone-200 focus:border-amber-500'}`} required />
-                <button className="w-full py-5 bg-amber-500 text-stone-900 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-amber-400 flex items-center justify-center gap-3 shadow-xl shadow-amber-900/20 active:scale-95 transition-all">
+                <textarea name="message" value={contactData.message} onChange={e => setContactData({...contactData, message: e.target.value})} placeholder="Tell me about your project..." rows={6} className={`w-full p-5 rounded-2xl outline-none border transition-all resize-none ${darkMode ? 'bg-black/40 border-white/10 focus:border-orange-600' : 'bg-stone-50 border-stone-200 focus:border-orange-600'}`} required />
+                <button className="w-full py-5 bg-orange-600 text-stone-900 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-orange-500 flex items-center justify-center gap-3 shadow-xl shadow-orange-900/20 active:scale-95 transition-all">
                   {contactStatus.loading ? <Loader2 className="animate-spin" size={20}/> : <Save size={18}/>} Send Message
                 </button>
                 {contactStatus.success && <p className="text-emerald-500 text-xs font-bold text-center mt-4">{contactStatus.success}</p>}

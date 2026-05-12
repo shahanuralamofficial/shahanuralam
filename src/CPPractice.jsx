@@ -37,7 +37,7 @@ const CountdownTimer = ({ startTime }) => {
   if (isNaN(days) || isNaN(hours)) return <span className="text-slate-500 font-bold text-[10px]">TBA</span>;
 
   return (
-    <div className="flex gap-1 text-[10px] font-mono font-black text-orange-500 bg-orange-500/10 px-2 py-1 rounded-lg border border-orange-500/20">
+    <div className="flex gap-1 text-[10px] font-mono font-black text-orange-600 bg-orange-600/10 px-2 py-1 rounded-lg border border-orange-600/20">
       {days > 0 && <span>{days}d</span>}
       <span>{hours.toString().padStart(2, '0')}h</span>
       <span>{minutes.toString().padStart(2, '0')}m</span>
@@ -79,8 +79,8 @@ const CPPractice = ({ onBack }) => {
   const platforms = ['All Platforms', 'Codeforces', 'AtCoder'];
 
   const platformColors = {
-    'Codeforces': 'bg-orange-500/10 text-orange-400 border-orange-500/20',
-    'AtCoder': 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+    'Codeforces': 'bg-orange-600/10 text-orange-500 border-orange-600/20',
+    'AtCoder': 'bg-rose-600/10 text-rose-500 border-rose-600/20'
   };
 
   const [userData, setUserData] = useState(() => {
@@ -213,14 +213,14 @@ const CPPractice = ({ onBack }) => {
       <style>{`
         .custom-scrollbar::-webkit-scrollbar { height: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(249, 115, 22, 0.2); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(249, 115, 22, 0.4); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(234, 88, 12, 0.2); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(234, 88, 12, 0.4); }
       `}</style>
-      <nav className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center bg-black/40 backdrop-blur-xl border-b border-orange-500/10 sticky top-0">
-        <button onClick={onBack} className="flex items-center gap-2 text-slate-400 hover:text-orange-400 transition-all bg-white/5 px-3 py-1.5 rounded-xl border border-white/10">
+      <nav className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center bg-black/40 backdrop-blur-xl border-b border-orange-600/10 sticky top-0">
+        <button onClick={onBack} className="flex items-center gap-2 text-slate-400 hover:text-orange-500 transition-all bg-white/5 px-3 py-1.5 rounded-xl border border-white/10">
           <ArrowLeft className="w-4 h-4" /> <span className="text-xs font-bold hidden sm:inline">Portfolio</span>
         </button>
-        <button onClick={fetchProblems} className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-orange-500/10 text-slate-400 transition-all">
+        <button onClick={fetchProblems} className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-orange-600/10 text-slate-400 transition-all">
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
         </button>
       </nav>
@@ -229,9 +229,9 @@ const CPPractice = ({ onBack }) => {
         {/* Upcoming Contests Section */}
         <div className="mb-12 overflow-x-auto pb-4 custom-scrollbar">
            <div className="flex items-center gap-3 mb-6">
-              <div className="w-2 h-8 bg-orange-500 rounded-full" />
+              <div className="w-2 h-8 bg-orange-600 rounded-full" />
               <h2 className="text-xl font-black uppercase tracking-tighter text-white">Upcoming Contests</h2>
-              {contestsLoading && <Loader2 className="w-4 h-4 animate-spin text-orange-500" />}
+              {contestsLoading && <Loader2 className="w-4 h-4 animate-spin text-orange-600" />}
            </div>
            <div className="flex gap-4 min-w-max px-2">
               {contests.length > 0 ? contests.map(c => {
@@ -254,7 +254,7 @@ const CPPractice = ({ onBack }) => {
                            {c.startTime > 0 ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Date TBA'}
                          </span>
                        </div>
-                       <a href={c.link} target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-xl bg-orange-500/10 text-orange-500 text-[9px] font-black uppercase hover:bg-orange-500 hover:text-black transition-all border border-orange-500/20">Register</a>
+                       <a href={c.link} target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-xl bg-orange-600/10 text-orange-600 text-[9px] font-black uppercase hover:bg-orange-600 hover:text-black transition-all border border-orange-600/20">Register</a>
                     </div>
                   </div>
                 );
@@ -266,7 +266,7 @@ const CPPractice = ({ onBack }) => {
 
         <header className="mb-8">
           <h1 className="text-4xl sm:text-7xl font-black text-white tracking-tighter mb-4 leading-none">
-            Zen <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400">Workspace</span>
+            Zen <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-rose-500 to-rose-600">Workspace</span>
           </h1>
           <p className="text-slate-500 text-xs sm:text-lg max-w-2xl font-medium leading-relaxed">
             Exploring {problems.length > 0 ? problems.length.toLocaleString() : 'thousands of'} problems across multiple platforms for distraction-free practice.
@@ -283,11 +283,11 @@ const CPPractice = ({ onBack }) => {
                 placeholder="Search by problem name or ID..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-orange-500/50 transition-all"
+                className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-orange-600/50 transition-all"
               />
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
-               <select value={platformFilter} onChange={(e) => setPlatformFilter(e.target.value)} className="bg-white/[0.03] border border-white/10 text-white text-xs font-black uppercase px-6 py-4 rounded-2xl outline-none focus:ring-1 focus:ring-orange-500 cursor-pointer appearance-none min-w-[200px]">
+               <select value={platformFilter} onChange={(e) => setPlatformFilter(e.target.value)} className="bg-white/[0.03] border border-white/10 text-white text-xs font-black uppercase px-6 py-4 rounded-2xl outline-none focus:ring-1 focus:ring-orange-600 cursor-pointer appearance-none min-w-[200px]">
                   {platforms.map(p => <option key={p} value={p} className="bg-[#111]">{p}</option>)}
                </select>
             </div>
@@ -315,9 +315,9 @@ const CPPractice = ({ onBack }) => {
                       <div>
                         <div className="flex items-center gap-2 mb-4">
                           <span className={`px-2 py-1 rounded-lg text-[9px] font-black uppercase border ${platformColors[p.platform] || 'bg-white/10'}`}>{p.platform}</span>
-                          <span onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(p.id); showToast(`ID #${p.id} copied!`); }} className="text-[10px] font-bold text-slate-500 cursor-pointer hover:text-orange-400 flex items-center gap-1 group/id" title="Click to copy ID">#{p.id} <Copy className="w-2.5 h-2.5 opacity-0 group-hover/id:opacity-100" /></span>
+                          <span onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(p.id); showToast(`ID #${p.id} copied!`); }} className="text-[10px] font-bold text-slate-500 cursor-pointer hover:text-orange-500 flex items-center gap-1 group/id" title="Click to copy ID">#{p.id} <Copy className="w-2.5 h-2.5 opacity-0 group-hover/id:opacity-100" /></span>
                         </div>
-                        <a href={p.link} target="_blank" rel="noopener noreferrer" className="block"><h3 className="text-xl font-bold text-white hover:text-orange-400 transition-colors line-clamp-2">{p.title}</h3></a>
+                        <a href={p.link} target="_blank" rel="noopener noreferrer" className="block"><h3 className="text-xl font-bold text-white hover:text-orange-500 transition-colors line-clamp-2">{p.title}</h3></a>
                       </div>
                       <div className="flex items-center justify-between mt-8">
                         <div className="flex gap-1 p-1 bg-black/40 rounded-xl border border-white/5">
@@ -326,7 +326,7 @@ const CPPractice = ({ onBack }) => {
                           <button onClick={() => toggleAction(globalId, 'solved')} className={`p-2.5 rounded-lg transition-all ${userData.solved.includes(globalId) ? 'text-emerald-400 bg-emerald-400/10' : 'text-slate-600 hover:text-emerald-400'}`} title="Mark Solved"><CheckCircle2 className="w-4 h-4" /></button>
                           <button onClick={() => toggleAction(globalId, 'blocked')} className={`p-2.5 rounded-lg transition-all ${userData.blocked.includes(globalId) ? 'text-white bg-white/10' : 'text-slate-600 hover:text-white'}`} title="Block"><Ban className="w-4 h-4" /></button>
                         </div>
-                        <button onClick={() => { setActiveCodeProblem(p); handleLangChange('C++ 17'); }} className="px-6 py-3 bg-white text-black rounded-2xl text-[10px] font-black uppercase hover:bg-orange-500 hover:text-white transition-all shadow-xl active:scale-95">Code & Solve</button>
+                        <button onClick={() => { setActiveCodeProblem(p); handleLangChange('C++ 17'); }} className="px-6 py-3 bg-white text-black rounded-2xl text-[10px] font-black uppercase hover:bg-orange-600 hover:text-white transition-all shadow-xl active:scale-95">Code & Solve</button>
                       </div>
                     </motion.div>
                   );
@@ -354,20 +354,20 @@ const CPPractice = ({ onBack }) => {
         {activeCodeProblem && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setActiveCodeProblem(null)} className="absolute inset-0 bg-black/95 backdrop-blur-2xl" />
-            <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} className="relative w-full h-full sm:max-h-[96vh] sm:max-w-[98vw] bg-[#0d0a09] sm:rounded-[3rem] border-t sm:border border-orange-500/10 flex flex-col overflow-hidden">
+            <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} className="relative w-full h-full sm:max-h-[96vh] sm:max-w-[98vw] bg-[#0d0a09] sm:rounded-[3rem] border-t sm:border border-orange-600/10 flex flex-col overflow-hidden">
               <div className="p-4 sm:p-6 border-b border-white/5 flex items-center justify-between bg-black/40">
                 <div className="flex items-center gap-4">
-                  <Terminal className="text-orange-400 w-6 h-6 hidden sm:block" />
+                  <Terminal className="text-orange-500 w-6 h-6 hidden sm:block" />
                   <div>
                     <h4 className="text-white font-black text-sm sm:text-lg flex items-center gap-2">
                        {activeCodeProblem.title}
-                       <span onClick={() => { navigator.clipboard.writeText(activeCodeProblem.id); showToast(`ID #${activeCodeProblem.id} copied!`); }} className="text-slate-500 cursor-pointer hover:text-orange-400 transition-colors flex items-center gap-1 group/editid" title="Copy ID">#{activeCodeProblem.id} <Copy className="w-3 h-3 opacity-0 group-hover/editid:opacity-100" /></span>
+                       <span onClick={() => { navigator.clipboard.writeText(activeCodeProblem.id); showToast(`ID #${activeCodeProblem.id} copied!`); }} className="text-slate-500 cursor-pointer hover:text-orange-500 transition-colors flex items-center gap-1 group/editid" title="Copy ID">#{activeCodeProblem.id} <Copy className="w-3 h-3 opacity-0 group-hover/editid:opacity-100" /></span>
                     </h4>
-                    <p className="text-[10px] text-orange-500/60 font-black uppercase tracking-widest">{activeCodeProblem.platform}</p>
+                    <p className="text-[10px] text-orange-600/60 font-black uppercase tracking-widest">{activeCodeProblem.platform}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 sm:gap-4">
-                  <select value={selectedLang} onChange={(e) => handleLangChange(e.target.value)} className="bg-white/5 border border-white/10 text-white text-[9px] sm:text-[10px] font-black uppercase px-3 py-2 sm:px-4 sm:py-3 rounded-xl outline-none focus:ring-1 focus:ring-orange-500 cursor-pointer appearance-none min-w-[120px]">
+                  <select value={selectedLang} onChange={(e) => handleLangChange(e.target.value)} className="bg-white/5 border border-white/10 text-white text-[9px] sm:text-[10px] font-black uppercase px-3 py-2 sm:px-4 sm:py-3 rounded-xl outline-none focus:ring-1 focus:ring-orange-600 cursor-pointer appearance-none min-w-[120px]">
                     {Object.keys(langSkeletons).map(l => <option key={l} value={l} className="bg-[#111]">{l}</option>)}
                   </select>
                   <button onClick={() => setIsFullScreenEditor(!isFullScreenEditor)} className="p-3 text-slate-500 hover:text-white bg-white/5 rounded-xl transition-all hidden lg:block">{isFullScreenEditor ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}</button>
@@ -384,9 +384,9 @@ const CPPractice = ({ onBack }) => {
                            <span className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border ${platformColors[activeCodeProblem.platform]}`}>{activeCodeProblem.platform}</span>
                            <span className="text-xs font-bold text-slate-500 tracking-widest">#{activeCodeProblem.id}</span>
                         </div>
-                        <div className="p-8 bg-orange-500/[0.03] border border-orange-500/10 rounded-[2rem] mb-10">
+                        <div className="p-8 bg-orange-600/[0.03] border border-orange-600/10 rounded-[2rem] mb-10">
                            <p className="text-slate-400 text-sm leading-relaxed mb-6 italic">"To master the logic, one must understand the core of the problem."</p>
-                           <button onClick={() => window.open(activeCodeProblem.link, '_blank')} className="w-full py-4 bg-orange-500/10 text-orange-400 border border-orange-500/20 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all flex items-center justify-center gap-2">View Official Statement <ExternalLink className="w-4 h-4" /></button>
+                           <button onClick={() => window.open(activeCodeProblem.link, '_blank')} className="w-full py-4 bg-orange-600/10 text-orange-500 border border-orange-600/20 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-600 hover:text-white transition-all flex items-center justify-center gap-2">View Official Statement <ExternalLink className="w-4 h-4" /></button>
                         </div>
                      </div>
                   </div>

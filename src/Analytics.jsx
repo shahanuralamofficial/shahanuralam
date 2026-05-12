@@ -36,25 +36,25 @@ const Analytics = ({ onBack }) => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-[#0c0a09] text-stone-200 font-sans pb-20">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex justify-between items-center sticky top-0 bg-[#0c0a09]/80 backdrop-blur-xl z-50 border-b border-white/5">
-        <button onClick={onBack} className="flex items-center gap-2 text-stone-400 hover:text-amber-500 transition-all bg-white/5 px-4 py-2 rounded-xl border border-white/5">
+        <button onClick={onBack} className="flex items-center gap-2 text-stone-400 hover:text-orange-600 transition-all bg-white/5 px-4 py-2 rounded-xl border border-white/5">
           <ArrowLeft size={18} /> <span className="font-bold">Portfolio</span>
         </button>
         <div className="flex items-center gap-2">
-           {loading && <Loader2 size={14} className="animate-spin text-amber-500" />}
-           <span className="font-black uppercase tracking-widest text-sm text-amber-500">Live Analytics</span>
+           {loading && <Loader2 size={14} className="animate-spin text-orange-600" />}
+           <span className="font-black uppercase tracking-widest text-sm text-orange-600">Live Analytics</span>
         </div>
       </nav>
 
       <div className="max-w-5xl mx-auto px-4 mt-12">
         <header className="text-center mb-16">
-          <h1 className="text-5xl font-black text-white tracking-tighter mb-4">Portfolio <span className="text-amber-500">Performance</span></h1>
+          <h1 className="text-5xl font-black text-white tracking-tighter mb-4">Portfolio <span className="text-orange-600">Performance</span></h1>
           <p className="text-stone-500">Real-time engagement metrics powered by Firebase.</p>
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             { label: 'Total Visits', value: stats.visits, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-            { label: 'CV Views', value: stats.cvViews, icon: FileText, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+            { label: 'CV Views', value: stats.cvViews, icon: FileText, color: 'text-orange-600', bg: 'bg-orange-600/10' },
             { label: 'Project Clicks', value: stats.projectClicks, icon: MousePointer2, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
             { label: 'Solved in Zen', value: stats.solvedProblems, icon: Trophy, color: 'text-purple-500', bg: 'bg-purple-500/10' },
           ].map((stat, i) => (
@@ -77,10 +77,10 @@ const Analytics = ({ onBack }) => {
         </div>
 
         {/* Growth Visualizer Placeholder */}
-        <div className="mt-12 p-8 rounded-[3rem] bg-gradient-to-br from-amber-500/5 to-orange-500/5 border border-amber-500/10 h-80 flex flex-col justify-end">
+        <div className="mt-12 p-8 rounded-[3rem] bg-gradient-to-br from-orange-600/5 to-orange-500/5 border border-orange-600/10 h-80 flex flex-col justify-end">
            <div className="flex items-end gap-2 h-full">
               {[40, 70, 45, 90, 65, 80, 50, 85, 30, 95, 60, 75].map((h, i) => (
-                <div key={i} className="flex-1 bg-amber-500/20 rounded-t-lg hover:bg-amber-500 transition-all cursor-help relative group" style={{ height: `${h}%` }}>
+                <div key={i} className="flex-1 bg-orange-600/20 rounded-t-lg hover:bg-orange-600 transition-all cursor-help relative group" style={{ height: `${h}%` }}>
                 </div>
               ))}
            </div>
