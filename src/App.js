@@ -2,7 +2,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import {
   Github, Linkedin, Facebook, Mail, MapPin, Download,
   Code2, Globe, ExternalLink, Award, FileText, Layout,
-  Sun, Moon, BarChart
+  Sun, Moon, BarChart2
 } from 'lucide-react';
 import profileImg from "./assets/ShahanurAlam.png";
 import logoIcon from "./assets/logo-icon.png";
@@ -140,8 +140,8 @@ export default function ShahanurPortfolio() {
             <button onClick={() => setDarkMode(!darkMode)} className={`p-2 rounded-xl border transition-all ${darkMode ? 'bg-amber-400/10 border-amber-400/20 text-amber-500 hover:bg-amber-400/20' : 'bg-white border-stone-200 text-stone-600 hover:bg-stone-100'}`}>
               {darkMode ? <Sun size={18} /> : <Moon size={18} />}
             </button>
-            <button onClick={() => window.location.hash = 'analytics'} className={`p-2 rounded-xl border transition-all ${darkMode ? 'bg-amber-400/10 border-amber-400/20 text-amber-500 hover:bg-amber-400/20' : 'bg-white border-stone-200 text-stone-600 hover:bg-stone-100'}`} title="Analytics">
-              <BarChart size={18} />
+            <button onClick={() => window.location.hash = 'analytics'} className={`p-2 rounded-xl border transition-all ${darkMode ? 'bg-amber-400/10 border-amber-400/20 text-amber-500' : 'bg-white border-stone-200 text-stone-600 hover:bg-stone-100'}`} title="Analytics">
+              <BarChart2 size={18} />
             </button>
             <button onClick={() => window.location.hash = 'resume-builder'} className={`flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-xl border transition-all ${darkMode ? 'text-amber-500 border-amber-500/20 bg-amber-500/5 hover:bg-amber-500 hover:text-stone-950' : 'text-stone-800 border-stone-200 bg-stone-100 hover:bg-stone-200'}`}>
               <Layout size={14}/> Resume

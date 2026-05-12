@@ -4,7 +4,7 @@ import {
   User, Mail, Phone, MapPin, GraduationCap, Briefcase,
   Code2, Award, Download, ArrowLeft, Plus, Trash2, Loader2,
   Save, Sparkles, Layout, Type, Palette,
-  Eye, Edit, Languages, Trophy, Users
+  Eye, Edit3, Languages, Trophy, Users
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -162,7 +162,7 @@ const ResumeBuilder = ({ onBack }) => {
             onClick={() => setShowPreviewMobile(!showPreviewMobile)}
             className="lg:hidden flex items-center gap-2 px-4 py-2 bg-white/5 rounded-xl text-xs font-bold"
           >
-            {showPreviewMobile ? <Edit size={14}/> : <Eye size={14}/>} {showPreviewMobile ? 'Edit' : 'Preview'}
+            {showPreviewMobile ? <Edit3 size={14}/> : <Eye size={14}/>} {showPreviewMobile ? 'Edit' : 'Preview'}
           </button>
           <button
             onClick={generatePDF}
@@ -178,7 +178,7 @@ const ResumeBuilder = ({ onBack }) => {
         {/* Left Sidebar - Navigation */}
         <aside className="w-16 border-r border-white/5 bg-[#120f0e] flex flex-col items-center py-6 gap-6 shrink-0">
           {[
-            { id: 'content', icon: Edit },
+            { id: 'content', icon: Edit3 },
             { id: 'templates', icon: Layout },
             { id: 'style', icon: Palette }
           ].map(tab => (
