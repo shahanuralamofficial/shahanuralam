@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { BarChart, Users, MousePointer2, FileText, ArrowLeft, Trophy } from 'lucide-react';
+import React, { useState } from 'react';
+import { BarChart2, Users, MousePointer2, FileText, ArrowLeft, Trophy } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Analytics = ({ onBack }) => {
-  const [stats, setStats] = useState({
-    visits: Math.floor(Math.random() * 500) + 120,
-    cvViews: Math.floor(Math.random() * 100) + 45,
-    projectClicks: Math.floor(Math.random() * 300) + 80,
+  const [stats] = useState({
+    visits: 642,
+    cvViews: 128,
+    projectClicks: 310,
     solvedProblems: 142
   });
 
