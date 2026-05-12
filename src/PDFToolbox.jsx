@@ -1,210 +1,242 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import React, { useState, useEffect, useRef } from 'react';
+import * as fabric from 'fabric';
+import * as pdfjsLib from 'pdfjs-dist';
 import {
-  FileStack, FileText, ArrowLeft, Download, Trash2,
-  Loader2, Plus, Type, Image as ImageIcon, CheckCircle2,
-  Eraser, MousePointer2, Move, Save
+  FileText, ArrowLeft, Download, Trash2, Loader2, Plus,
+  Type, Eraser, MousePointer2, ZoomIn, ZoomOut, Maximize2,
+  ChevronLeft, ChevronRight, Save, Undo, Redo, Layout
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import usePDFStore from './pdfStore';
+import { loadPDF, getPageTextData } from './pdfUtils';
+
+// Set worker path
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 const PDFToolbox = ({ onBack }) => {
-  const [files, setFiles] = useState([]);
+  const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('merge');
-  const [annotations, setAnnotations] = useState([]); // { x, y, text, id, type }
-  const [currentTool, setCurrentTool] = useState('text'); // text, eraser
-  const [previewUrl, setPreviewUrl] = useState(null);
-  const workspaceRef = useRef(null);
+  const [platform, setPlatform] = useState('merge'); // 'editor', 'merge', 'img2pdf'
+  const canvasRef = useRef(null);
+  const fabricCanvas = useRef(null);
 
-  const handleFileChange = async (e) => {
-    const selectedFiles = Array.from(e.target.files);
-    const newFiles = selectedFiles.map(file => ({
-      id: Math.random().toString(36).substr(2, 9),
-      file,
-      name: file.name,
-      size: (file.size / 1024 / 1024).toFixed(2) + ' MB'
-    }));
-    setFiles(newFiles);
+  const {
+    pdfDoc, numPages, currentPage, scale,
+    setPDFDoc, setCurrentPage, setScale
+  } = usePDFStore();
 
-    if (activeTab === 'edit' && newFiles.length > 0) {
-      const url = URL.createObjectURL(newFiles[0].file);
-      setPreviewUrl(url);
-    }
-  };
-
-  const handleWorkspaceClick = (e) => {
-    if (activeTab !== 'edit' || !previewUrl) return;
-
-    const rect = workspaceRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    if (currentTool === 'text') {
-      const text = prompt('Enter text to add at this position:');
-      if (text) {
-        setAnnotations([...annotations, { id: Date.now(), x, y, text, type: 'text' }]);
-      }
-    } else if (currentTool === 'eraser') {
-      setAnnotations([...annotations, { id: Date.now(), x, y, type: 'eraser', width: 100, height: 20 }]);
-    }
-  };
-
-  const saveEditedPDF = async () => {
-    if (files.length === 0) return;
-    setLoading(true);
-    try {
-      const fileBytes = await files[0].file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(fileBytes);
-      const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-      const pages = pdfDoc.getPages();
-      const firstPage = pages[0];
-      const { height } = firstPage.getSize();
-
-      // workspace size ratio
-      const viewWidth = workspaceRef.current.offsetWidth;
-      const viewHeight = workspaceRef.current.offsetHeight;
-      const pdfWidth = firstPage.getWidth();
-      const pdfHeight = firstPage.getHeight();
-
-      const scaleX = pdfWidth / viewWidth;
-      const scaleY = pdfHeight / viewHeight;
-
-      annotations.forEach(ann => {
-        if (ann.type === 'text') {
-          firstPage.drawText(ann.text, {
-            x: ann.x * scaleX,
-            y: pdfHeight - (ann.y * scaleY),
-            size: 14 * scaleX,
-            font: helveticaFont,
-            color: rgb(0, 0, 0),
-          });
-        } else if (ann.type === 'eraser') {
-          firstPage.drawRectangle({
-            x: ann.x * scaleX,
-            y: pdfHeight - (ann.y * scaleY) - (ann.height * scaleY),
-            width: ann.width * scaleX,
-            height: ann.height * scaleY,
-            color: rgb(1, 1, 1),
-          });
-        }
+  useEffect(() => {
+    if (platform === 'editor' && canvasRef.current && !fabricCanvas.current) {
+      fabricCanvas.current = new fabric.Canvas(canvasRef.current, {
+        width: 800,
+        height: 1100,
+        backgroundColor: '#fff',
       });
+    }
+  }, [platform]);
 
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'edited_by_zen.pdf';
-      link.click();
+  const handleFileUpload = async (e) => {
+    const uploadedFile = e.target.files[0];
+    if (!uploadedFile) return;
+
+    setLoading(true);
+    setFile(uploadedFile);
+
+    try {
+      const url = URL.createObjectURL(uploadedFile);
+      const doc = await loadPDF(url);
+      setPDFDoc(doc);
+      setPlatform('editor');
+      renderPage(1, doc);
     } catch (err) {
       console.error(err);
-      alert('Error saving PDF');
+      alert('Failed to load PDF');
     } finally {
       setLoading(false);
     }
   };
 
-  // ... (Other functions merge, img2pdf remain same logic but integrated)
+  const renderPage = async (pageNum, doc = pdfDoc) => {
+    if (!doc) return;
+    const page = await doc.getPage(pageNum);
+    const viewport = page.getViewport({ scale: 2.0 }); // Render high quality
+
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+
+    await page.render({ canvasContext: context, viewport }).promise;
+
+    const bgImage = canvas.toDataURL('image/png');
+
+    // Set Fabric Background
+    fabric.Image.fromURL(bgImage, (img) => {
+      fabricCanvas.current.setWidth(viewport.width / 2);
+      fabricCanvas.current.setHeight(viewport.height / 2);
+      img.scale(0.5);
+      fabricCanvas.current.setBackgroundImage(img, fabricCanvas.current.renderAll.bind(fabricCanvas.current));
+
+      // Auto-detect text layers
+      detectText(pageNum, doc, viewport);
+    });
+  };
+
+  const detectText = async (pageNum, doc, viewport) => {
+    const textData = await getPageTextData(doc, pageNum);
+
+    textData.forEach(item => {
+      // Create an editable text object exactly on top
+      const text = new fabric.IText(item.text, {
+        left: item.x / 2,
+        top: item.y / 2,
+        fontSize: item.fontSize / 2,
+        fontFamily: 'Arial',
+        fill: 'transparent', // Hide by default until clicked? Or show as ghost?
+        hasBorders: true,
+        hasControls: true,
+      });
+
+      // Add a white "hider" rectangle behind it if edited
+      text.on('changed', () => {
+        if (!text.hider) {
+          const rect = new fabric.Rect({
+            left: text.left,
+            top: text.top,
+            width: text.width,
+            height: text.height,
+            fill: '#fff',
+            selectable: false,
+          });
+          text.hider = rect;
+          fabricCanvas.current.add(rect);
+          rect.sendToBack();
+          text.set('fill', '#000'); // Make text visible now that it's "editing"
+        }
+      });
+
+      fabricCanvas.current.add(text);
+    });
+    fabricCanvas.current.renderAll();
+  };
+
+  const addText = () => {
+    const text = new fabric.IText('New Text', {
+      left: 100,
+      top: 100,
+      fontSize: 20,
+      fontFamily: 'Arial',
+      fill: '#000',
+    });
+    fabricCanvas.current.add(text);
+    fabricCanvas.current.setActiveObject(text);
+  };
+
+  const downloadPDF = async () => {
+    alert('Exporting advanced edits requires server-side or complex client-side mapping. Base structure ready!');
+    // In a full implementation, we'd use pdf-lib to draw fabric objects on top of existing pages
+  };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-[#0c0a09] text-stone-200 font-sans pb-20">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex justify-between items-center sticky top-0 bg-[#0c0a09]/80 backdrop-blur-xl z-50 border-b border-white/5">
-        <button onClick={onBack} className="flex items-center gap-2 text-stone-400 hover:text-amber-500 transition-all bg-white/5 px-4 py-2 rounded-xl border border-white/5">
-          <ArrowLeft size={18} /> <span className="font-bold">Portfolio</span>
-        </button>
-        <span className="font-black uppercase tracking-widest text-sm text-amber-500">PDF Editor Pro</span>
-      </nav>
-
-      <div className="max-w-6xl mx-auto px-4 mt-8">
-        <div className="flex flex-wrap gap-2 p-1 bg-white/5 rounded-2xl mb-8 border border-white/5 w-fit mx-auto">
-          {['merge', 'edit', 'img2pdf'].map(tab => (
-            <button key={tab} onClick={() => { setActiveTab(tab); setFiles([]); setPreviewUrl(null); }} className={`px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-amber-500 text-stone-900 shadow-xl' : 'text-stone-500 hover:text-stone-200'}`}>
-              {tab}
-            </button>
-          ))}
+    <div className="min-h-screen bg-[#0f0e0d] text-stone-300 flex flex-col font-sans">
+      {/* Header */}
+      <header className="h-16 border-b border-white/5 bg-[#1a1918]/80 backdrop-blur-xl px-6 flex items-center justify-between sticky top-0 z-50">
+        <div className="flex items-center gap-4">
+          <button onClick={onBack} className="p-2 hover:bg-white/5 rounded-lg transition-colors">
+            <ArrowLeft size={20} />
+          </button>
+          <div className="flex items-center gap-2 border-l border-white/10 pl-4">
+            <FileText className="text-amber-500" size={24} />
+            <h1 className="font-black uppercase tracking-widest text-sm">Zen PDF Editor</h1>
+          </div>
         </div>
 
-        {activeTab === 'edit' ? (
-          <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8">
-            <div className="space-y-6">
-              <div className="bg-white/[0.02] border border-white/5 p-6 rounded-[2rem] space-y-4">
-                <h3 className="text-sm font-black uppercase text-stone-500 tracking-tighter">Tools</h3>
-                <div className="grid grid-cols-2 gap-2">
-                   <button onClick={() => setCurrentTool('text')} className={`p-4 rounded-2xl flex flex-col items-center gap-2 transition-all ${currentTool === 'text' ? 'bg-amber-500 text-stone-900' : 'bg-white/5 text-stone-400 hover:bg-white/10'}`}>
-                      <Type size={20} /> <span className="text-[10px] font-bold">ADD TEXT</span>
-                   </button>
-                   <button onClick={() => setCurrentTool('eraser')} className={`p-4 rounded-2xl flex flex-col items-center gap-2 transition-all ${currentTool === 'eraser' ? 'bg-amber-500 text-stone-900' : 'bg-white/5 text-stone-400 hover:bg-white/10'}`}>
-                      <Eraser size={20} /> <span className="text-[10px] font-bold">ERASE LINE</span>
-                   </button>
-                </div>
-                {!previewUrl && (
-                  <input type="file" accept="application/pdf" onChange={handleFileChange} className="w-full text-xs text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-stone-900 hover:file:bg-amber-400" />
-                )}
-                {previewUrl && (
-                  <button onClick={saveEditedPDF} disabled={loading} className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-emerald-500 transition-all">
-                    {loading ? <Loader2 className="animate-spin" /> : <Save size={18} />} SAVE PDF
-                  </button>
-                )}
-              </div>
-
-              <div className="bg-white/[0.02] border border-white/5 p-6 rounded-[2rem]">
-                 <p className="text-[10px] text-stone-500 font-bold leading-relaxed">
-                   <span className="text-amber-500">HOW TO EDIT:</span><br/>
-                   1. Select 'ERASE LINE' and click over existing text to hide it.<br/>
-                   2. Select 'ADD TEXT' and click to type new text on top.<br/>
-                   3. Click SAVE to download your edited PDF.
-                 </p>
-              </div>
-            </div>
-
-            <div className="relative">
-               {previewUrl ? (
-                 <div
-                   ref={workspaceRef}
-                   onClick={handleWorkspaceClick}
-                   className="relative bg-white shadow-2xl overflow-hidden cursor-crosshair min-h-[800px] w-full max-w-[600px] mx-auto rounded-lg"
-                 >
-                    {/* Simplified: Using embed/iframe for view, canvas for edit coords */}
-                    <embed src={previewUrl} className="absolute inset-0 w-full h-full pointer-events-none" type="application/pdf" />
-
-                    {/* Visual Overlay of Annotations */}
-                    {annotations.map(ann => (
-                      <div
-                        key={ann.id}
-                        style={{ left: ann.x, top: ann.y }}
-                        className={`absolute transform -translate-y-1/2 p-1 pointer-events-none ${ann.type === 'eraser' ? 'bg-white border border-stone-200' : 'text-black font-bold whitespace-nowrap'}`}
-                      >
-                        {ann.type === 'text' ? ann.text : ''}
-                        {ann.type === 'eraser' && <div style={{ width: ann.width, height: ann.height }} />}
-                      </div>
-                    ))}
-                 </div>
-               ) : (
-                 <div className="h-[600px] rounded-[3rem] bg-white/[0.01] border-2 border-dashed border-white/5 flex flex-col items-center justify-center text-center p-12">
-                    <FileText size={48} className="text-stone-800 mb-4" />
-                    <h3 className="text-xl font-bold text-stone-600">Select a PDF to start editing</h3>
-                 </div>
-               )}
-            </div>
-          </div>
-        ) : (
-          <div className="max-w-2xl mx-auto space-y-6 text-center">
-            {/* Standard Merge/Image tools here (similar to previous version) */}
-            <div className="p-12 rounded-[3rem] bg-white/[0.02] border-2 border-dashed border-white/10 text-center">
-               <Plus size={48} className="text-amber-500 mx-auto mb-6" />
-               <input type="file" multiple accept={activeTab === 'img2pdf' ? 'image/*' : 'application/pdf'} onChange={handleFileChange} className="hidden" id="file-upload" />
-               <label htmlFor="file-upload" className="px-8 py-4 bg-amber-500 text-stone-900 rounded-2xl font-black uppercase cursor-pointer hover:bg-amber-400 transition-all">Select Files</label>
-            </div>
-            {files.length > 0 && (
-              <div className="space-y-3">
-                {files.map(f => <div key={f.id} className="p-4 bg-white/5 rounded-2xl text-left flex justify-between"><span>{f.name}</span> <span className="text-stone-500">{f.size}</span></div>)}
-                <button onClick={saveEditedPDF} className="w-full py-5 bg-stone-100 text-black rounded-full font-black uppercase tracking-widest">Execute {activeTab}</button>
-              </div>
-            )}
+        {platform === 'editor' && (
+          <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl border border-white/5">
+            <button onClick={addText} className="flex items-center gap-2 px-4 py-2 hover:bg-amber-500 hover:text-stone-900 rounded-lg transition-all text-xs font-bold uppercase">
+              <Type size={16} /> Add Text
+            </button>
+            <button className="flex items-center gap-2 px-4 py-2 hover:bg-white/10 rounded-lg transition-all text-xs font-bold uppercase">
+              <Eraser size={16} /> Erase
+            </button>
           </div>
         )}
+
+        <div className="flex items-center gap-3">
+          {platform === 'editor' && (
+            <button onClick={downloadPDF} className="bg-amber-500 text-stone-900 px-6 py-2.5 rounded-xl font-bold text-xs uppercase flex items-center gap-2 hover:bg-amber-400 transition-all shadow-lg shadow-amber-900/20">
+              <Save size={16} /> Export PDF
+            </button>
+          )}
+        </div>
+      </header>
+
+      <div className="flex-1 flex overflow-hidden">
+        {/* Sidebar / Thumbnails */}
+        {platform === 'editor' && (
+          <aside className="w-64 border-r border-white/5 bg-[#141312] overflow-y-auto p-4 hidden md:block">
+            <h3 className="text-[10px] font-black uppercase tracking-widest text-stone-500 mb-6 px-2">Pages ({numPages})</h3>
+            <div className="space-y-4">
+              {[...Array(numPages)].map((_, i) => (
+                <div
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`aspect-[3/4] rounded-xl border-2 transition-all cursor-pointer overflow-hidden relative group ${currentPage === i + 1 ? 'border-amber-500' : 'border-white/5 hover:border-white/20'}`}
+                >
+                  <div className="absolute inset-0 bg-white/5 group-hover:bg-transparent transition-colors" />
+                  <div className="absolute bottom-2 right-2 bg-black/60 px-2 py-1 rounded text-[10px] font-bold">{i + 1}</div>
+                </div>
+              ))}
+            </div>
+          </aside>
+        )}
+
+        {/* Main Workspace */}
+        <main className="flex-1 overflow-auto bg-[#0a0908] relative flex flex-col items-center p-8">
+          {platform === 'merge' && !file && (
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-20 max-w-xl w-full text-center">
+              <div className="p-16 rounded-[4rem] bg-white/[0.02] border-2 border-dashed border-white/10 hover:border-amber-500/40 hover:bg-amber-500/[0.02] transition-all group relative cursor-pointer">
+                <input type="file" accept="application/pdf" onChange={handleFileUpload} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
+                <div className="w-20 h-20 bg-amber-500/10 text-amber-500 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                  <Plus size={40} />
+                </div>
+                <h2 className="text-2xl font-bold text-white mb-3">Upload PDF to Edit</h2>
+                <p className="text-stone-500 text-sm leading-relaxed">Experience professional PDF editing like Sejda. Detect text layers, edit line-by-line, and more.</p>
+              </div>
+            </motion.div>
+          )}
+
+          {platform === 'editor' && (
+            <div className="relative shadow-2xl shadow-black shadow-[0_50px_100px_rgba(0,0,0,0.5)] bg-white rounded-sm mb-20 overflow-hidden">
+               <canvas ref={canvasRef} />
+            </div>
+          )}
+
+          {/* Floating Controls */}
+          {platform === 'editor' && (
+            <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-[#1a1918]/90 backdrop-blur-2xl px-6 py-4 rounded-[2rem] border border-white/10 shadow-2xl z-50">
+               <button className="p-2 hover:bg-white/10 rounded-full transition-colors"><ZoomOut size={18} /></button>
+               <span className="text-xs font-black px-4 border-x border-white/10 text-white">100%</span>
+               <button className="p-2 hover:bg-white/10 rounded-full transition-colors"><ZoomIn size={18} /></button>
+               <div className="w-px h-4 bg-white/10 mx-2" />
+               <button className="flex items-center gap-2 px-4 py-2 hover:bg-white/10 rounded-xl transition-all text-[10px] font-black uppercase">
+                  <Undo size={14} /> Undo
+               </button>
+               <button className="flex items-center gap-2 px-4 py-2 hover:bg-white/10 rounded-xl transition-all text-[10px] font-black uppercase">
+                  <Redo size={14} /> Redo
+               </button>
+            </div>
+          )}
+        </main>
       </div>
-    </motion.div>
+
+      {loading && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex flex-col items-center justify-center">
+           <Loader2 className="text-amber-500 animate-spin w-12 h-12 mb-4" />
+           <p className="text-xs font-black uppercase tracking-[0.3em] text-white">Initializing Editor...</p>
+        </div>
+      )}
+    </div>
   );
 };
 
