@@ -10,8 +10,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import usePDFStore from './pdfStore';
 import { loadPDF, getPageTextData } from './pdfUtils';
 
-// Set worker path
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.mjs`;
+// Correct way to set worker in newer pdfjs versions
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
 
 const PDFToolbox = ({ onBack }) => {
   const [file, setFile] = useState(null);
