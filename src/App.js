@@ -131,7 +131,7 @@ export default function ShahanurPortfolio() {
             </button>
             <button onClick={() => window.location.hash = '#visualizers'} className="hidden lg:flex items-center gap-2 px-3 py-1.5 text-xs font-bold border border-white/10 rounded-lg transition-colors hover:border-orange-500/50">
               <Zap size={14} className="text-orange-500" />
-              Algo Lab
+              Algo Lab & Challenges
             </button>
             <button onClick={() => window.location.hash = '#analytics'} className="p-2 rounded-xl border border-white/10"><BarChart2 size={18}/></button>
           </div>
