@@ -29,10 +29,24 @@ const CPPractice = ({ onBack }) => {
   const [isFullScreenEditor, setIsFullScreenEditor] = useState(false);
   const [toast, setToast] = useState(null);
   const [visibleCount, setVisibleCount] = useState(12);
+  const [showVisualizer, setShowVisualizer] = useState(false);
+  const [visArray, setVisArray] = useState([45, 20, 80, 60, 30, 90, 10]);
+  const [isSorting, setIsVisSorting] = useState(false);
 
-  const showToast = (message) => {
-    setToast(message);
-    setTimeout(() => setToast(null), 2000);
+  const bubbleSort = async () => {
+    setIsVisSorting(true);
+    let arr = [...visArray];
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < arr.length - i - 1; j++) {
+        if (arr[j] > arr[j + 1]) {
+          [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+          setVisArray([...arr]);
+          await new Promise(r => setTimeout(r, 200));
+        }
+      }
+    }
+    setIsVisSorting(false);
+    showToast("Sorting Complete!");
   };
 
   const langSkeletons = {
@@ -142,9 +156,26 @@ const CPPractice = ({ onBack }) => {
         <button onClick={fetchProblems} className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-orange-500/10 text-slate-400 transition-all">
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
         </button>
+        <button onClick={() => setShowVisualizer(!showVisualizer)} className="flex items-center gap-2 text-orange-400 hover:text-white transition-all bg-orange-400/10 px-3 py-1.5 rounded-xl border border-orange-400/20">
+          <Zap className="w-4 h-4" /> <span className="text-xs font-bold">{showVisualizer ? 'Hide Visualizer' : 'Algo Visualizer'}</span>
+        </button>
       </nav>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 mt-8 sm:mt-12">
+        {showVisualizer && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className="mb-12 p-8 rounded-[3rem] bg-orange-500/[0.03] border border-orange-500/10 overflow-hidden">
+             <div className="flex justify-between items-center mb-8">
+                <h3 className="text-xl font-black uppercase text-orange-500 tracking-tighter">Bubble Sort Visualizer</h3>
+                <button onClick={bubbleSort} disabled={isSorting} className="px-6 py-2 bg-orange-500 text-black font-bold rounded-xl hover:bg-orange-400 transition-all disabled:opacity-50">START SORTING</button>
+             </div>
+             <div className="flex items-end gap-2 h-40">
+                {visArray.map((val, i) => (
+                  <motion.div key={i} layout style={{ height: `${val}%` }} className="flex-1 bg-gradient-to-t from-orange-600 to-amber-400 rounded-t-lg" />
+                ))}
+             </div>
+          </motion.div>
+        )}
+
         <header className="mb-8">
           <h1 className="text-4xl sm:text-7xl font-black text-white tracking-tighter mb-4 leading-none">
             Zen <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400">Workspace</span>
