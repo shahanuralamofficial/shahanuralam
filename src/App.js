@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Github, Linkedin, Facebook, Mail, MapPin, Download, Code2, Globe, ExternalLink, Award, FileText } from 'lucide-react';
+import { Github, Linkedin, Facebook, Mail, MapPin, Download, Code2, Globe, ExternalLink, Award, FileText, Layout } from 'lucide-react';
 import CPPractice from './CPPractice';
 import PDFToolbox from './PDFToolbox';
+import ResumeBuilder from './ResumeBuilder';
 import profileImg from "./assets/ShahanurAlam.png";
 import logoIcon from "./assets/logo-icon.png";
 import bloodDonateLogo from "./assets/applogo/blood_donate.png";
@@ -71,6 +72,7 @@ const skills = [
 export default function ShahanurPortfolio() {
   const [showCP, setShowCP] = useState(false);
   const [showPDF, setShowPDF] = useState(false);
+  const [showResume, setShowResume] = useState(false);
   const [contactData, setContactData] = useState({ name: '', email: '', message: '' });
   const [contactStatus, setContactStatus] = useState({ loading: false, success: '', error: '' });
 
@@ -78,6 +80,7 @@ export default function ShahanurPortfolio() {
     const handleHashChange = () => {
       setShowCP(window.location.hash === '#cp');
       setShowPDF(window.location.hash === '#pdf-tools');
+      setShowResume(window.location.hash === '#resume-builder');
     };
     window.addEventListener('hashchange', handleHashChange);
     handleHashChange(); // Check initial hash
@@ -132,6 +135,10 @@ export default function ShahanurPortfolio() {
 
   if (showPDF) {
     return <PDFToolbox onBack={() => window.location.hash = ''} />;
+  }
+
+  if (showResume) {
+    return <ResumeBuilder onBack={() => window.location.hash = ''} />;
   }
 
   return (
