@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, RefreshCw, Zap, Info, Play, RotateCcw,
@@ -15,6 +15,13 @@ import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-java';
 import 'prismjs/themes/prism-tomorrow.css';
 import Editor from 'react-simple-code-editor';
+
+const langSkeletons = {
+  'JavaScript': (name) => `function ${name}(arr) {\n  // Write your logic here\n  \n  return arr;\n}`,
+  'Python 3': (name) => `def ${name}(arr):\n    # Write your logic here\n    \n    return arr`,
+  'C++ 17': (name) => `#include <iostream>\n#include <vector>\nusing namespace std;\n\nvector<int> ${name}(vector<int>& arr) {\n    // Write your logic here\n    \n    return arr;\n}`,
+  'Java': (name) => `import java.util.*;\n\npublic class Solution {\n    public int[] ${name}(int[] arr) {\n        // Write your logic here\n        \n        return arr;\n    }\n}`
+};
 
 const Visualizers = ({ onBack }) => {
   const [visType, setVisType] = useState('bubble');
@@ -40,12 +47,12 @@ const Visualizers = ({ onBack }) => {
     speedRef.current = speed;
   }, [speed]);
 
-  const showToast = (msg) => {
+  const showToast = useCallback((msg) => {
     setToast(msg);
     setTimeout(() => setToast(null), 3000);
-  };
+  }, []);
 
-  const playTone = (freq, type = 'sine', duration = 0.1) => {
+  const playTone = useCallback((freq, type = 'sine', duration = 0.1) => {
     if (isMuted) return;
     try {
       if (!audioCtx.current) {
@@ -66,27 +73,20 @@ const Visualizers = ({ onBack }) => {
       osc.start();
       osc.stop(audioCtx.current.currentTime + duration);
     } catch (e) {}
-  };
+  }, [isMuted]);
 
-  const playSuccessSound = () => {
+  const playSuccessSound = useCallback(() => {
     if (isMuted) return;
     [440, 554, 659].forEach((f, i) => {
       setTimeout(() => playTone(f, 'sine', 0.2), i * 150);
     });
-  };
+  }, [isMuted, playTone]);
 
-  const delay = () => new Promise(r => setTimeout(r, speedRef.current));
-
-  const langSkeletons = {
-    'JavaScript': (name) => `function ${name}(arr) {\n  // Write your logic here\n  \n  return arr;\n}`,
-    'Python 3': (name) => `def ${name}(arr):\n    # Write your logic here\n    \n    return arr`,
-    'C++ 17': (name) => `#include <iostream>\n#include <vector>\nusing namespace std;\n\nvector<int> ${name}(vector<int>& arr) {\n    // Write your logic here\n    \n    return arr;\n}`,
-    'Java': (name) => `import java.util.*;\n\npublic class Solution {\n    public int[] ${name}(int[] arr) {\n        // Write your logic here\n        \n        return arr;\n    }\n}`
-  };
+  const delay = useCallback(() => new Promise(r => setTimeout(r, speedRef.current)), []);
 
   // --- Algorithms Implementation ---
 
-  const bubbleSort = async () => {
+  const bubbleSort = useCallback(async () => {
     setIsVisSorting(true);
     let arr = [...visArray];
     setStepDescription('Starting Bubble Sort: Comparing adjacent elements and swapping if needed.');
@@ -110,9 +110,9 @@ const Visualizers = ({ onBack }) => {
     setStepDescription('Bubble Sort Complete! The array is now sorted.');
     playSuccessSound();
     showToast("Sorting Complete!");
-  };
+  }, [visArray, delay, playTone, playSuccessSound]);
 
-  const linearSearch = async () => {
+  const linearSearch = useCallback(async () => {
     setIsVisSorting(true);
     let arr = [...visArray];
     let target = arr[Math.floor(Math.random() * arr.length)];
@@ -134,9 +134,9 @@ const Visualizers = ({ onBack }) => {
         }
     }
     setIsVisSorting(false);
-  };
+  }, [visArray, delay, playTone, playSuccessSound]);
 
-  const binarySearch = async () => {
+  const binarySearch = useCallback(async () => {
     setIsVisSorting(true);
     let arr = [...visArray].sort((a, b) => a - b);
     setVisArray(arr);
@@ -168,9 +168,9 @@ const Visualizers = ({ onBack }) => {
       await delay();
     }
     setIsVisSorting(false);
-  };
+  }, [visArray, delay, playTone, playSuccessSound]);
 
-  const sieveVisualizer = async () => {
+  const sieveVisualizer = useCallback(async () => {
     setIsVisSorting(true);
     let n = 50;
     let primes = new Array(n + 1).fill(true);
@@ -197,9 +197,9 @@ const Visualizers = ({ onBack }) => {
     setStepDescription('Sieve Complete! Remaining numbers are prime.');
     playSuccessSound();
     showToast("Sieve Complete!");
-  };
+  }, [delay, playTone, playSuccessSound]);
 
-  const euclideanGCD = async () => {
+  const euclideanGCD = useCallback(async () => {
     setIsVisSorting(true);
     let a = Math.floor(Math.random() * 80) + 20;
     let b = Math.floor(Math.random() * 80) + 20;
@@ -223,9 +223,9 @@ const Visualizers = ({ onBack }) => {
     playSuccessSound();
     showToast(`GCD is ${a}`);
     setIsVisSorting(false);
-  };
+  }, [delay, playTone, playSuccessSound]);
 
-  const quickSortVisualizer = async () => {
+  const quickSortVisualizer = useCallback(async () => {
     setIsVisSorting(true);
     let arr = [...visArray];
     setStepDescription('Starting Quick Sort: Selecting pivot and partitioning...');
@@ -274,7 +274,7 @@ const Visualizers = ({ onBack }) => {
     setStepDescription('Quick Sort Complete! The array is fully sorted.');
     playSuccessSound();
     showToast("Quick Sort Complete!");
-  };
+  }, [visArray, delay, playTone, playSuccessSound]);
 
   // --- Utility ---
 
@@ -292,7 +292,7 @@ const Visualizers = ({ onBack }) => {
 
   useEffect(() => { resetVis(); }, [visType]);
 
-  const algoData = {
+  const algoData = useMemo(() => ({
     bubble: {
         id: 'bubble',
         name: 'Bubble Sort',
@@ -381,9 +381,9 @@ const Visualizers = ({ onBack }) => {
           'C++ 17': `void quickSort(vector<int>& arr, int low, int high) {\n    if (low < high) {\n        int pi = partition(arr, low, high);\n        quickSort(arr, low, pi - 1);\n        quickSort(arr, pi + 1, high);\n    }\n}`,
           'Java': `public void quickSort(int[] arr, int low, int high) {\n    if (low < high) {\n        int pi = partition(arr, low, high);\n        quickSort(arr, low, pi - 1);\n        quickSort(arr, pi + 1, high);\n    }\n}`
         },
-        startFunc: () => quickSortVisualizer()
+        startFunc: quickSortVisualizer
     }
-  };
+  }), [bubbleSort, linearSearch, binarySearch, sieveVisualizer, euclideanGCD, quickSortVisualizer]);
 
   // --- Code Editor for "Submit" simulation ---
   const handleRunChallenge = () => {
@@ -397,9 +397,11 @@ const Visualizers = ({ onBack }) => {
   };
 
   useEffect(() => {
-    const skeleton = langSkeletons[selectedLang](algoData[visType].funcName);
-    setUserCode(skeleton);
-    setSubmitStatus(null);
+    if (algoData[visType]) {
+      const skeleton = langSkeletons[selectedLang](algoData[visType].funcName);
+      setUserCode(skeleton);
+      setSubmitStatus(null);
+    }
   }, [visType, selectedLang]);
 
   return (
@@ -466,10 +468,11 @@ const Visualizers = ({ onBack }) => {
                  ))}
               </div>
 
+              {algoData[visType] ? (
               <AnimatePresence mode="wait">
                 {activeTab === 'visualizer' && (
                   <motion.div
-                    key="visualizer"
+                    key={`visualizer-${visType}`}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
@@ -577,7 +580,7 @@ const Visualizers = ({ onBack }) => {
 
                 {activeTab === 'problem' && (
                     <motion.div
-                        key="problem"
+                        key={`problem-${visType}`}
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -20 }}
@@ -668,7 +671,7 @@ const Visualizers = ({ onBack }) => {
 
                 {activeTab === 'solution' && (
                     <motion.div
-                        key="solution"
+                        key={`solution-${visType}`}
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 1.05 }}
@@ -715,6 +718,11 @@ const Visualizers = ({ onBack }) => {
                     </motion.div>
                 )}
               </AnimatePresence>
+              ) : (
+                <div className="p-12 rounded-[3rem] bg-white/[0.02] border border-white/5 text-center text-slate-500">
+                    Select an algorithm to view content.
+                </div>
+              )}
            </div>
         </div>
       </div>
