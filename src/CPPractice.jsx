@@ -17,9 +17,40 @@ import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-java';
 import 'prismjs/themes/prism-tomorrow.css';
 
+const CountdownTimer = ({ startTime }) => {
+  const [timeLeft, setTimeLeft] = useState(startTime - Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(startTime - Date.now());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [startTime]);
+
+  if (isNaN(timeLeft) || timeLeft <= 0) return <span className="text-emerald-500 animate-pulse font-black text-[10px]">LIVE NOW</span>;
+
+  const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+  if (isNaN(days) || isNaN(hours)) return <span className="text-slate-500 font-bold text-[10px]">TBA</span>;
+
+  return (
+    <div className="flex gap-1 text-[10px] font-mono font-black text-orange-500 bg-orange-500/10 px-2 py-1 rounded-lg border border-orange-500/20">
+      {days > 0 && <span>{days}d</span>}
+      <span>{hours.toString().padStart(2, '0')}h</span>
+      <span>{minutes.toString().padStart(2, '0')}m</span>
+      <span>{seconds.toString().padStart(2, '0')}s</span>
+    </div>
+  );
+};
+
 const CPPractice = ({ onBack }) => {
   const [problems, setProblems] = useState([]);
+  const [contests, setContests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [contestsLoading, setContestsLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [platformFilter, setPlatformFilter] = useState('All Platforms');
   const [searchQuery, setSearchQuery] = useState('');
@@ -29,24 +60,10 @@ const CPPractice = ({ onBack }) => {
   const [isFullScreenEditor, setIsFullScreenEditor] = useState(false);
   const [toast, setToast] = useState(null);
   const [visibleCount, setVisibleCount] = useState(12);
-  const [showVisualizer, setShowVisualizer] = useState(false);
-  const [visArray, setVisArray] = useState([45, 20, 80, 60, 30, 90, 10]);
-  const [isSorting, setIsVisSorting] = useState(false);
 
-  const bubbleSort = async () => {
-    setIsVisSorting(true);
-    let arr = [...visArray];
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0; j < arr.length - i - 1; j++) {
-        if (arr[j] > arr[j + 1]) {
-          [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-          setVisArray([...arr]);
-          await new Promise(r => setTimeout(r, 200));
-        }
-      }
-    }
-    setIsVisSorting(false);
-    showToast("Sorting Complete!");
+  const showToast = (msg) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 3000);
   };
 
   const langSkeletons = {
@@ -105,7 +122,51 @@ const CPPractice = ({ onBack }) => {
     } catch (e) { console.error(e); } finally { setLoading(false); }
   };
 
-  useEffect(() => { fetchProblems(); }, []);
+  const fetchContests = async () => {
+    setContestsLoading(true);
+    try {
+      const res = await fetch('https://kontests.net/api/v1/all');
+      const data = await res.json();
+
+      const filtered = data
+        .filter(c => ['CodeForces', 'AtCoder', 'LeetCode', 'CodeChef'].includes(c.site))
+        .map(c => ({
+          id: c.name + c.start_time,
+          name: c.name,
+          platform: c.site === 'CodeForces' ? 'Codeforces' : c.site,
+          startTime: c.start_time ? new Date(c.start_time).getTime() : 0,
+          link: c.url
+        }))
+        .filter(c => c.startTime > Date.now() || c.startTime === 0)
+        .sort((a, b) => a.startTime - b.startTime);
+
+      setContests(filtered);
+    } catch (e) {
+      console.error("Kontests API failed, falling back to CF", e);
+      try {
+        const res = await fetch('https://codeforces.com/api/contest.list');
+        const data = await res.json();
+        if (data.status === 'OK') {
+          const upcoming = data.result
+            .filter(c => c.phase === 'BEFORE')
+            .map(c => ({
+              id: c.id,
+              name: c.name,
+              platform: 'Codeforces',
+              startTime: c.startTimeSeconds * 1000,
+              link: `https://codeforces.com/contests/${c.id}`
+            }))
+            .sort((a, b) => a.startTime - b.startTime);
+          setContests(upcoming);
+        }
+      } catch (err) { console.error(err); }
+    } finally { setContestsLoading(false); }
+  };
+
+  useEffect(() => {
+    fetchProblems();
+    fetchContests();
+  }, []);
 
   useEffect(() => {
     setVisibleCount(12);
@@ -149,6 +210,12 @@ const CPPractice = ({ onBack }) => {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-screen bg-[#0a0604] text-slate-200 font-sans pb-20 overflow-x-hidden">
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar { height: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(249, 115, 22, 0.2); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(249, 115, 22, 0.4); }
+      `}</style>
       <nav className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center bg-black/40 backdrop-blur-xl border-b border-orange-500/10 sticky top-0">
         <button onClick={onBack} className="flex items-center gap-2 text-slate-400 hover:text-orange-400 transition-all bg-white/5 px-3 py-1.5 rounded-xl border border-white/10">
           <ArrowLeft className="w-4 h-4" /> <span className="text-xs font-bold hidden sm:inline">Portfolio</span>
@@ -156,25 +223,46 @@ const CPPractice = ({ onBack }) => {
         <button onClick={fetchProblems} className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-orange-500/10 text-slate-400 transition-all">
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
         </button>
-        <button onClick={() => setShowVisualizer(!showVisualizer)} className="flex items-center gap-2 text-orange-400 hover:text-white transition-all bg-orange-400/10 px-3 py-1.5 rounded-xl border border-orange-400/20">
-          <Zap className="w-4 h-4" /> <span className="text-xs font-bold">{showVisualizer ? 'Hide Visualizer' : 'Algo Visualizer'}</span>
-        </button>
       </nav>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 mt-8 sm:mt-12">
-        {showVisualizer && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className="mb-12 p-8 rounded-[3rem] bg-orange-500/[0.03] border border-orange-500/10 overflow-hidden">
-             <div className="flex justify-between items-center mb-8">
-                <h3 className="text-xl font-black uppercase text-orange-500 tracking-tighter">Bubble Sort Visualizer</h3>
-                <button onClick={bubbleSort} disabled={isSorting} className="px-6 py-2 bg-orange-500 text-black font-bold rounded-xl hover:bg-orange-400 transition-all disabled:opacity-50">START SORTING</button>
-             </div>
-             <div className="flex items-end gap-2 h-40">
-                {visArray.map((val, i) => (
-                  <motion.div key={i} layout style={{ height: `${val}%` }} className="flex-1 bg-gradient-to-t from-orange-600 to-amber-400 rounded-t-lg" />
-                ))}
-             </div>
-          </motion.div>
-        )}
+        {/* Upcoming Contests Section */}
+        <div className="mb-12 overflow-x-auto pb-4 custom-scrollbar">
+           <div className="flex items-center gap-3 mb-6">
+              <div className="w-2 h-8 bg-orange-500 rounded-full" />
+              <h2 className="text-xl font-black uppercase tracking-tighter text-white">Upcoming Contests</h2>
+              {contestsLoading && <Loader2 className="w-4 h-4 animate-spin text-orange-500" />}
+           </div>
+           <div className="flex gap-4 min-w-max px-2">
+              {contests.length > 0 ? contests.map(c => {
+                const date = new Date(c.startTime);
+                return (
+                  <div key={c.id} className="p-6 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:border-orange-500/20 transition-all w-80 flex flex-col justify-between">
+                    <div>
+                      <div className="flex justify-between items-start mb-4">
+                        <span className={`px-2 py-1 rounded-lg text-[9px] font-black uppercase border ${platformColors[c.platform] || 'bg-white/10 text-white border-white/20'}`}>{c.platform}</span>
+                        <CountdownTimer startTime={c.startTime} />
+                      </div>
+                      <h4 className="text-white font-bold text-sm mb-6 line-clamp-2 leading-relaxed h-10">{c.name}</h4>
+                    </div>
+                    <div className="flex items-center justify-between mt-2 pt-4 border-t border-white/5">
+                       <div className="flex flex-col">
+                         <span className="text-[10px] text-white font-black">
+                           {c.startTime > 0 ? date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'TBA'}
+                         </span>
+                         <span className="text-[9px] text-slate-500 font-bold">
+                           {c.startTime > 0 ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Date TBA'}
+                         </span>
+                       </div>
+                       <a href={c.link} target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-xl bg-orange-500/10 text-orange-500 text-[9px] font-black uppercase hover:bg-orange-500 hover:text-black transition-all border border-orange-500/20">Register</a>
+                    </div>
+                  </div>
+                );
+              }) : !contestsLoading && (
+                <p className="text-slate-600 text-[10px] font-black uppercase tracking-widest pl-4">No upcoming contests found.</p>
+              )}
+           </div>
+        </div>
 
         <header className="mb-8">
           <h1 className="text-4xl sm:text-7xl font-black text-white tracking-tighter mb-4 leading-none">

@@ -16,6 +16,7 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "fabric": "^7.3.1",
+    "firebase": "^10.14.1",
     "framer-motion": "^11.0.0",
     "jspdf": "^4.2.1",
     "pdf-lib": "^1.17.1",

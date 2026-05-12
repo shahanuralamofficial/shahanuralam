@@ -2,15 +2,19 @@ import React, { useState, useEffect, Suspense } from 'react';
 import {
   Github, Linkedin, Facebook, Mail, MapPin, Download,
   Code2, Globe, ExternalLink, Award, FileText, Layout,
-  Sun, Moon, BarChart2, Save, Loader2, Phone
+  Sun, Moon, BarChart2, Save, Loader2, Phone, Zap
 } from 'lucide-react';
 import profileImg from "./assets/ShahanurAlam.png";
 import bloodDonateLogo from "./assets/applogo/blood_donate.png";
 import badalgachiLogo from "./assets/applogo/Badalgachi Net.png";
 import cvPdf from './assets/cv/CV.pdf';
 
+// Firebase
+import { db, ref, update, increment } from './firebase';
+
 // Components (Lazy Load for performance)
 const CPPractice = React.lazy(() => import('./CPPractice'));
+const Visualizers = React.lazy(() => import('./Visualizers'));
 const Analytics = React.lazy(() => import('./Analytics'));
 
 // Certificates
@@ -70,6 +74,12 @@ export default function ShahanurPortfolio() {
   const [contactStatus, setContactStatus] = useState({ loading: false, success: '', error: '' });
 
   useEffect(() => {
+    // Track Page Visit
+    try {
+      const statsRef = ref(db, 'stats');
+      update(statsRef, { visits: increment(1) }).catch(() => {});
+    } catch (e) {}
+
     const handleHash = () => setHash(window.location.hash);
     window.addEventListener('hashchange', handleHash);
     return () => window.removeEventListener('hashchange', handleHash);
@@ -92,6 +102,7 @@ export default function ShahanurPortfolio() {
   };
 
   if (hash === '#cp') return <Suspense fallback={<LoadingScreen/>}><CPPractice onBack={() => window.location.hash = ''} /></Suspense>;
+  if (hash === '#visualizers') return <Suspense fallback={<LoadingScreen/>}><Visualizers onBack={() => window.location.hash = ''} /></Suspense>;
   if (hash === '#analytics') return <Suspense fallback={<LoadingScreen/>}><Analytics onBack={() => window.location.hash = ''} /></Suspense>;
 
   return (
@@ -118,6 +129,10 @@ export default function ShahanurPortfolio() {
               <Code2 size={14} className="text-amber-500" />
               CP Workspace
             </button>
+            <button onClick={() => window.location.hash = '#visualizers'} className="hidden lg:flex items-center gap-2 px-3 py-1.5 text-xs font-bold border border-white/10 rounded-lg transition-colors hover:border-orange-500/50">
+              <Zap size={14} className="text-orange-500" />
+              Algo Lab
+            </button>
             <button onClick={() => window.location.hash = '#analytics'} className="p-2 rounded-xl border border-white/10"><BarChart2 size={18}/></button>
           </div>
         </nav>
@@ -126,22 +141,25 @@ export default function ShahanurPortfolio() {
       <main className="max-w-6xl mx-auto px-4 py-12 space-y-24">
         {/* Hero */}
         <section className={`p-8 sm:p-12 rounded-[3rem] border transition-all ${darkMode ? 'bg-black/20 border-white/5 shadow-2xl' : 'bg-white border-stone-200 shadow-xl'}`}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
-            <div className="md:col-span-2 space-y-6">
-              <h2 className="text-5xl sm:text-7xl font-black tracking-tighter">Hi — I’m <span className="text-amber-500">Shahanur</span>.</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
+            <div className="lg:col-span-2 space-y-6">
+              <h2 className="text-4xl md:text-5xl lg:text-7xl font-black tracking-tighter whitespace-nowrap">Hi — I’m <span className="text-amber-500">Shahanur Alam</span>.</h2>
               <p className="text-xl text-stone-400">Mobile App Developer specializing in Java & Flutter.</p>
               <div className="flex flex-wrap gap-4 pt-4">
-                <button onClick={() => window.location.hash = '#cp'} className="px-8 py-3 bg-white text-black rounded-xl font-bold hover:scale-105 transition-all">CP Zen Workspace</button>
-                <a href="Shahanur_Alam_CV.html" target="_blank" className={`px-8 py-3 border border-white/10 rounded-xl font-bold hover:bg-white/5 transition-all`}>View CV</a>
-                <a href={cvPdf} download className="px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-500 transition-all flex items-center gap-2"><Download size={18}/> Download</a>
+                <button onClick={() => {
+                  window.location.hash = '#cp';
+                  update(ref(db, 'stats'), { projectClicks: increment(1) }).catch(() => {});
+                }} className="px-8 py-3 bg-white text-black rounded-xl font-bold hover:scale-105 transition-all">CP Zen Workspace</button>
+                <a href="Shahanur_Alam_CV.html" target="_blank" onClick={() => update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => {})} className={`px-8 py-3 border border-white/10 rounded-xl font-bold hover:bg-white/5 transition-all`}>View CV</a>
+                <a href={cvPdf} download onClick={() => update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => {})} className="px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-500 transition-all flex items-center gap-2"><Download size={18}/> Download</a>
               </div>
               <div className="flex items-center gap-6 text-sm text-stone-500 pt-6">
                  <span className="flex items-center gap-2"><MapPin size={14} className="text-amber-500"/> Rajshahi, BD</span>
                  <span className="flex items-center gap-2"><Award size={14} className="text-amber-500"/> Open to Internships</span>
               </div>
             </div>
-            <div className="flex justify-center">
-              <div className={`w-56 h-56 rounded-[3.5rem] overflow-hidden border-4 border-amber-500/20 shadow-2xl transition-all duration-700 hover:scale-105`}>
+            <div className="flex justify-center lg:justify-end">
+              <div className={`w-56 h-56 rounded-[3.5rem] overflow-hidden border-4 border-amber-500/20 shadow-2xl transition-all duration-700 hover:scale-105 lg:translate-x-3`}>
                 <img src={profileImg} alt="Profile" className="w-full h-full object-cover" />
               </div>
             </div>
@@ -181,10 +199,10 @@ export default function ShahanurPortfolio() {
             {certificates.map((cert, i) => (
               <div key={i} className={`p-6 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:border-amber-500/30 transition-all group`}>
                 <div className="flex justify-between items-start mb-6">
-                   <FileText size={24} className="text-stone-500 group-hover:text-amber-500 transition-colors"/>
+                   <FileText size={24} className="text-stone-500 group-hover:text-amber-500 transition-all duration-500 group-hover:scale-110"/>
                    <div className="flex gap-2">
-                      <a href={cert.file} target="_blank" className="p-2 rounded-lg bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-black"><ExternalLink size={16}/></a>
-                      <a href={cert.file} download className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white"><Download size={16}/></a>
+                      <a href={cert.file} target="_blank" title="View Certificate" className="p-2 rounded-lg bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-black transition-all duration-300 hover:scale-110 active:scale-90 shadow-lg shadow-amber-500/5"><ExternalLink size={16}/></a>
+                      <a href={cert.file} download title="Download Certificate" className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all duration-300 hover:scale-110 active:scale-90 shadow-lg shadow-emerald-500/5"><Download size={16}/></a>
                    </div>
                 </div>
                 <h4 className="font-bold text-sm mb-1">{cert.title}</h4>
@@ -206,8 +224,8 @@ export default function ShahanurPortfolio() {
                    </div>
                    <p className="text-stone-400 text-sm mb-8 leading-relaxed">{p.description}</p>
                    <div className="flex gap-6">
-                      <a href={p.demoLink} target="_blank" className="text-amber-500 font-bold flex items-center gap-2 text-sm uppercase tracking-widest">Live Demo <Globe size={16}/></a>
-                      <a href={p.sourceLink} target="_blank" className="text-stone-500 font-bold text-sm uppercase tracking-widest underline underline-offset-8">Source</a>
+                      <a href={p.demoLink} target="_blank" className="text-amber-500 font-bold flex items-center gap-2 text-sm uppercase tracking-widest hover:text-amber-400 hover:scale-105 transition-all duration-300">Live Demo <Globe size={16}/></a>
+                      <a href={p.sourceLink} target="_blank" className="text-stone-500 font-bold text-sm uppercase tracking-widest underline underline-offset-8 hover:text-stone-300 hover:scale-105 transition-all duration-300">Source</a>
                    </div>
                 </div>
               ))}
