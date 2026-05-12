@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Github, Linkedin, Facebook, Mail, MapPin, Download, Code2, Globe, ExternalLink, Award, FileText, Layout } from 'lucide-react';
+import { Github, Linkedin, Facebook, Mail, MapPin, Download, Code2, Globe, ExternalLink, Award, FileText, Layout, Sun, Moon } from 'lucide-react';
 import CPPractice from './CPPractice';
 import PDFToolbox from './PDFToolbox';
 import ResumeBuilder from './ResumeBuilder';
 import profileImg from "./assets/ShahanurAlam.png";
+
+// ... (keep certificates and projects constants as they are)
+
 import logoIcon from "./assets/logo-icon.png";
 import bloodDonateLogo from "./assets/applogo/blood_donate.png";
 import badalgachiLogo from "./assets/applogo/Badalgachi Net.png";
@@ -73,8 +76,16 @@ export default function ShahanurPortfolio() {
   const [showCP, setShowCP] = useState(false);
   const [showPDF, setShowPDF] = useState(false);
   const [showResume, setShowResume] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('theme');
+    return saved ? saved === 'dark' : true;
+  });
   const [contactData, setContactData] = useState({ name: '', email: '', message: '' });
   const [contactStatus, setContactStatus] = useState({ loading: false, success: '', error: '' });
+
+  useEffect(() => {
+    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+  }, [darkMode]);
 
   useEffect(() => {
     const handleHashChange = () => {
