@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Github, Linkedin, Facebook, Mail, MapPin, Download, Code2, Globe, ExternalLink, Award, FileText, Layout, Sun, Moon, BarChart3 } from 'lucide-react';
+import { Github, Linkedin, Facebook, Mail, MapPin, Download, Code2, Globe, ExternalLink, Award, FileText, Layout, Sun, Moon, BarChart } from 'lucide-react';
 import CPPractice from './CPPractice';
 import PDFToolbox from './PDFToolbox';
 import ResumeBuilder from './ResumeBuilder';
@@ -59,7 +59,14 @@ export default function ShahanurPortfolio() {
   const [showPDF, setShowPDF] = useState(false);
   const [showResume, setShowResume] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
-  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') !== 'light');
+  const [darkMode, setDarkMode] = useState(() => {
+    try {
+      const saved = localStorage.getItem('theme');
+      return saved ? saved === 'dark' : true;
+    } catch (e) {
+      return true;
+    }
+  });
   const [contactData, setContactData] = useState({ name: '', email: '', message: '' });
   const [contactStatus, setContactStatus] = useState({ loading: false, success: '', error: '' });
 
@@ -130,7 +137,7 @@ export default function ShahanurPortfolio() {
               {darkMode ? <Sun size={18} /> : <Moon size={18} />}
             </button>
             <button onClick={() => window.location.hash = 'analytics'} className={`p-2 rounded-xl border transition-all ${darkMode ? 'bg-amber-400/10 border-amber-400/20 text-amber-500' : 'bg-stone-100 border-stone-200 text-stone-600'}`}>
-              <BarChart3 size={18} />
+              <BarChart size={18} />
             </button>
             <button onClick={() => window.location.hash = 'resume-builder'} className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg border ${darkMode ? 'text-amber-500 bg-amber-500/10 border-amber-500/20' : 'bg-stone-100 border-stone-200'}`}><Layout size={14}/> Resume</button>
             <button onClick={() => window.location.hash = 'pdf-tools'} className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg border ${darkMode ? 'text-amber-500 bg-amber-500/10 border-amber-500/20' : 'bg-stone-100 border-stone-200'}`}><FileText size={14}/> PDF Tools</button>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, Users, MousePointer2, FileText, ArrowLeft, Trophy } from 'lucide-react';
+import { BarChart, Users, MousePointer2, FileText, ArrowLeft, Trophy } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Analytics = ({ onBack }) => {
