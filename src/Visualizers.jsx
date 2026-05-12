@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, RefreshCw, Zap, Info, Play, RotateCcw,
   Code2, HelpCircle, CheckCircle2, Terminal, ExternalLink,
-  ChevronRight, ChevronLeft, FastForward, Cpu, Loader2, Save
+  ChevronRight, ChevronLeft, FastForward, Cpu, Loader2, Save,
+  Volume2, VolumeX
 } from 'lucide-react';
 import { highlight, languages as prismLanguages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
@@ -25,12 +26,15 @@ const Visualizers = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState('visualizer'); // 'visualizer', 'problem', 'solution'
   const [speed, setSpeed] = useState(500);
   const speedRef = useRef(500);
+  const [isMuted, setIsMuted] = useState(false);
 
   const [selectedLang, setSelectedLang] = useState('JavaScript');
   const [ansSelectedLang, setAnsSelectedLang] = useState('JavaScript');
   const [userCode, setUserCode] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // 'loading', 'success', 'error'
+
+  const audioCtx = useRef(null);
 
   useEffect(() => {
     speedRef.current = speed;
@@ -39,6 +43,36 @@ const Visualizers = ({ onBack }) => {
   const showToast = (msg) => {
     setToast(msg);
     setTimeout(() => setToast(null), 3000);
+  };
+
+  const playTone = (freq, type = 'sine', duration = 0.1) => {
+    if (isMuted) return;
+    try {
+      if (!audioCtx.current) {
+        audioCtx.current = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      const osc = audioCtx.current.createOscillator();
+      const gain = audioCtx.current.createGain();
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.current.currentTime);
+
+      gain.gain.setValueAtTime(0.05, audioCtx.current.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.current.currentTime + duration);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.current.destination);
+
+      osc.start();
+      osc.stop(audioCtx.current.currentTime + duration);
+    } catch (e) {}
+  };
+
+  const playSuccessSound = () => {
+    if (isMuted) return;
+    [440, 554, 659].forEach((f, i) => {
+      setTimeout(() => playTone(f, 'sine', 0.2), i * 150);
+    });
   };
 
   const delay = () => new Promise(r => setTimeout(r, speedRef.current));
@@ -60,9 +94,11 @@ const Visualizers = ({ onBack }) => {
       for (let j = 0; j < arr.length - i - 1; j++) {
         setVisPointers({ active: [j, j + 1] });
         setStepDescription(`Comparing ${arr[j]} and ${arr[j + 1]}...`);
+        playTone(200 + arr[j] * 5);
         await delay();
         if (arr[j] > arr[j + 1]) {
           setStepDescription(`${arr[j]} > ${arr[j+1]}, swapping them.`);
+          playTone(400 + arr[j] * 5, 'square', 0.05);
           [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
           setVisArray([...arr]);
           await delay();
@@ -72,6 +108,7 @@ const Visualizers = ({ onBack }) => {
     setVisPointers({ active: [] });
     setIsVisSorting(false);
     setStepDescription('Bubble Sort Complete! The array is now sorted.');
+    playSuccessSound();
     showToast("Sorting Complete!");
   };
 
@@ -85,10 +122,12 @@ const Visualizers = ({ onBack }) => {
     for (let i = 0; i < arr.length; i++) {
         setVisPointers({ active: [i] });
         setStepDescription(`Checking element at index ${i}: ${arr[i]}`);
+        playTone(300 + i * 20);
         await delay();
         if (arr[i] === target) {
             setVisPointers({ active: [i] });
             setStepDescription(`Match found! ${target} is at index ${i}.`);
+            playSuccessSound();
             showToast("Element Found!");
             setIsVisSorting(false);
             return;
@@ -110,11 +149,13 @@ const Visualizers = ({ onBack }) => {
       let mid = Math.floor((low + high) / 2);
       setVisPointers({ left: low, right: high, mid: mid, active: [] });
       setStepDescription(`Range: [${low}, ${high}]. Midpoint at index ${mid} is ${arr[mid]}.`);
+      playTone(400 + mid * 20);
       await delay();
 
       if (arr[mid] === target) {
         setVisPointers({ left: low, right: high, mid: mid, active: [mid] });
         setStepDescription(`Match found! ${target} is at index ${mid}.`);
+        playSuccessSound();
         showToast("Element Found!");
         break;
       } else if (arr[mid] < target) {
@@ -140,11 +181,13 @@ const Visualizers = ({ onBack }) => {
       if (primes[p]) {
         setVisPointers({ active: [p] });
         setStepDescription(`${p} is prime. Marking all its multiples as non-prime.`);
+        playTone(300 + p * 10);
         await delay();
         for (let i = p * p; i <= n; i += p) {
           primes[i] = false;
           setVisArray([...primes.map((val, idx) => val ? idx : -1)]);
           setVisPointers({ active: [p, i] });
+          playTone(200, 'sine', 0.05);
           await delay();
         }
       }
@@ -152,6 +195,7 @@ const Visualizers = ({ onBack }) => {
     setVisPointers({ active: [] });
     setIsVisSorting(false);
     setStepDescription('Sieve Complete! Remaining numbers are prime.');
+    playSuccessSound();
     showToast("Sieve Complete!");
   };
 
@@ -165,15 +209,18 @@ const Visualizers = ({ onBack }) => {
     while (b !== 0) {
         setVisPointers({ active: [0, 1] });
         setStepDescription(`a = ${a}, b = ${b}. Calculating a % b...`);
+        playTone(300);
         await delay();
         let temp = b;
         b = a % b;
         a = temp;
         setVisArray([a, b]);
         setStepDescription(`New state: a = ${a}, b = ${b}.`);
+        playTone(400);
         await delay();
     }
     setStepDescription(`GCD is ${a}.`);
+    playSuccessSound();
     showToast(`GCD is ${a}`);
     setIsVisSorting(false);
   };
@@ -187,24 +234,28 @@ const Visualizers = ({ onBack }) => {
         let pivot = arr[r];
         setStepDescription(`Selecting pivot: ${pivot} at index ${r}`);
         setVisPointers({ mid: r, active: [] });
+        playTone(500);
         await delay();
 
         let i = l - 1;
         for (let j = l; j < r; j++) {
             setVisPointers({ mid: r, active: [j, i >= l ? i : l] });
             setStepDescription(`Comparing ${arr[j]} with pivot ${pivot}...`);
+            playTone(300 + arr[j] * 5);
             await delay();
             if (arr[j] < pivot) {
                 i++;
                 [arr[i], arr[j]] = [arr[j], arr[i]];
                 setVisArray([...arr]);
                 setStepDescription(`${arr[i]} < pivot, moving to left partition.`);
+                playTone(400, 'square', 0.05);
                 await delay();
             }
         }
         [arr[i + 1], arr[r]] = [arr[r], arr[i + 1]];
         setVisArray([...arr]);
         setStepDescription(`Placing pivot ${pivot} at its correct position.`);
+        playTone(600);
         await delay();
         return i + 1;
     };
@@ -221,6 +272,7 @@ const Visualizers = ({ onBack }) => {
     setVisPointers({ active: [], mid: -1 });
     setIsVisSorting(false);
     setStepDescription('Quick Sort Complete! The array is fully sorted.');
+    playSuccessSound();
     showToast("Quick Sort Complete!");
   };
 
@@ -442,6 +494,9 @@ const Visualizers = ({ onBack }) => {
                                     title="Adjust Speed"
                                 />
                            </div>
+                           <button onClick={() => setIsMuted(!isMuted)} className="p-3 rounded-xl bg-white/5 text-slate-400 hover:text-white border border-white/10 transition-all">
+                              {isMuted ? <VolumeX size={18}/> : <Volume2 size={18}/>}
+                           </button>
                            <button onClick={resetVis} disabled={isSorting} className="p-3 rounded-xl bg-white/5 text-slate-400 hover:text-white border border-white/10 transition-all"><RotateCcw size={18}/></button>
                            <button
                              onClick={() => algoData[visType].startFunc()}
