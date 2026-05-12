@@ -10,11 +10,11 @@ import bloodDonateLogo from "./assets/applogo/blood_donate.png";
 import badalgachiLogo from "./assets/applogo/Badalgachi Net.png";
 import cvPdf from './assets/cv/CV.pdf';
 
-// Lazy load heavy components
-const CPPractice = React.lazy(() => import('./CPPractice'));
-const PDFToolbox = React.lazy(() => import('./PDFToolbox'));
-const ResumeBuilder = React.lazy(() => import('./ResumeBuilder'));
-const Analytics = React.lazy(() => import('./Analytics'));
+// Components
+import CPPractice from './CPPractice';
+import PDFToolbox from './PDFToolbox';
+import ResumeBuilder from './ResumeBuilder';
+import Analytics from './Analytics';
 
 // Certificates imports
 import flutterCert from "./assets/certificates/Flutter Certificate.pdf";
@@ -113,10 +113,10 @@ export default function ShahanurPortfolio() {
     }
   };
 
-  if (hash === '#cp') return <Suspense fallback={<LoadingScreen/>}><CPPractice onBack={() => window.location.hash = ''} /></Suspense>;
-  if (hash === '#pdf-tools') return <Suspense fallback={<LoadingScreen/>}><PDFToolbox onBack={() => window.location.hash = ''} /></Suspense>;
-  if (hash === '#resume-builder') return <Suspense fallback={<LoadingScreen/>}><ResumeBuilder onBack={() => window.location.hash = ''} /></Suspense>;
-  if (hash === '#analytics') return <Suspense fallback={<LoadingScreen/>}><Analytics onBack={() => window.location.hash = ''} /></Suspense>;
+  if (hash === '#cp') return <CPPractice onBack={() => window.location.hash = ''} />;
+  if (hash === '#pdf-tools') return <PDFToolbox onBack={() => window.location.hash = ''} />;
+  if (hash === '#resume-builder') return <ResumeBuilder onBack={() => window.location.hash = ''} />;
+  if (hash === '#analytics') return <Analytics onBack={() => window.location.hash = ''} />;
 
   return (
     <div className={`min-h-screen w-full transition-colors duration-500 antialiased relative overflow-x-hidden ${darkMode ? 'bg-[#0c0a09] text-stone-200' : 'bg-[#fcfaf9] text-stone-900'}`}>
