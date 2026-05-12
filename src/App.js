@@ -2,18 +2,15 @@ import React, { useState, useEffect, Suspense } from 'react';
 import {
   Github, Linkedin, Facebook, Mail, MapPin, Download,
   Code2, Globe, ExternalLink, Award, FileText, Layout,
-  Sun, Moon, BarChart2, Save, Loader2
+  Sun, Moon, BarChart2, Save, Loader2, Phone
 } from 'lucide-react';
 import profileImg from "./assets/ShahanurAlam.png";
-import logoIcon from "./assets/logo-icon.png";
 import bloodDonateLogo from "./assets/applogo/blood_donate.png";
 import badalgachiLogo from "./assets/applogo/Badalgachi Net.png";
 import cvPdf from './assets/cv/CV.pdf';
 
 // Components (Lazy Load for performance)
 const CPPractice = React.lazy(() => import('./CPPractice'));
-const PDFToolbox = React.lazy(() => import('./PDFToolbox'));
-const ResumeBuilder = React.lazy(() => import('./ResumeBuilder'));
 const Analytics = React.lazy(() => import('./Analytics'));
 
 // Certificates
@@ -95,13 +92,11 @@ export default function ShahanurPortfolio() {
   };
 
   if (hash === '#cp') return <Suspense fallback={<LoadingScreen/>}><CPPractice onBack={() => window.location.hash = ''} /></Suspense>;
-  if (hash === '#pdf-tools') return <Suspense fallback={<LoadingScreen/>}><PDFToolbox onBack={() => window.location.hash = ''} /></Suspense>;
-  if (hash === '#resume-builder') return <Suspense fallback={<LoadingScreen/>}><ResumeBuilder onBack={() => window.location.hash = ''} /></Suspense>;
   if (hash === '#analytics') return <Suspense fallback={<LoadingScreen/>}><Analytics onBack={() => window.location.hash = ''} /></Suspense>;
 
   return (
     <div className={`min-h-screen w-full transition-colors duration-500 antialiased relative overflow-x-hidden ${darkMode ? 'bg-[#0c0a09] text-stone-200' : 'bg-[#fcfaf9] text-stone-900'}`}>
-      <div className={`absolute inset-0 transition-opacity duration-1000 ${darkMode ? 'opacity-100' : 'opacity-30'}`}>
+      <div className={`absolute inset-0 transition-opacity duration-1000 pointer-events-none ${darkMode ? 'opacity-100' : 'opacity-30'}`}>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(217,119,6,0.03),transparent_50%)] pointer-events-none"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(251,191,36,0.03),transparent_50%)] pointer-events-none"></div>
       </div>
@@ -109,7 +104,9 @@ export default function ShahanurPortfolio() {
       <header className={`w-full p-4 border-b sticky top-0 z-50 backdrop-blur-xl ${darkMode ? 'border-white/5 bg-black/40' : 'border-stone-200 bg-white/70 shadow-sm'}`}>
         <nav className="max-w-6xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <img src={logoIcon} alt="Icon" className="w-10 h-10 rounded-full border-2 border-amber-500/30" />
+            <div className="w-10 h-10 rounded-full border-2 border-amber-500/50 overflow-hidden shadow-lg shadow-amber-900/20">
+              <img src={profileImg} alt="Shahanur" className="w-full h-full object-cover scale-110" />
+            </div>
             <div className="hidden sm:block text-left">
                <h1 className="text-lg font-bold">Shahanur Alam</h1>
                <p className="text-[10px] text-amber-500 font-black uppercase">Mobile Developer</p>
@@ -117,8 +114,10 @@ export default function ShahanurPortfolio() {
           </div>
           <div className="flex items-center gap-2">
             <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-xl border border-white/10">{darkMode ? <Sun size={18} /> : <Moon size={18} />}</button>
-            <button onClick={() => window.location.hash = '#resume-builder'} className="px-3 py-1.5 text-xs font-bold bg-amber-500 text-black rounded-lg">Resume</button>
-            <button onClick={() => window.location.hash = '#pdf-tools'} className="px-3 py-1.5 text-xs font-bold border border-white/10 rounded-lg">PDF Editor</button>
+            <button onClick={() => window.location.hash = '#cp'} className="hidden md:flex items-center gap-2 px-3 py-1.5 text-xs font-bold border border-white/10 rounded-lg transition-colors hover:border-amber-500/50">
+              <Code2 size={14} className="text-amber-500" />
+              CP Workspace
+            </button>
             <button onClick={() => window.location.hash = '#analytics'} className="p-2 rounded-xl border border-white/10"><BarChart2 size={18}/></button>
           </div>
         </nav>
@@ -132,8 +131,8 @@ export default function ShahanurPortfolio() {
               <h2 className="text-5xl sm:text-7xl font-black tracking-tighter">Hi — I’m <span className="text-amber-500">Shahanur</span>.</h2>
               <p className="text-xl text-stone-400">Mobile App Developer specializing in Java & Flutter.</p>
               <div className="flex flex-wrap gap-4 pt-4">
-                <button onClick={() => window.location.hash = '#cp'} className="px-8 py-3 bg-white text-black rounded-xl font-bold hover:scale-105 transition-all">Zen Workspace</button>
-                <a href="/Shahanur_Alam_CV.html" target="_blank" className={`px-8 py-3 border border-white/10 rounded-xl font-bold hover:bg-white/5 transition-all`}>View CV</a>
+                <button onClick={() => window.location.hash = '#cp'} className="px-8 py-3 bg-white text-black rounded-xl font-bold hover:scale-105 transition-all">CP Zen Workspace</button>
+                <a href="Shahanur_Alam_CV.html" target="_blank" className={`px-8 py-3 border border-white/10 rounded-xl font-bold hover:bg-white/5 transition-all`}>View CV</a>
                 <a href={cvPdf} download className="px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-500 transition-all flex items-center gap-2"><Download size={18}/> Download</a>
               </div>
               <div className="flex items-center gap-6 text-sm text-stone-500 pt-6">
@@ -216,32 +215,43 @@ export default function ShahanurPortfolio() {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className={`p-10 sm:p-16 rounded-[4rem] border transition-all ${darkMode ? 'bg-black/40 border-white/5 shadow-2xl' : 'bg-white border-stone-200 shadow-xl'}`}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <div className="space-y-8">
-              <h3 className="text-5xl font-black">Get in <span className="text-amber-500">Touch</span></h3>
-              <p className="text-stone-400 text-lg leading-relaxed">I’m available for internships, freelance projects, and junior roles. Send a note and I will reach out with a tailored reply.</p>
-              <div className="space-y-4 pt-4">
-                <div className="flex items-center gap-4 text-stone-300 font-medium"><Mail className="text-amber-500" size={20}/> shahanuralam.dev@gmail.com</div>
-                <div className="flex items-center gap-4 text-stone-300 font-medium"><MapPin className="text-amber-500" size={20}/> Rajshahi, Bangladesh</div>
+        <section id="contact">
+          <h3 className="text-2xl font-bold text-amber-500 border-l-4 border-amber-500 pl-4 mb-8">Contact Me</h3>
+          <div className={`p-10 sm:p-16 rounded-[4rem] border transition-all ${darkMode ? 'bg-black/40 border-white/5 shadow-2xl' : 'bg-white border-stone-200 shadow-xl'}`}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <div className="space-y-8">
+                <h3 className="text-5xl font-black">Get in <span className="text-amber-500">Touch</span></h3>
+                <p className="text-stone-400 text-lg leading-relaxed">I’m available for internships, freelance projects, and junior roles. Send a note and I will reach out with a tailored reply.</p>
+                <div className="space-y-4 pt-4">
+                  <a href="mailto:shahanuralam.dev@gmail.com" className="flex items-center gap-4 text-stone-300 font-medium hover:text-amber-500 transition-colors">
+                    <Mail className="text-amber-500" size={20}/> shahanuralam.dev@gmail.com
+                  </a>
+                  <a href="tel:+8801518939114" className="flex items-center gap-4 text-stone-300 font-medium hover:text-amber-500 transition-colors">
+                    <Phone className="text-amber-500" size={20}/> +880 1518-939114
+                  </a>
+                  <div className="flex items-center gap-4 text-stone-300 font-medium">
+                    <MapPin className="text-amber-500" size={20}/> Rajshahi, Bangladesh
+                  </div>
+                </div>
+                <div className="flex gap-4 pt-6">
+                   <a href="https://github.com/shahanuralamofficial" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-black transition-all"><Github size={20}/></a>
+                   <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-blue-500 transition-all"><Linkedin size={20}/></a>
+                   <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-blue-600 transition-all"><Facebook size={20}/></a>
+                </div>
               </div>
-              <div className="flex gap-4 pt-6">
-                 <a href="https://github.com/shahanuralamofficial" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-black transition-all"><Github size={20}/></a>
-                 <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-blue-500 transition-all"><Linkedin size={20}/></a>
-                 <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-blue-600 transition-all"><Facebook size={20}/></a>
-              </div>
+              <form onSubmit={handleContactSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                   <input name="name" value={contactData.name} onChange={e => setContactData({...contactData, name: e.target.value})} placeholder="Full Name" className={`w-full p-5 rounded-2xl outline-none border transition-all ${darkMode ? 'bg-black/40 border-white/10 focus:border-amber-500' : 'bg-stone-50 border-stone-200 focus:border-amber-500'}`} required />
+                   <input name="email" value={contactData.email} onChange={e => setContactData({...contactData, email: e.target.value})} placeholder="Email Address" className={`w-full p-5 rounded-2xl outline-none border transition-all ${darkMode ? 'bg-black/40 border-white/10 focus:border-amber-500' : 'bg-stone-50 border-stone-200 focus:border-amber-500'}`} required />
+                </div>
+                <textarea name="message" value={contactData.message} onChange={e => setContactData({...contactData, message: e.target.value})} placeholder="Tell me about your project..." rows={6} className={`w-full p-5 rounded-2xl outline-none border transition-all resize-none ${darkMode ? 'bg-black/40 border-white/10 focus:border-amber-500' : 'bg-stone-50 border-stone-200 focus:border-amber-500'}`} required />
+                <button className="w-full py-5 bg-amber-500 text-stone-900 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-amber-400 flex items-center justify-center gap-3 shadow-xl shadow-amber-900/20 active:scale-95 transition-all">
+                  {contactStatus.loading ? <Loader2 className="animate-spin" size={20}/> : <Save size={18}/>} Send Message
+                </button>
+                {contactStatus.success && <p className="text-emerald-500 text-xs font-bold text-center mt-4">{contactStatus.success}</p>}
+                {contactStatus.error && <p className="text-rose-500 text-xs font-bold text-center mt-4">{contactStatus.error}</p>}
+              </form>
             </div>
-            <form onSubmit={handleContactSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                 <input name="name" value={contactData.name} onChange={e => setContactData({...contactData, name: e.target.value})} placeholder="Full Name" className={`w-full p-5 rounded-2xl outline-none border transition-all ${darkMode ? 'bg-black/40 border-white/10 focus:border-amber-500' : 'bg-stone-50 border-stone-200 focus:border-amber-500'}`} required />
-                 <input name="email" value={contactData.email} onChange={e => setContactData({...contactData, email: e.target.value})} placeholder="Email Address" className={`w-full p-5 rounded-2xl outline-none border transition-all ${darkMode ? 'bg-black/40 border-white/10 focus:border-amber-500' : 'bg-stone-50 border-stone-200 focus:border-amber-500'}`} required />
-              </div>
-              <textarea name="message" value={contactData.message} onChange={e => setContactData({...contactData, message: e.target.value})} placeholder="Tell me about your project..." rows={6} className={`w-full p-5 rounded-2xl outline-none border transition-all resize-none ${darkMode ? 'bg-black/40 border-white/10 focus:border-amber-500' : 'bg-stone-50 border-stone-200 focus:border-amber-500'}`} required />
-              <button className="w-full py-5 bg-amber-500 text-stone-900 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-amber-400 flex items-center justify-center gap-3 shadow-xl shadow-amber-900/20 active:scale-95 transition-all">
-                {contactStatus.loading ? <Loader2 className="animate-spin" size={20}/> : <Save size={18}/>} Send Message
-              </button>
-              {contactStatus.success && <p className="text-emerald-500 text-xs font-bold text-center mt-4">{contactStatus.success}</p>}
-            </form>
           </div>
         </section>
       </main>
