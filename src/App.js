@@ -159,6 +159,9 @@ export default function ShahanurPortfolio() {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-3 sm:gap-4 order-2 sm:order-2 w-full sm:w-auto justify-start sm:justify-end">
+            <button onClick={() => window.location.hash = 'resume-builder'} className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm text-amber-500 hover:text-white transition-all duration-300 font-bold px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
+              <Layout size={12} className="sm:w-3.5 sm:h-3.5" /> Resume Builder
+            </button>
             <button onClick={() => window.location.hash = 'pdf-tools'} className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm text-amber-500 hover:text-white transition-all duration-300 font-bold px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
               <FileText size={12} className="sm:w-3.5 sm:h-3.5" /> PDF Tools
             </button>
@@ -192,7 +195,10 @@ export default function ShahanurPortfolio() {
             </p>
 
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              <button onClick={() => window.location.hash = 'pdf-tools'} className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-amber-500 text-stone-900 rounded-xl shadow-xl hover:bg-amber-400 transform hover:-translate-y-1 transition-all duration-300 text-sm font-black uppercase flex items-center gap-2">
+              <button onClick={() => window.location.hash = 'resume-builder'} className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-amber-500 text-stone-900 rounded-xl shadow-xl hover:bg-amber-400 transform hover:-translate-y-1 transition-all duration-300 text-sm font-black uppercase flex items-center gap-2">
+                <Layout size={16} /> Resume Builder
+              </button>
+              <button onClick={() => window.location.hash = 'pdf-tools'} className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-white text-black rounded-xl shadow-xl hover:shadow-white/20 transform hover:-translate-y-1 transition-all duration-300 text-sm font-black uppercase flex items-center gap-2">
                 <FileText size={16} /> PDF Tools
               </button>
               <button onClick={() => window.location.hash = 'cp'} className="inline-block px-3 py-2 sm:px-4 sm:py-2.5 bg-white text-black rounded-xl shadow-xl hover:shadow-white/20 transform hover:-translate-y-1 transition-all duration-300 text-sm font-black uppercase flex items-center gap-2">
