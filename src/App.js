@@ -109,18 +109,18 @@ export default function ShahanurPortfolio() {
     return (
       <main className="max-w-6xl mx-auto px-4 py-12 space-y-24">
         {/* Hero */}
-        <section className={`p-8 sm:p-12 rounded-[3rem] border transition-all ${darkMode ? 'bg-black/20 border-white/5 shadow-2xl' : 'bg-white border-stone-200 shadow-xl'}`}>
+        <section className={`p-6 sm:p-12 rounded-[2rem] sm:rounded-[3rem] border transition-all ${darkMode ? 'bg-black/20 border-white/5 shadow-2xl' : 'bg-white border-stone-200 shadow-xl'}`}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
             <div className="lg:col-span-2 space-y-6">
-              <h2 className="text-4xl md:text-5xl lg:text-7xl font-black tracking-tighter whitespace-nowrap">Hi — I’m <span className="text-orange-600">Shahanur Alam</span>.</h2>
+              <h2 className="text-4xl md:text-5xl lg:text-7xl font-black tracking-tighter">Hi — I’m <span className="text-orange-600">Shahanur Alam</span>.</h2>
               <p className="text-xl text-stone-400">Mobile App Developer specializing in Java & Flutter.</p>
-              <div className="flex flex-wrap gap-4 pt-4">
+              <div className="flex flex-wrap gap-3 sm:gap-4 pt-4">
                 <button onClick={() => {
                   window.location.hash = '#cp';
                   update(ref(db, 'stats'), { projectClicks: increment(1) }).catch(() => {});
-                }} className="px-8 py-3 bg-white text-black rounded-xl font-bold hover:scale-105 transition-all">CP Zen Workspace</button>
-                <a href="Shahanur_Alam_CV.html" target="_blank" onClick={() => update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => {})} className={`px-8 py-3 border border-white/10 rounded-xl font-bold hover:bg-white/5 transition-all`}>View CV</a>
-                <a href={cvPdf} download onClick={() => update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => {})} className="px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-500 transition-all flex items-center gap-2"><Download size={18}/> Download</a>
+                }} className="flex-1 sm:flex-none px-6 sm:px-8 py-3 bg-white text-black rounded-xl font-bold hover:scale-105 transition-all text-sm sm:text-base">CP Zen Workspace</button>
+                <a href="Shahanur_Alam_CV.html" target="_blank" onClick={() => update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => {})} className={`flex-1 sm:flex-none px-6 sm:px-8 py-3 border border-white/10 rounded-xl font-bold hover:bg-white/5 transition-all text-center text-sm sm:text-base`}>View CV</a>
+                <a href={cvPdf} download onClick={() => update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => {})} className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-500 transition-all flex items-center justify-center gap-2 text-sm sm:text-base"><Download size={18}/> Download</a>
               </div>
               <div className="flex items-center gap-6 text-sm text-stone-500 pt-6">
                  <span className="flex items-center gap-2"><MapPin size={14} className="text-orange-600"/> Rajshahi, BD</span>
@@ -190,7 +190,7 @@ export default function ShahanurPortfolio() {
            <h3 className="text-2xl font-bold text-orange-600 border-l-4 border-orange-600 pl-4 mb-12">Selected Projects</h3>
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {projects.map((p, i) => (
-                <div key={i} className={`p-8 bg-white/[0.02] border border-white/5 rounded-[3rem] hover:border-orange-600/20 transition-all`}>
+                <div key={i} className={`p-6 sm:p-8 bg-white/[0.02] border border-white/5 rounded-[2rem] sm:rounded-[3rem] hover:border-orange-600/20 transition-all`}>
                    <div className="flex items-center gap-4 mb-6">
                       {p.logo === "icon:code" ? <Code2 className="text-orange-600" size={32}/> : <img src={p.logo} className="w-14 h-14 rounded-2xl shadow-lg" alt="logo"/>}
                       <h4 className="text-xl font-bold">{p.title}</h4>
@@ -208,10 +208,10 @@ export default function ShahanurPortfolio() {
         {/* Contact Section */}
         <section id="contact">
           <h3 className="text-2xl font-bold text-orange-600 border-l-4 border-orange-600 pl-4 mb-8">Contact Me</h3>
-          <div className={`p-10 sm:p-16 rounded-[4rem] border transition-all ${darkMode ? 'bg-black/40 border-white/5 shadow-2xl' : 'bg-white border-stone-200 shadow-xl'}`}>
+          <div className={`p-6 sm:p-16 rounded-[2.5rem] sm:rounded-[4rem] border transition-all ${darkMode ? 'bg-black/40 border-white/5 shadow-2xl' : 'bg-white border-stone-200 shadow-xl'}`}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               <div className="space-y-8">
-                <h3 className="text-5xl font-black">Get in <span className="text-orange-600">Touch</span></h3>
+                <h3 className="text-4xl sm:text-5xl font-black">Get in <span className="text-orange-600">Touch</span></h3>
                 <p className="text-stone-400 text-lg leading-relaxed">I’m available for internships, freelance projects, and junior roles. Send a note and I will reach out with a tailored reply.</p>
                 <div className="space-y-4 pt-4">
                   <a href="mailto:shahanuralam.dev@gmail.com" className="flex items-center gap-4 text-stone-300 font-medium hover:text-orange-600 transition-colors">
@@ -262,7 +262,7 @@ export default function ShahanurPortfolio() {
             <div className="w-10 h-10 rounded-full border-2 border-orange-600/50 overflow-hidden shadow-lg shadow-orange-900/20 shrink-0">
               <img src={profileImg} alt="Shahanur" className="w-full h-full object-cover scale-110" />
             </div>
-            <div className="text-left">
+            <div className="hidden min-[400px]:block text-left">
                <h1 className="text-sm sm:text-lg font-bold leading-tight">Shahanur Alam</h1>
                <p className="text-[8px] sm:text-[10px] text-orange-600 font-black uppercase tracking-tighter sm:tracking-normal">Mobile Developer</p>
             </div>

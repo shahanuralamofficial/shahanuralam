@@ -353,28 +353,30 @@ const Visualizers = ({ onBack }) => {
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-           <div className="lg:col-span-3 space-y-4">
-              {algoCategories.map((cat) => (
-                <div key={cat.name} className="p-4 rounded-3xl bg-white/[0.02] border border-white/5">
-                    <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4 flex items-center gap-2">
-                        <cat.icon size={12} /> {cat.name}
-                    </h4>
-                    <div className="space-y-1">
-                        {cat.keys.map(key => (
-                            <button key={key} onClick={() => { setVisType(key); setActiveTab('visualizer'); }} disabled={isSorting}
-                                className={`w-full text-left px-4 py-2 rounded-lg text-xs font-bold transition-all ${visType === key ? 'bg-orange-600 text-black' : 'text-slate-400 hover:bg-white/5'}`}
-                            > {algoData[key]?.name} </button>
-                        ))}
-                    </div>
-                </div>
-              ))}
+           <div className="lg:col-span-3 space-y-4 overflow-x-auto pb-4 lg:pb-0 scrollbar-hide">
+              <div className="flex lg:flex-col gap-4 min-w-max lg:min-w-0">
+                {algoCategories.map((cat) => (
+                  <div key={cat.name} className="p-4 rounded-3xl bg-white/[0.02] border border-white/5 w-64 lg:w-full shrink-0">
+                      <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4 flex items-center gap-2">
+                          <cat.icon size={12} /> {cat.name}
+                      </h4>
+                      <div className="space-y-1">
+                          {cat.keys.map(key => (
+                              <button key={key} onClick={() => { setVisType(key); setActiveTab('visualizer'); }} disabled={isSorting}
+                                  className={`w-full text-left px-4 py-2 rounded-lg text-xs font-bold transition-all ${visType === key ? 'bg-orange-600 text-black' : 'text-slate-400 hover:bg-white/5'}`}
+                              > {algoData[key]?.name} </button>
+                          ))}
+                      </div>
+                  </div>
+                ))}
+              </div>
            </div>
 
            <div className="lg:col-span-9 space-y-6">
-              <div className="flex gap-2 p-1.5 bg-white/[0.02] rounded-2xl border border-white/5 inline-flex">
+              <div className="flex gap-1.5 p-1.5 bg-white/[0.02] rounded-2xl border border-white/5 overflow-x-auto scrollbar-hide">
                  {[{ id: 'visualizer', name: 'Visualize', icon: Play }, { id: 'problem', name: 'Practice', icon: HelpCircle }, { id: 'solution', name: 'Standard Code', icon: Code2 }].map(tab => (
                     <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                        className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab.id ? 'bg-orange-600 text-black' : 'text-slate-500 hover:text-slate-300'}`}
+                        className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all shrink-0 ${activeTab === tab.id ? 'bg-orange-600 text-black' : 'text-slate-500 hover:text-slate-300'}`}
                     > <tab.icon size={14} /> {tab.name} </button>
                  ))}
               </div>
@@ -382,55 +384,55 @@ const Visualizers = ({ onBack }) => {
               <AnimatePresence mode="wait">
                 {activeTab === 'visualizer' && (
                   <motion.div key={`vis-${visType}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                    className="p-8 sm:p-12 rounded-[3rem] bg-white/[0.02] border border-white/5 min-h-[550px] flex flex-col justify-between relative overflow-hidden"
+                    className="p-4 sm:p-12 rounded-[2rem] sm:rounded-[3rem] bg-white/[0.02] border border-white/5 min-h-[500px] sm:min-h-[550px] flex flex-col justify-between relative overflow-hidden"
                   >
-                    <div className="flex flex-col sm:flex-row justify-between items-start gap-6 mb-12">
+                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4 sm:gap-6 mb-8 sm:mb-12">
                         <div className="flex-1">
-                            <h3 className="text-2xl font-black text-white">{algoData[visType]?.name}</h3>
-                            <p className="text-[10px] text-orange-600 font-black uppercase tracking-widest mt-1">{algoData[visType]?.description}</p>
+                            <h3 className="text-xl sm:text-2xl font-black text-white">{algoData[visType]?.name}</h3>
+                            <p className="text-[9px] sm:text-[10px] text-orange-600 font-black uppercase tracking-widest mt-1">{algoData[visType]?.description}</p>
                         </div>
-                        <div className="flex flex-wrap items-center gap-4 shrink-0">
-                           <div className="flex bg-white/5 p-1 rounded-xl border border-white/5 gap-1">
+                        <div className="flex flex-wrap items-center gap-3 sm:gap-4 shrink-0">
+                           <div className="flex bg-white/5 p-1 rounded-lg sm:rounded-xl border border-white/5 gap-0.5 sm:gap-1">
                                 {[0.5, 1, 1.5, 2].map(m => (
                                     <button key={m} onClick={() => setSpeedMultiplier(m)} title={`Set Speed to ${m}x`}
-                                        className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition-all ${speedMultiplier === m ? 'bg-orange-600 text-black shadow-lg shadow-orange-600/20' : 'text-slate-500 hover:text-slate-200'}`}
+                                        className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-md sm:rounded-lg text-[9px] sm:text-[10px] font-black transition-all ${speedMultiplier === m ? 'bg-orange-600 text-black shadow-lg shadow-orange-600/20' : 'text-slate-500 hover:text-slate-200'}`}
                                     > {m}x </button>
                                 ))}
                            </div>
-                           <div className="flex items-center gap-2 bg-white/5 px-3 py-2 rounded-xl border border-white/5">
+                           <div className="flex items-center gap-2 bg-white/5 px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl border border-white/5">
                                <button onClick={() => setIsMuted(!isMuted)} title={isMuted ? "Unmute" : "Mute"} className="text-slate-400 hover:text-white">
-                                 {isMuted || volume === 0 ? <VolumeX size={16}/> : <Volume2 size={16}/>}
+                                 {isMuted || volume === 0 ? <VolumeX size={14}/> : <Volume2 size={14}/>}
                                </button>
-                               <input type="range" min="0" max="1" step="0.1" value={isMuted ? 0 : volume} onChange={(e) => {setVolume(parseFloat(e.target.value)); setIsMuted(false);}} className="w-16 h-1 accent-orange-600 cursor-pointer" title={`Volume: ${Math.round(volume * 100)}%`} />
+                               <input type="range" min="0" max="1" step="0.1" value={isMuted ? 0 : volume} onChange={(e) => {setVolume(parseFloat(e.target.value)); setIsMuted(false);}} className="w-12 sm:w-16 h-1 accent-orange-600 cursor-pointer" title={`Volume: ${Math.round(volume * 100)}%`} />
                            </div>
-                           <button onClick={resetVis} disabled={isSorting} title="Reset Simulation" className="p-3 rounded-xl bg-white/5 text-slate-400 hover:text-white border border-white/10 transition-all"><RotateCcw size={18}/></button>
+                           <button onClick={resetVis} disabled={isSorting} title="Reset Simulation" className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white/5 text-slate-400 hover:text-white border border-white/10 transition-all"><RotateCcw size={16}/></button>
 
-                           <div className="flex items-center gap-2">
+                           <div className="flex items-center gap-2 w-full sm:w-auto">
                                 {!isSorting ? (
-                                    <button onClick={() => algoData[visType]?.startFunc()} className="px-8 py-3 bg-orange-600 text-black font-black text-xs uppercase tracking-widest rounded-xl hover:bg-orange-500 transition-all flex items-center justify-center gap-2 shadow-xl shadow-orange-600/10"><Play size={16}/> Start</button>
+                                    <button onClick={() => algoData[visType]?.startFunc()} className="flex-1 sm:flex-none px-6 sm:px-8 py-2.5 sm:py-3 bg-orange-600 text-black font-black text-[10px] sm:text-xs uppercase tracking-widest rounded-lg sm:rounded-xl hover:bg-orange-500 transition-all flex items-center justify-center gap-2 shadow-xl shadow-orange-600/10"><Play size={14}/> Start</button>
                                 ) : (
                                     <>
-                                        <button onClick={togglePlayPause} title={isPaused ? "Resume" : "Pause"} className="p-3 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all">{isPaused ? <Play size={18}/> : <Pause size={18}/>}</button>
-                                        <button onClick={handleStep} disabled={!isPaused} className={`p-3 rounded-xl transition-all ${isPaused ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-white/5 text-slate-600'}`} title="Next Step"><SkipForward size={18}/></button>
+                                        <button onClick={togglePlayPause} title={isPaused ? "Resume" : "Pause"} className="flex-1 sm:flex-none p-2.5 sm:p-3 bg-white/10 text-white rounded-lg sm:rounded-xl hover:bg-white/20 transition-all flex justify-center">{isPaused ? <Play size={16}/> : <Pause size={16}/>}</button>
+                                        <button onClick={handleStep} disabled={!isPaused} className={`flex-1 sm:flex-none p-2.5 sm:p-3 rounded-lg sm:rounded-xl transition-all flex justify-center ${isPaused ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-white/5 text-slate-600'}`} title="Next Step"><SkipForward size={16}/></button>
                                     </>
                                 )}
                            </div>
                         </div>
                     </div>
 
-                    <div className="flex-1 flex flex-col items-center justify-center py-10 min-h-[350px]">
+                    <div className="flex-1 flex flex-col items-center justify-center py-6 sm:py-10 min-h-[300px] sm:min-h-[350px]">
                         {algoData[visType]?.type === 'grid' ? (
-                            <div className="grid grid-cols-10 gap-1 w-full max-w-[400px]">
+                            <div className="grid grid-cols-10 gap-0.5 sm:gap-1 w-full max-w-[350px] sm:max-w-[400px]">
                                 {(gridData || []).map((val, i) => (
-                                    <div key={i} className={`aspect-square rounded-sm border ${val === 1 ? 'bg-orange-600 border-orange-400' : val === 2 ? 'bg-rose-500 border-rose-400' : val === 3 ? 'bg-emerald-500 border-emerald-400' : 'bg-white/5 border-white/10'}`} />
+                                    <div key={i} className={`aspect-square rounded-[1px] sm:rounded-sm border ${val === 1 ? 'bg-orange-600 border-orange-400' : val === 2 ? 'bg-rose-500 border-rose-400' : val === 3 ? 'bg-emerald-500 border-emerald-400' : 'bg-white/5 border-white/10'}`} />
                                 ))}
                             </div>
                         ) : (
-                            <div className="flex items-end gap-2 h-64 w-full max-w-4xl px-4">
+                            <div className="flex items-end gap-1 sm:gap-2 h-48 sm:h-64 w-full max-w-4xl px-2 sm:px-4">
                                 {(visArray || []).map((val, i) => (
                                     <motion.div key={i} layout animate={{ height: `${val}%`, opacity: (visPointers.secondary || []).includes(i) ? 0.6 : 1 }}
-                                        className={`flex-1 rounded-t-xl transition-all duration-300 relative group ${(visPointers.active || []).includes(i) ? 'bg-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.3)]' : visPointers.mid === i ? 'bg-rose-500' : (visPointers.secondary || []).includes(i) ? 'bg-blue-400' : 'bg-gradient-to-t from-orange-700 to-orange-500'}`}
-                                    > <span className="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] font-black text-slate-500 group-hover:text-white">{val}</span> </motion.div>
+                                        className={`flex-1 rounded-t-md sm:rounded-t-xl transition-all duration-300 relative group ${(visPointers.active || []).includes(i) ? 'bg-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.3)]' : visPointers.mid === i ? 'bg-rose-500' : (visPointers.secondary || []).includes(i) ? 'bg-blue-400' : 'bg-gradient-to-t from-orange-700 to-orange-500'}`}
+                                    > <span className="absolute -top-6 sm:-top-8 left-1/2 -translate-x-1/2 text-[8px] sm:text-[10px] font-black text-slate-500 group-hover:text-white">{val}</span> </motion.div>
                                 ))}
                             </div>
                         )}

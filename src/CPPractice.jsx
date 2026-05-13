@@ -229,7 +229,7 @@ const CPPractice = ({ onBack }) => {
               {contests.length > 0 ? contests.map(c => {
                 const date = new Date(c.startTime);
                 return (
-                  <div key={c.id} className="p-6 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:border-orange-500/20 transition-all w-80 flex flex-col justify-between">
+                  <div key={c.id} className="p-6 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:border-orange-500/20 transition-all w-[18rem] sm:w-80 flex flex-col justify-between shrink-0">
                     <div>
                       <div className="flex justify-between items-start mb-4">
                         <span className={`px-2 py-1 rounded-lg text-[9px] font-black uppercase border ${platformColors[c.platform] || 'bg-white/10 text-white border-white/20'}`}>{c.platform}</span>
@@ -256,7 +256,7 @@ const CPPractice = ({ onBack }) => {
            </div>
         </div>
 
-        <header className="mb-8 flex justify-between items-start">
+        <header className="mb-8 flex flex-col sm:flex-row justify-between items-start gap-4">
           <div>
             <h1 className="text-4xl sm:text-7xl font-black text-white tracking-tighter mb-4 leading-none">
               Zen <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-rose-500 to-rose-600">Workspace</span>
@@ -265,8 +265,8 @@ const CPPractice = ({ onBack }) => {
               Exploring {problems.length > 0 ? problems.length.toLocaleString() : 'thousands of'} problems across multiple platforms for distraction-free practice.
             </p>
           </div>
-          <button onClick={fetchProblems} title="Refresh Problems" className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-orange-500/50 hover:bg-orange-500/10 text-slate-400 transition-all">
-            <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
+          <button onClick={fetchProblems} title="Refresh Problems" className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/10 hover:border-orange-500/50 hover:bg-orange-500/10 text-slate-400 transition-all self-end sm:self-auto">
+            <RefreshCw className={`w-4 h-4 sm:w-5 sm:h-5 ${loading ? 'animate-spin' : ''}`} />
           </button>
         </header>
 
@@ -283,11 +283,11 @@ const CPPractice = ({ onBack }) => {
                 className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-orange-600/50 transition-all"
               />
             </div>
-            <div className="flex flex-col sm:flex-row gap-4">
-               <select value={platformFilter} onChange={(e) => setPlatformFilter(e.target.value)} className="bg-white/[0.03] border border-white/10 text-white text-xs font-black uppercase px-6 py-4 rounded-2xl outline-none focus:ring-1 focus:ring-orange-600 cursor-pointer appearance-none min-w-[200px]">
-                  {platforms.map(p => <option key={p} value={p} className="bg-[#111]">{p}</option>)}
-               </select>
-            </div>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                     <select value={platformFilter} onChange={(e) => setPlatformFilter(e.target.value)} className="bg-white/[0.03] border border-white/10 text-white text-[10px] sm:text-xs font-black uppercase px-6 py-4 rounded-2xl outline-none focus:ring-1 focus:ring-orange-600 cursor-pointer appearance-none w-full sm:min-w-[200px]">
+                        {platforms.map(p => <option key={p} value={p} className="bg-[#111]">{p}</option>)}
+                     </select>
+                  </div>
           </div>
           <div className="flex flex-wrap gap-2 p-2 bg-white/[0.01] rounded-2xl border border-white/5">
               {['All', 'Solved', 'Saved', 'Favorites', 'Blocked'].map(item => (
@@ -316,14 +316,14 @@ const CPPractice = ({ onBack }) => {
                         </div>
                         <a href={p.link} target="_blank" rel="noopener noreferrer" className="block"><h3 className="text-xl font-bold text-white hover:text-orange-500 transition-colors line-clamp-2">{p.title}</h3></a>
                       </div>
-                      <div className="flex items-center justify-between mt-8">
-                        <div className="flex gap-1 p-1 bg-black/40 rounded-xl border border-white/5">
-                          <button onClick={() => toggleAction(globalId, 'favorites')} className={`p-2.5 rounded-lg transition-all ${userData.favorites.includes(globalId) ? 'text-rose-400 bg-rose-400/10' : 'text-slate-600 hover:text-rose-400'}`} title="Favorite"><Heart className="w-4 h-4" /></button>
-                          <button onClick={() => toggleAction(globalId, 'saved')} className={`p-2.5 rounded-lg transition-all ${userData.saved.includes(globalId) ? 'text-blue-400 bg-blue-400/10' : 'text-slate-600 hover:text-blue-400'}`} title="Save"><Bookmark className="w-4 h-4" /></button>
-                          <button onClick={() => toggleAction(globalId, 'solved')} className={`p-2.5 rounded-lg transition-all ${userData.solved.includes(globalId) ? 'text-emerald-400 bg-emerald-400/10' : 'text-slate-600 hover:text-emerald-400'}`} title="Mark Solved"><CheckCircle2 className="w-4 h-4" /></button>
-                          <button onClick={() => toggleAction(globalId, 'blocked')} className={`p-2.5 rounded-lg transition-all ${userData.blocked.includes(globalId) ? 'text-white bg-white/10' : 'text-slate-600 hover:text-white'}`} title="Block"><Ban className="w-4 h-4" /></button>
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between mt-8 gap-4">
+                        <div className="flex justify-center gap-1 p-1 bg-black/40 rounded-xl border border-white/5">
+                          <button onClick={() => toggleAction(globalId, 'favorites')} className={`p-2 sm:p-2.5 rounded-lg transition-all ${userData.favorites.includes(globalId) ? 'text-rose-400 bg-rose-400/10' : 'text-slate-600 hover:text-rose-400'}`} title="Favorite"><Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4" /></button>
+                          <button onClick={() => toggleAction(globalId, 'saved')} className={`p-2 sm:p-2.5 rounded-lg transition-all ${userData.saved.includes(globalId) ? 'text-blue-400 bg-blue-400/10' : 'text-slate-600 hover:text-blue-400'}`} title="Save"><Bookmark className="w-3.5 h-3.5 sm:w-4 sm:h-4" /></button>
+                          <button onClick={() => toggleAction(globalId, 'solved')} className={`p-2 sm:p-2.5 rounded-lg transition-all ${userData.solved.includes(globalId) ? 'text-emerald-400 bg-emerald-400/10' : 'text-slate-600 hover:text-emerald-400'}`} title="Mark Solved"><CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" /></button>
+                          <button onClick={() => toggleAction(globalId, 'blocked')} className={`p-2 sm:p-2.5 rounded-lg transition-all ${userData.blocked.includes(globalId) ? 'text-white bg-white/10' : 'text-slate-600 hover:text-white'}`} title="Block"><Ban className="w-3.5 h-3.5 sm:w-4 sm:h-4" /></button>
                         </div>
-                        <button onClick={() => { setActiveCodeProblem(p); handleLangChange('C++ 17'); }} className="px-6 py-3 bg-white text-black rounded-2xl text-[10px] font-black uppercase hover:bg-orange-600 hover:text-white transition-all shadow-xl active:scale-95">Code & Solve</button>
+                        <button onClick={() => { setActiveCodeProblem(p); handleLangChange('C++ 17'); }} className="px-6 py-3 bg-white text-black rounded-xl sm:rounded-2xl text-[10px] font-black uppercase hover:bg-orange-600 hover:text-white transition-all shadow-xl active:scale-95 text-center">Code & Solve</button>
                       </div>
                     </motion.div>
                   );
