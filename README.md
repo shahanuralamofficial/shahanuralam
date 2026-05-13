@@ -1,17 +1,26 @@
 # Shahanur Alam | Portfolio & Zen Workspace
 
+[![Live Website](https://img.shields.io/badge/Live-Website-orange?style=for-the-badge&logo=vercel)](https://shahanuralam.vercel.app)
 ![Portfolio Banner](./images.png)
 
-Hi! I'm **Shahanur Alam**, a motivated Computer Science undergraduate from Rajshahi, Bangladesh. I specialize in mobile app development using Java and Flutter, building practical, localized apps for real users.
+Hi! I'm **Shahanur Alam**, a motivated Computer Science undergraduate from Rajshahi, Bangladesh. I specialize in mobile app development using Java and Flutter, and I'm a full-stack enthusiast.
 
 ---
 
-## ⚡ Zen Workspace (CP Platform)
-I've integrated a high-performance **Competitive Programming Workspace** into my portfolio. 
-- **Automatic Fetching**: Real-time problem aggregation from **Codeforces** (8000+) and **AtCoder** (6000+).
-- **Integrated IDE**: Solve problems directly in a distraction-free environment with multi-language support (C++, Python, Java, JS).
-- **Smart Filters**: Filter by platform, status (Solved, Favorite, Blocked), or search by problem ID/Title.
-- **Load More**: Efficiently browse thousands of problems with paginated loading.
+## ⚡ Key Features
+
+### 🧩 Zen Workspace (CP Platform)
+A high-performance **Competitive Programming Workspace** integrated directly into the portfolio. 
+- **Real-time Fetching**: Automatically aggregates 14,000+ problems from **Codeforces** and **AtCoder**.
+- **Integrated IDE**: Solve problems in a distraction-free environment with syntax highlighting for C++, Python, Java, and JavaScript.
+- **Smart Management**: Save favorites, mark solved, or block problems.
+- **Contest Tracker**: Stay updated with upcoming contests from multiple platforms.
+
+### 🧪 AlgoLab (Algorithm Visualizer)
+An interactive laboratory to learn and visualize classic computer science algorithms.
+- **Dynamic Visuals**: Watch Sorting, Searching, Graph, DP, and Backtracking algorithms step-by-step.
+- **Audio Feedback**: Frequency-mapped audio tones to "hear" the algorithms.
+- **Standard Solutions**: Access reference code for every algorithm in 4 different languages.
 
 ---
 
@@ -45,11 +54,9 @@ I've integrated a high-performance **Competitive Programming Workspace** into my
 
 ## 📞 Contact & Socials
 - 📧 **Email**: [shahanuralam.dev@gmail.com](mailto:shahanuralam.dev@gmail.com)
-- 📞 **Phone**: +8801518939114
-- 📍 **Location**: Rajshahi, Bangladesh
 - 🔗 **LinkedIn**: [shahanur-alam](https://www.linkedin.com/in/shahanur-alam/)
 - 🐙 **GitHub**: [shahanuralamofficial](https://github.com/shahanuralamofficial)
-- 👤 **Facebook**: [ShahanurAlam2k3](https://www.facebook.com/ShahanurAlam2k3)
+- 🌐 **Portfolio**: [shahanuralam.vercel.app](https://shahanuralam.vercel.app)
 
 ---
 
@@ -71,9 +78,7 @@ I've integrated a high-performance **Competitive Programming Workspace** into my
    npm start
    ```
 
-4. **Open** [http://localhost:3000/shahanuralam](http://localhost:3000/shahanuralam) in your browser.
-
 ---
 
 ## 🚀 Deployment
-This portfolio is built with **React & Tailwind CSS** and is automatically deployed to **GitHub Pages**.
+This portfolio is built with **React & Tailwind CSS** and is deployed on **Vercel**.
