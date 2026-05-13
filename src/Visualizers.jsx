@@ -15,27 +15,26 @@ import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-java';
 import 'prismjs/themes/prism-tomorrow.css';
 
-// Fixed metadata outside component to prevent dependency loops
 const ALGO_METADATA = {
-    bubble: { type: 'bars', name: 'Bubble Sort' },
-    selection: { type: 'bars', name: 'Selection Sort' },
-    insertion: { type: 'bars', name: 'Insertion Sort' },
-    merge: { type: 'bars', name: 'Merge Sort' },
-    quick: { type: 'bars', name: 'Quick Sort' },
-    heap: { type: 'bars', name: 'Heap Sort' },
-    shell: { type: 'bars', name: 'Shell Sort' },
-    linear: { type: 'bars', name: 'Linear Search' },
-    binary: { type: 'bars', name: 'Binary Search' },
-    jump: { type: 'bars', name: 'Jump Search' },
-    interpolation: { type: 'bars', name: 'Interpolation Search' },
-    bfs: { type: 'grid', name: 'Breadth-First Search' },
-    dfs: { type: 'grid', name: 'Depth-First Search' },
-    fibonacci: { type: 'bars', name: 'Fibonacci (DP)' },
-    gcd: { type: 'bars', name: 'Euclidean GCD' },
-    sieve: { type: 'bars', name: 'Sieve of Eratosthenes' },
-    pascals: { type: 'bars', name: 'Pascal Triangle' },
-    hanoi: { type: 'peg', name: 'Tower of Hanoi' },
-    nqueens: { type: 'grid', name: 'N-Queens' },
+    bubble: { type: 'bars', name: 'Bubble Sort', cat: 'Sorting' },
+    selection: { type: 'bars', name: 'Selection Sort', cat: 'Sorting' },
+    insertion: { type: 'bars', name: 'Insertion Sort', cat: 'Sorting' },
+    merge: { type: 'bars', name: 'Merge Sort', cat: 'Sorting' },
+    quick: { type: 'bars', name: 'Quick Sort', cat: 'Sorting' },
+    heap: { type: 'bars', name: 'Heap Sort', cat: 'Sorting' },
+    shell: { type: 'bars', name: 'Shell Sort', cat: 'Sorting' },
+    linear: { type: 'bars', name: 'Linear Search', cat: 'Searching' },
+    binary: { type: 'bars', name: 'Binary Search', cat: 'Searching' },
+    jump: { type: 'bars', name: 'Jump Search', cat: 'Searching' },
+    interpolation: { type: 'bars', name: 'Interpolation Search', cat: 'Searching' },
+    bfs: { type: 'grid', name: 'Breadth-First Search', cat: 'Graph/Grid' },
+    dfs: { type: 'grid', name: 'Depth-First Search', cat: 'Graph/Grid' },
+    fibonacci: { type: 'bars', name: 'Fibonacci (DP)', cat: 'Math & DP' },
+    gcd: { type: 'bars', name: 'Euclidean GCD', cat: 'Math & DP' },
+    sieve: { type: 'bars', name: 'Sieve of Eratosthenes', cat: 'Math & DP' },
+    pascals: { type: 'bars', name: 'Pascal Triangle', cat: 'Math & DP' },
+    hanoi: { type: 'peg', name: 'Tower of Hanoi', cat: 'Backtracking' },
+    nqueens: { type: 'grid', name: 'N-Queens', cat: 'Backtracking' },
 };
 
 const Visualizers = ({ onBack }) => {
@@ -192,11 +191,8 @@ const Visualizers = ({ onBack }) => {
         setVisPointers(prev => ({ ...prev, active: [mid] }));
         setStepDescription(`Found ${target} at index ${mid}!`);
         playSuccessSound(); break;
-      } else if (arr[mid] < target) {
-        low = mid + 1;
-      } else {
-        high = mid - 1;
-      }
+      } else if (arr[mid] < target) low = mid + 1;
+      else high = mid - 1;
       await delay();
     }
     setIsVisSorting(false);
@@ -248,16 +244,20 @@ const Visualizers = ({ onBack }) => {
   };
 
   const algoData = {
-    bubble: { ...ALGO_METADATA.bubble, startFunc: bubbleSort, description: 'Compares adjacent elements and swaps if needed.', solutions: { JavaScript: '...' } },
+    bubble: { ...ALGO_METADATA.bubble, startFunc: bubbleSort, description: 'Compares adjacent elements and swaps if needed.', practiceProblems: [{ title: 'Bubble Sort (GFG)', url: 'https://www.geeksforgeeks.org/problems/bubble-sort/1', difficulty: 'Easy' }], solutions: { JavaScript: '...' } },
     selection: { ...ALGO_METADATA.selection, startFunc: selectionSort, description: 'Finds min element and puts it at front.' },
     insertion: { ...ALGO_METADATA.insertion, startFunc: insertionSort, description: 'Inserts each element into its place.' },
     linear: { ...ALGO_METADATA.linear, startFunc: linearSearch, description: 'Sequentially checks elements.' },
     binary: { ...ALGO_METADATA.binary, startFunc: binarySearch, description: 'Search in sorted array.' },
     bfs: { ...ALGO_METADATA.bfs, startFunc: runBFS, description: 'Explores neighbors level by level.' },
-    dfs: { ...ALGO_METADATA.dfs, startFunc: runDFS, description: 'Explores path as deep as possible.' },
-    gcd: { ...ALGO_METADATA.gcd, startFunc: bubbleSort, description: 'Euclidean GCD algorithm.' },
-    fibonacci: { ...ALGO_METADATA.fibonacci, startFunc: bubbleSort, description: 'Dynamic Programming Fibonacci.' }
+    dfs: { ...ALGO_METADATA.dfs, startFunc: runDFS, description: 'Explores path as deep as possible.' }
   };
+
+  const algoCategories = [
+    { name: 'Sorting', icon: List, keys: ['bubble', 'selection', 'insertion'] },
+    { name: 'Searching', icon: Binary, keys: ['linear', 'binary'] },
+    { name: 'Graph/Grid', icon: LayoutGrid, keys: ['bfs', 'dfs'] }
+  ];
 
   const resetVis = useCallback(() => {
     const type = ALGO_METADATA[visType]?.type;
@@ -285,15 +285,17 @@ const Visualizers = ({ onBack }) => {
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-           <div className="lg:col-span-3 space-y-4 max-h-[80vh] overflow-y-auto pr-2 custom-scrollbar">
-              {['Sorting', 'Searching', 'Graph/Grid'].map((cat) => (
-                <div key={cat} className="p-4 rounded-3xl bg-white/[0.02] border border-white/5">
-                    <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4">{cat}</h4>
+           <div className="lg:col-span-3 space-y-4">
+              {algoCategories.map((cat) => (
+                <div key={cat.name} className="p-4 rounded-3xl bg-white/[0.02] border border-white/5">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4 flex items-center gap-2">
+                        <cat.icon size={12} /> {cat.name}
+                    </h4>
                     <div className="space-y-1">
-                        {Object.keys(algoData).filter(k => (cat === 'Sorting' && ['bubble', 'selection', 'insertion'].includes(k)) || (cat === 'Searching' && ['linear', 'binary'].includes(k)) || (cat === 'Graph/Grid' && ['bfs', 'dfs'].includes(k))).map(key => (
+                        {cat.keys.map(key => (
                             <button key={key} onClick={() => { setVisType(key); setActiveTab('visualizer'); }} disabled={isSorting}
                                 className={`w-full text-left px-4 py-2 rounded-lg text-xs font-bold transition-all ${visType === key ? 'bg-orange-600 text-black' : 'text-slate-400 hover:bg-white/5'}`}
-                            > {algoData[key].name} </button>
+                            > {algoData[key]?.name} </button>
                         ))}
                     </div>
                 </div>
@@ -314,12 +316,12 @@ const Visualizers = ({ onBack }) => {
                   <motion.div key={`vis-${visType}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                     className="p-8 sm:p-12 rounded-[3rem] bg-white/[0.02] border border-white/5 min-h-[550px] flex flex-col justify-between relative overflow-hidden"
                   >
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12">
-                        <div>
-                            <h3 className="text-2xl font-black text-white">{algoData[visType].name}</h3>
-                            <p className="text-[10px] text-orange-600 font-black uppercase tracking-widest mt-1">{algoData[visType].description}</p>
+                    <div className="flex flex-col sm:flex-row justify-between items-start gap-6 mb-12">
+                        <div className="flex-1">
+                            <h3 className="text-2xl font-black text-white">{algoData[visType]?.name}</h3>
+                            <p className="text-[10px] text-orange-600 font-black uppercase tracking-widest mt-1">{algoData[visType]?.description}</p>
                         </div>
-                        <div className="flex flex-wrap items-center gap-4">
+                        <div className="flex flex-wrap items-center gap-4 shrink-0">
                            <div className="flex bg-white/5 p-1 rounded-xl border border-white/5 gap-1">
                                 {[0.5, 1, 1.5, 2].map(m => (
                                     <button key={m} onClick={() => setSpeedMultiplier(m)} title={`Set Speed to ${m}x`}
@@ -337,7 +339,7 @@ const Visualizers = ({ onBack }) => {
 
                            <div className="flex items-center gap-2">
                                 {!isSorting ? (
-                                    <button onClick={() => algoData[visType].startFunc()} className="px-8 py-3 bg-orange-600 text-black font-black text-xs uppercase tracking-widest rounded-xl hover:bg-orange-500 transition-all flex items-center justify-center gap-2 shadow-xl shadow-orange-600/10"><Play size={16}/> Start</button>
+                                    <button onClick={() => algoData[visType]?.startFunc()} className="px-8 py-3 bg-orange-600 text-black font-black text-xs uppercase tracking-widest rounded-xl hover:bg-orange-500 transition-all flex items-center justify-center gap-2 shadow-xl shadow-orange-600/10"><Play size={16}/> Start</button>
                                 ) : (
                                     <>
                                         <button onClick={togglePlayPause} title={isPaused ? "Resume" : "Pause"} className="p-3 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all">{isPaused ? <Play size={18}/> : <Pause size={18}/>}</button>
@@ -349,7 +351,7 @@ const Visualizers = ({ onBack }) => {
                     </div>
 
                     <div className="flex-1 flex flex-col items-center justify-center py-10 min-h-[350px]">
-                        {algoData[visType].type === 'grid' ? (
+                        {algoData[visType]?.type === 'grid' ? (
                             <div className="grid grid-cols-10 gap-1 w-full max-w-[400px]">
                                 {(gridData || []).map((val, i) => (
                                     <div key={i} className={`aspect-square rounded-sm border ${val === 1 ? 'bg-orange-600 border-orange-400' : val === 2 ? 'bg-rose-500 border-rose-400' : val === 3 ? 'bg-emerald-500 border-emerald-400' : 'bg-white/5 border-white/10'}`} />
@@ -374,6 +376,38 @@ const Visualizers = ({ onBack }) => {
                         </div>
                     </div>
                   </motion.div>
+                )}
+
+                {activeTab === 'problem' && (
+                    <motion.div key={`prob-${visType}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="p-10 rounded-[3rem] bg-white/[0.02] border border-white/5 space-y-8">
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-3xl font-black text-white">Practice Lab</h3>
+                            <div className="p-4 bg-orange-600/10 rounded-2xl"><Cpu size={24} className="text-orange-600" /></div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {(algoData[visType]?.practiceProblems || []).map((prob, idx) => (
+                                <a key={idx} href={prob.url} target="_blank" rel="noopener noreferrer" className="group p-6 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-orange-600/50 transition-all flex flex-col gap-4">
+                                    <div className="flex justify-between items-start">
+                                        <h4 className="font-bold text-white group-hover:text-orange-500">{prob.title}</h4>
+                                        <ExternalLink size={16} className="text-slate-600 group-hover:text-orange-600" />
+                                    </div>
+                                    <span className="px-3 py-1 rounded-full text-[10px] font-black bg-white/5 text-slate-400 w-fit">{prob.difficulty}</span>
+                                </a>
+                            ))}
+                        </div>
+                    </motion.div>
+                )}
+
+                {activeTab === 'solution' && (
+                    <motion.div key={`sol-${visType}`} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="p-10 rounded-[3rem] bg-white/[0.02] border border-white/5">
+                         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+                            <h3 className="text-2xl font-black text-white">Reference Solution</h3>
+                            <button onClick={() => { navigator.clipboard.writeText(algoData[visType]?.solutions?.JavaScript || ""); showToast("Copied!"); }} className="px-4 py-2 bg-white/5 rounded-xl text-[10px] font-black uppercase text-slate-400 border border-white/5 hover:text-white transition-all">Copy Code</button>
+                         </div>
+                         <div className="p-8 bg-[#1a1412] rounded-[2rem] border border-white/5 overflow-auto max-h-[500px]">
+                            <pre className="text-xs leading-relaxed"><code dangerouslySetInnerHTML={{ __html: highlight(algoData[visType]?.solutions?.JavaScript || "// Solution coming soon...", prismLanguages.javascript) }} /></pre>
+                         </div>
+                    </motion.div>
                 )}
               </AnimatePresence>
            </div>
