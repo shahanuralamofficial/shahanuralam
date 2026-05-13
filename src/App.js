@@ -112,7 +112,7 @@ export default function ShahanurPortfolio() {
         <section className={`p-6 sm:p-12 rounded-[2rem] sm:rounded-[3rem] border transition-all ${darkMode ? 'bg-black/20 border-white/5 shadow-2xl' : 'bg-white border-stone-200 shadow-xl'}`}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
             <div className="lg:col-span-2 space-y-6">
-              <h2 className="text-4xl md:text-5xl lg:text-7xl font-black tracking-tighter">Hi — I’m <span className="text-orange-600">Shahanur Alam</span>.</h2>
+              <h2 className="text-3xl sm:text-5xl lg:text-7xl font-black tracking-tighter">Hi — I’m <span className="text-orange-600">Shahanur Alam</span>.</h2>
               <p className="text-xl text-stone-400">Mobile App Developer specializing in Java & Flutter.</p>
               <div className="flex flex-wrap gap-3 sm:gap-4 pt-4">
                 <button onClick={() => {
@@ -120,11 +120,11 @@ export default function ShahanurPortfolio() {
                   update(ref(db, 'stats'), { projectClicks: increment(1) }).catch(() => {});
                 }} className="flex-1 sm:flex-none px-6 sm:px-8 py-3 bg-white text-black rounded-xl font-bold hover:scale-105 transition-all text-sm sm:text-base">CP Zen Workspace</button>
                 <a href="Shahanur_Alam_CV.html" target="_blank" onClick={() => update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => {})} className={`flex-1 sm:flex-none px-6 sm:px-8 py-3 border border-white/10 rounded-xl font-bold hover:bg-white/5 transition-all text-center text-sm sm:text-base`}>View CV</a>
-                <a href={cvPdf} download onClick={() => update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => {})} className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-500 transition-all flex items-center justify-center gap-2 text-sm sm:text-base"><Download size={18}/> Download</a>
+                <a href={cvPdf} download onClick={() => update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => {})} className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-500 transition-all flex items-center justify-center gap-2 text-sm sm:text-base" title="Download CV (PDF)"><Download size={18}/> Download</a>
               </div>
               <div className="flex items-center gap-6 text-sm text-stone-500 pt-6">
-                 <span className="flex items-center gap-2"><MapPin size={14} className="text-orange-600"/> Rajshahi, BD</span>
-                 <span className="flex items-center gap-2"><Award size={14} className="text-orange-600"/> Open to Internships</span>
+                 <span className="flex items-center gap-2" title="Location"><MapPin size={14} className="text-orange-600"/> Rajshahi, BD</span>
+                 <span className="flex items-center gap-2" title="Status"><Award size={14} className="text-orange-600"/> Open to Internships</span>
               </div>
             </div>
             <div className="flex justify-center lg:justify-end">
@@ -192,12 +192,12 @@ export default function ShahanurPortfolio() {
               {projects.map((p, i) => (
                 <div key={i} className={`p-6 sm:p-8 bg-white/[0.02] border border-white/5 rounded-[2rem] sm:rounded-[3rem] hover:border-orange-600/20 transition-all`}>
                    <div className="flex items-center gap-4 mb-6">
-                      {p.logo === "icon:code" ? <Code2 className="text-orange-600" size={32}/> : <img src={p.logo} className="w-14 h-14 rounded-2xl shadow-lg" alt="logo"/>}
+                      {p.logo === "icon:code" ? <Code2 className="text-orange-600" size={32} title="Project Icon" /> : <img src={p.logo} className="w-14 h-14 rounded-2xl shadow-lg" alt="logo" title="Project Logo" />}
                       <h4 className="text-xl font-bold">{p.title}</h4>
                    </div>
                    <p className="text-stone-400 text-sm mb-8 leading-relaxed">{p.description}</p>
                    <div className="flex gap-6">
-                      <a href={p.demoLink} target="_blank" className="text-orange-600 font-bold flex items-center gap-2 text-sm uppercase tracking-widest hover:text-orange-500 hover:scale-105 transition-all duration-300">Live Demo <Globe size={16}/></a>
+                      <a href={p.demoLink} target="_blank" className="text-orange-600 font-bold flex items-center gap-2 text-sm uppercase tracking-widest hover:text-orange-500 hover:scale-105 transition-all duration-300">Live Demo <Globe size={16} title="Live Demo" /></a>
                       <a href={p.sourceLink} target="_blank" className="text-stone-500 font-bold text-sm uppercase tracking-widest underline underline-offset-8 hover:text-stone-300 hover:scale-105 transition-all duration-300">Source</a>
                    </div>
                 </div>
@@ -214,20 +214,20 @@ export default function ShahanurPortfolio() {
                 <h3 className="text-4xl sm:text-5xl font-black">Get in <span className="text-orange-600">Touch</span></h3>
                 <p className="text-stone-400 text-lg leading-relaxed">I’m available for internships, freelance projects, and junior roles. Send a note and I will reach out with a tailored reply.</p>
                 <div className="space-y-4 pt-4">
-                  <a href="mailto:shahanuralam.dev@gmail.com" className="flex items-center gap-4 text-stone-300 font-medium hover:text-orange-600 transition-colors">
+                  <a href="mailto:shahanuralam.dev@gmail.com" className="flex items-center gap-4 text-stone-300 font-medium hover:text-orange-600 transition-colors" title="Send Email">
                     <Mail className="text-orange-600" size={20}/> shahanuralam.dev@gmail.com
                   </a>
-                  <a href="tel:+8801518939114" className="flex items-center gap-4 text-stone-300 font-medium hover:text-orange-600 transition-colors">
+                  <a href="tel:+8801518939114" className="flex items-center gap-4 text-stone-300 font-medium hover:text-orange-600 transition-colors" title="Call Shahanur">
                     <Phone className="text-orange-600" size={20}/> +880 1518-939114
                   </a>
-                  <div className="flex items-center gap-4 text-stone-300 font-medium">
+                  <div className="flex items-center gap-4 text-stone-300 font-medium" title="Location">
                     <MapPin className="text-orange-600" size={20}/> Rajshahi, Bangladesh
                   </div>
                 </div>
                 <div className="flex gap-4 pt-6">
-                   <a href="https://github.com/shahanuralamofficial" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-orange-600 hover:text-black transition-all"><Github size={20}/></a>
-                   <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-blue-500 transition-all"><Linkedin size={20}/></a>
-                   <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-blue-600 transition-all"><Facebook size={20}/></a>
+                   <a href="https://github.com/shahanuralamofficial" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-orange-600 hover:text-black transition-all" title="GitHub Profile"><Github size={20}/></a>
+                   <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-blue-500 transition-all" title="LinkedIn Profile"><Linkedin size={20}/></a>
+                   <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-blue-600 transition-all" title="Facebook Profile"><Facebook size={20}/></a>
                 </div>
               </div>
               <form onSubmit={handleContactSubmit} className="space-y-4">
@@ -268,18 +268,18 @@ export default function ShahanurPortfolio() {
             </div>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-xl border border-white/10 transition-colors hover:bg-white/5">{darkMode ? <Sun size={18} /> : <Moon size={18} />}</button>
-            <button onClick={() => window.location.hash = '#cp'} className={`flex items-center gap-2 px-2.5 sm:px-3 py-1.5 text-[10px] sm:text-xs font-bold border rounded-lg transition-colors bg-white/5 ${hash === '#cp' ? 'border-orange-600 bg-orange-600/10' : 'border-white/10 hover:border-orange-600/50'}`}>
+            <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-xl border border-white/10 transition-colors hover:bg-white/5" title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}>{darkMode ? <Sun size={18} /> : <Moon size={18} />}</button>
+            <button onClick={() => window.location.hash = '#cp'} className={`flex items-center gap-2 px-2.5 sm:px-3 py-1.5 text-[10px] sm:text-xs font-bold border rounded-lg transition-colors bg-white/5 ${hash === '#cp' ? 'border-orange-600 bg-orange-600/10' : 'border-white/10 hover:border-orange-600/50'}`} title="Competitive Programming Workspace">
               <Code2 size={14} className="text-orange-600" />
               <span className="hidden sm:inline">CP Workspace</span>
               <span className="sm:hidden">CP</span>
             </button>
-            <button onClick={() => window.location.hash = '#visualizers'} className={`flex items-center gap-2 px-2.5 sm:px-3 py-1.5 text-[10px] sm:text-xs font-bold border rounded-lg transition-colors bg-white/5 ${hash === '#visualizers' ? 'border-orange-500 bg-orange-500/10' : 'border-white/10 hover:border-orange-500/50'}`}>
+            <button onClick={() => window.location.hash = '#visualizers'} className={`flex items-center gap-2 px-2.5 sm:px-3 py-1.5 text-[10px] sm:text-xs font-bold border rounded-lg transition-colors bg-white/5 ${hash === '#visualizers' ? 'border-orange-500 bg-orange-600/10' : 'border-white/10 hover:border-orange-500/50'}`} title="Algorithm Visualizer Lab">
               <Zap size={14} className="text-orange-500" />
               <span className="hidden sm:inline">Algo Lab</span>
               <span className="sm:hidden">Lab</span>
             </button>
-            <button onClick={() => window.location.hash = '#analytics'} className={`p-2 rounded-xl border transition-colors hover:bg-white/5 ${hash === '#analytics' ? 'border-orange-600 bg-orange-600/10' : 'border-white/10'}`}><BarChart2 size={18}/></button>
+            <button onClick={() => window.location.hash = '#analytics'} className={`p-2 rounded-xl border transition-colors hover:bg-white/5 ${hash === '#analytics' ? 'border-orange-600 bg-orange-600/10' : 'border-white/10'}`} title="Live Portfolio Analytics"><BarChart2 size={18}/></button>
           </div>
         </nav>
       </header>

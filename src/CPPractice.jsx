@@ -16,6 +16,7 @@ import 'prismjs/components/prism-cpp';
 import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-java';
 import 'prismjs/themes/prism-tomorrow.css';
+import { CP_TEMPLATES } from './algoSolutions';
 
 const CountdownTimer = ({ startTime }) => {
   const [timeLeft, setTimeLeft] = useState(startTime - Date.now());
@@ -66,12 +67,7 @@ const CPPractice = ({ onBack }) => {
     setTimeout(() => setToast(null), 3000);
   };
 
-  const langSkeletons = {
-    'C++ 17': '#include <iostream>\nusing namespace std;\n\nint main() {\n    // Write your logic here\n    return 0;\n}',
-    'Python 3': 'def solve():\n    # Write your logic here\n    pass\n\nif __name__ == "__main__":\n    solve()',
-    'Java': 'import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        // Write your logic here\n    }\n}',
-    'JavaScript': 'const solve = () => {\n    // Write your logic here\n};\nsolve();'
-  };
+  const langSkeletons = CP_TEMPLATES;
 
   const [selectedLang, setSelectedLang] = useState('C++ 17');
   const [code, setCode] = useState(langSkeletons['C++ 17']);
@@ -223,7 +219,7 @@ const CPPractice = ({ onBack }) => {
            <div className="flex items-center gap-3 mb-6">
               <div className="w-2 h-8 bg-orange-600 rounded-full" />
               <h2 className="text-xl font-black uppercase tracking-tighter text-white">Upcoming Contests</h2>
-              {contestsLoading && <Loader2 className="w-4 h-4 animate-spin text-orange-600" />}
+              {contestsLoading && <Loader2 className="w-4 h-4 animate-spin text-orange-600" title="Fetching upcoming contests..." />}
            </div>
            <div className="flex gap-4 min-w-max px-2">
               {contests.length > 0 ? contests.map(c => {
@@ -258,7 +254,7 @@ const CPPractice = ({ onBack }) => {
 
         <header className="mb-8 flex flex-col sm:flex-row justify-between items-start gap-4">
           <div>
-            <h1 className="text-4xl sm:text-7xl font-black text-white tracking-tighter mb-4 leading-none">
+            <h1 className="text-3xl sm:text-7xl font-black text-white tracking-tighter mb-4 leading-tight sm:leading-none">
               Zen <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-rose-500 to-rose-600">Workspace</span>
             </h1>
             <p className="text-slate-500 text-xs sm:text-lg max-w-2xl font-medium leading-relaxed">
@@ -274,7 +270,7 @@ const CPPractice = ({ onBack }) => {
         <div className="mb-10 space-y-4">
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" title="Search Problems" />
               <input
                 type="text"
                 placeholder="Search by problem name or ID..."
@@ -367,8 +363,8 @@ const CPPractice = ({ onBack }) => {
                   <select value={selectedLang} onChange={(e) => handleLangChange(e.target.value)} className="bg-white/5 border border-white/10 text-white text-[9px] sm:text-[10px] font-black uppercase px-3 py-2 sm:px-4 sm:py-3 rounded-xl outline-none focus:ring-1 focus:ring-orange-600 cursor-pointer appearance-none min-w-[120px]">
                     {Object.keys(langSkeletons).map(l => <option key={l} value={l} className="bg-[#111]">{l}</option>)}
                   </select>
-                  <button onClick={() => setIsFullScreenEditor(!isFullScreenEditor)} className="p-3 text-slate-500 hover:text-white bg-white/5 rounded-xl transition-all hidden lg:block">{isFullScreenEditor ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}</button>
-                  <button onClick={() => setActiveCodeProblem(null)} className="p-3 text-slate-500 hover:text-white bg-white/5 rounded-xl transition-all"><X className="w-6 h-6" /></button>
+                  <button onClick={() => setIsFullScreenEditor(!isFullScreenEditor)} className="p-3 text-slate-500 hover:text-white bg-white/5 rounded-xl transition-all hidden lg:block" title={isFullScreenEditor ? "Exit Fullscreen" : "Fullscreen Mode"}>{isFullScreenEditor ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}</button>
+                  <button onClick={() => setActiveCodeProblem(null)} className="p-3 text-slate-500 hover:text-white bg-white/5 rounded-xl transition-all" title="Close Workspace"><X className="w-6 h-6" /></button>
                 </div>
               </div>
 
@@ -399,15 +395,15 @@ const CPPractice = ({ onBack }) => {
                           selectedLang === 'Python 3' ? prismLanguages.python :
                           selectedLang === 'Java' ? prismLanguages.java : prismLanguages.javascript
                         )}
-                        padding={20}
-                        style={{ fontFamily: '"Fira code", monospace', fontSize: 14, minHeight: '100%' }}
+                        padding={window.innerWidth < 640 ? 12 : 20}
+                        style={{ fontFamily: '"Fira code", monospace', fontSize: window.innerWidth < 640 ? 12 : 14, minHeight: '100%' }}
                         className="editor text-slate-300 outline-none"
                       />
                   </div>
                   <div className="h-44 sm:h-52 bg-black/60 p-4 sm:p-6 flex flex-col border-t border-white/5 backdrop-blur-md">
                      <div className="flex items-center justify-between mb-4">
                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">Compiler Output</span>
-                        <button onClick={runCode} disabled={isRunning} className="flex items-center gap-2 px-4 py-2 bg-orange-600/10 text-orange-500 rounded-xl text-[10px] font-black uppercase border border-orange-500/20 hover:bg-orange-600 hover:text-white transition-all">
+                        <button onClick={runCode} disabled={isRunning} className="flex items-center gap-2 px-4 py-2 bg-orange-600/10 text-orange-500 rounded-xl text-[10px] font-black uppercase border border-orange-500/20 hover:bg-orange-600 hover:text-white transition-all" title="Run Sample Tests">
                           {isRunning ? <Loader2 className="w-3 h-3 animate-spin" /> : <Play className="w-3 h-3" />} TEST RUN
                         </button>
                      </div>

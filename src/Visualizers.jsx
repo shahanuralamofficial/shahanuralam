@@ -4,7 +4,8 @@ import {
   ArrowLeft, RefreshCw, Zap, Info, Play, RotateCcw,
   Code2, HelpCircle, CheckCircle2, Terminal, ExternalLink,
   ChevronRight, ChevronLeft, FastForward, Cpu, Volume2, VolumeX,
-  Pause, SkipForward, LayoutGrid, List, Binary, Layers
+  Pause, SkipForward, LayoutGrid, List, Binary, Layers,
+  Network, Table, Shapes, Compass, Brain, Hash
 } from 'lucide-react';
 import { highlight, languages as prismLanguages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
@@ -15,7 +16,11 @@ import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-java';
 import 'prismjs/themes/prism-tomorrow.css';
 
+import * as Algos from './algoLogic';
+import { ALGO_SOLUTIONS } from './algoSolutions';
+
 const ALGO_METADATA = {
+    // Sorting
     bubble: { type: 'bars', name: 'Bubble Sort', cat: 'Sorting' },
     selection: { type: 'bars', name: 'Selection Sort', cat: 'Sorting' },
     insertion: { type: 'bars', name: 'Insertion Sort', cat: 'Sorting' },
@@ -23,18 +28,23 @@ const ALGO_METADATA = {
     quick: { type: 'bars', name: 'Quick Sort', cat: 'Sorting' },
     heap: { type: 'bars', name: 'Heap Sort', cat: 'Sorting' },
     shell: { type: 'bars', name: 'Shell Sort', cat: 'Sorting' },
+    // Searching
     linear: { type: 'bars', name: 'Linear Search', cat: 'Searching' },
     binary: { type: 'bars', name: 'Binary Search', cat: 'Searching' },
     jump: { type: 'bars', name: 'Jump Search', cat: 'Searching' },
-    interpolation: { type: 'bars', name: 'Interpolation Search', cat: 'Searching' },
+    // Graph
     bfs: { type: 'grid', name: 'Breadth-First Search', cat: 'Graph/Grid' },
     dfs: { type: 'grid', name: 'Depth-First Search', cat: 'Graph/Grid' },
-    fibonacci: { type: 'bars', name: 'Fibonacci (DP)', cat: 'Math & DP' },
-    gcd: { type: 'bars', name: 'Euclidean GCD', cat: 'Math & DP' },
-    sieve: { type: 'bars', name: 'Sieve of Eratosthenes', cat: 'Math & DP' },
-    pascals: { type: 'bars', name: 'Pascal Triangle', cat: 'Math & DP' },
-    hanoi: { type: 'peg', name: 'Tower of Hanoi', cat: 'Backtracking' },
-    nqueens: { type: 'grid', name: 'N-Queens', cat: 'Backtracking' },
+    dijkstra: { type: 'grid', name: 'Dijkstra Pathfinding', cat: 'Graph/Grid' },
+    // DP
+    fibonacci: { type: 'bars', name: 'Fibonacci (DP)', cat: 'Dynamic Programming' },
+    knapsack: { type: 'table', name: '0/1 Knapsack', cat: 'Dynamic Programming' },
+    // Backtracking
+    nqueens: { type: 'grid', name: 'N-Queens (Backtrack)', cat: 'Backtracking' },
+    sudoku: { type: 'grid', name: 'Sudoku Solver', cat: 'Backtracking' },
+    // Math
+    gcd: { type: 'bars', name: 'Euclidean GCD', cat: 'Math & Logic' },
+    sieve: { type: 'grid', name: 'Sieve of Eratosthenes', cat: 'Math & Logic' },
 };
 
 const Visualizers = ({ onBack }) => {
@@ -50,10 +60,9 @@ const Visualizers = ({ onBack }) => {
   const speedRef = useRef(800);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(0.5);
-  const [ansSelectedLang, setAnsSelectedLang] = useState('JavaScript');
+  const [solLang, setSolLang] = useState('JavaScript');
 
   const [gridData, setVisGrid] = useState([]);
-  const [pegs, setVisPegs] = useState([[], [], []]);
 
   const audioCtx = useRef(null);
   const isPausedRef = useRef(false);
@@ -106,231 +115,175 @@ const Visualizers = ({ onBack }) => {
     if (isPaused && stepResolverRef.current) handleStep();
   };
 
-  // --- Algorithms ---
-  const bubbleSort = async () => {
-    setIsVisSorting(true); setIsPaused(false);
-    let arr = [...visArray];
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0; j < arr.length - i - 1; j++) {
-        setVisPointers(prev => ({ ...prev, active: [j, j + 1] }));
-        setStepDescription(`Comparing ${arr[j]} and ${arr[j+1]}`);
-        playTone(200 + arr[j] * 5); await delay();
-        if (arr[j] > arr[j + 1]) {
-          [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-          setVisArray([...arr]); await delay();
-        }
-      }
-    }
-    setVisPointers(prev => ({ ...prev, active: [] })); setIsVisSorting(false);
-    setStepDescription('Bubble Sort Complete!'); playSuccessSound();
+  const [tableData, setTableData] = useState({ rows: [], cols: [], data: [[]] });
+
+  const algoHelpers = {
+    visArray, setVisArray, visPointers, setVisPointers, setIsVisSorting,
+    setStepDescription, playTone, delay, playSuccessSound, setVisGrid, gridData,
+    tableData, setTableData
   };
 
-  const selectionSort = async () => {
-    setIsVisSorting(true); setIsPaused(false);
-    let arr = [...visArray];
-    for (let i = 0; i < arr.length; i++) {
-        let min = i;
-        for (let j = i + 1; j < arr.length; j++) {
-            setVisPointers(prev => ({ ...prev, active: [j], mid: min, left: i }));
-            setStepDescription(`Looking for min. Current: ${arr[min]}`);
-            playTone(300 + j * 10); await delay();
-            if (arr[j] < arr[min]) min = j;
-        }
-        [arr[i], arr[min]] = [arr[min], arr[i]];
-        setVisArray([...arr]); await delay();
-    }
-    setIsVisSorting(false); playSuccessSound();
-  };
-
-  const insertionSort = async () => {
-    setIsVisSorting(true); setIsPaused(false);
-    let arr = [...visArray];
-    for (let i = 1; i < arr.length; i++) {
-        let key = arr[i]; let j = i - 1;
-        setStepDescription(`Inserting ${key}`);
-        while (j >= 0 && arr[j] > key) {
-            setVisPointers(prev => ({ ...prev, active: [j, j+1] }));
-            arr[j + 1] = arr[j]; setVisArray([...arr]);
-            playTone(300 + j * 10); await delay(); j--;
-        }
-        arr[j + 1] = key; setVisArray([...arr]);
-    }
-    setIsVisSorting(false); playSuccessSound();
-  };
-
-  const linearSearch = async () => {
-    setIsVisSorting(true); setIsPaused(false);
-    let arr = [...visArray];
-    let target = arr[Math.floor(Math.random() * arr.length)];
-    setStepDescription(`Searching for: ${target}`);
-    for (let i = 0; i < arr.length; i++) {
-        setVisPointers(prev => ({ ...prev, active: [i] }));
-        setStepDescription(`Checking index ${i}: ${arr[i]}`);
-        playTone(300 + i * 20); await delay();
-        if (arr[i] === target) {
-            setStepDescription(`Match found at index ${i}!`);
-            playSuccessSound(); setIsVisSorting(false); return;
-        }
-    }
-    setIsVisSorting(false);
-  };
-
-  const binarySearch = async () => {
-    setIsVisSorting(true); setIsPaused(false);
-    let arr = [...visArray].sort((a, b) => a - b);
-    setVisArray(arr);
-    let target = arr[Math.floor(Math.random() * arr.length)];
-    setStepDescription(`Searching for: ${target}`);
-    let low = 0, high = arr.length - 1;
-    while (low <= high) {
-      let mid = low + Math.floor((high - low) / 2);
-      setVisPointers(prev => ({ ...prev, left: low, right: high, mid: mid, active: [] }));
-      setStepDescription(`Checking index ${mid}: ${arr[mid]}`);
-      playTone(400 + mid * 20); await delay();
-      if (arr[mid] === target) {
-        setVisPointers(prev => ({ ...prev, active: [mid] }));
-        setStepDescription(`Found ${target} at index ${mid}!`);
-        playSuccessSound(); break;
-      } else if (arr[mid] < target) low = mid + 1;
-      else high = mid - 1;
-      await delay();
-    }
-    setIsVisSorting(false);
-  };
-
-  const runBFS = async () => {
-    setIsVisSorting(true); setIsPaused(false);
-    let grid = Array(100).fill(0); const start = 0, end = 99;
-    let queue = [start]; let visited = new Set([start]);
-    grid[start] = 1; grid[end] = 2;
-    const neighbors = (u) => {
-        let n = []; let r = Math.floor(u / 10), c = u % 10;
-        if (r > 0) n.push(u - 10); if (r < 9) n.push(u + 10);
-        if (c > 0) n.push(u - 1); if (c < 9) n.push(u + 1);
-        return n;
-    };
-    while (queue.length > 0) {
-        let u = queue.shift(); if (u === end) break;
-        setVisPointers(prev => ({ ...prev, active: [u] }));
-        for (let v of neighbors(u)) {
-            if (!visited.has(v)) {
-                visited.add(v); grid[v] = grid[v] === 2 ? 2 : 3;
-                setVisGrid([...grid]); playTone(400 + v * 5); await delay();
-                queue.push(v);
-            }
-        }
-    }
-    setIsVisSorting(false); playSuccessSound();
-  };
-
-  const runDFS = async () => {
-    setIsVisSorting(true); setIsPaused(false);
-    let grid = Array(100).fill(0); const end = 99;
-    let visited = new Set(); grid[end] = 2;
-    const neighbors = (u) => {
-        let n = []; let r = Math.floor(u / 10), c = u % 10;
-        if (r < 9) n.push(u + 10); if (c < 9) n.push(u + 1);
-        if (r > 0) n.push(u - 10); if (c > 0) n.push(u - 1);
-        return n;
-    };
-    const dfs = async (u) => {
-        if (u === end || visited.has(u)) return u === end;
-        visited.add(u); grid[u] = 3; setVisGrid([...grid]);
-        playTone(300 + u * 5); await delay();
-        for (let v of neighbors(u)) if (await dfs(v)) return true;
-        return false;
-    };
-    await dfs(0); setIsVisSorting(false); playSuccessSound();
-  };
-
-  const algoData = {
+  const algoData = useMemo(() => ({
     bubble: {
         ...ALGO_METADATA.bubble,
-        startFunc: bubbleSort,
+        startFunc: () => Algos.runBubbleSort(algoHelpers),
         description: 'Compares adjacent elements and swaps if needed.',
         practiceProblems: [
             { title: 'Bubble Sort (GFG)', url: 'https://www.geeksforgeeks.org/problems/bubble-sort/1', difficulty: 'Easy' },
             { title: 'Sort Colors (LeetCode)', url: 'https://leetcode.com/problems/sort-colors/', difficulty: 'Medium' }
         ],
-        solutions: {
-            JavaScript: `function bubbleSort(arr) {\n  let n = arr.length;\n  for (let i = 0; i < n; i++) {\n    for (let j = 0; j < n - i - 1; j++) {\n      if (arr[j] > arr[j + 1]) {\n        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];\n      }\n    }\n  }\n  return arr;\n}`
-        }
+        solutions: ALGO_SOLUTIONS.bubble
     },
     selection: {
         ...ALGO_METADATA.selection,
-        startFunc: selectionSort,
+        startFunc: () => Algos.runSelectionSort(algoHelpers),
         description: 'Finds min element and puts it at front.',
         practiceProblems: [
             { title: 'Selection Sort (GFG)', url: 'https://www.geeksforgeeks.org/problems/selection-sort/1', difficulty: 'Easy' }
         ],
-        solutions: {
-            JavaScript: `function selectionSort(arr) {\n  let n = arr.length;\n  for (let i = 0; i < n; i++) {\n    let min = i;\n    for (let j = i + 1; j < n; j++) {\n      if (arr[j] < arr[min]) min = j;\n    }\n    [arr[i], arr[min]] = [arr[min], arr[i]];\n  }\n  return arr;\n}`
-        }
+        solutions: ALGO_SOLUTIONS.selection
     },
     insertion: {
         ...ALGO_METADATA.insertion,
-        startFunc: insertionSort,
+        startFunc: () => Algos.runInsertionSort(algoHelpers),
         description: 'Inserts each element into its place.',
         practiceProblems: [
             { title: 'Insertion Sort (GFG)', url: 'https://www.geeksforgeeks.org/problems/insertion-sort/1', difficulty: 'Easy' }
         ],
-        solutions: {
-            JavaScript: `function insertionSort(arr) {\n  for (let i = 1; i < arr.length; i++) {\n    let key = arr[i];\n    let j = i - 1;\n    while (j >= 0 && arr[j] > key) {\n      arr[j + 1] = arr[j];\n      j--;\n    }\n    arr[j + 1] = key;\n  }\n  return arr;\n}`
-        }
+        solutions: ALGO_SOLUTIONS.insertion
+    },
+    merge: {
+        ...ALGO_METADATA.merge,
+        startFunc: () => Algos.runMergeSort(algoHelpers),
+        description: 'Divide and conquer sorting algorithm.',
+        practiceProblems: [{ title: 'Merge Sort (LeetCode)', url: 'https://leetcode.com/problems/sort-an-array/', difficulty: 'Medium' }],
+        solutions: ALGO_SOLUTIONS.merge
+    },
+    quick: {
+        ...ALGO_METADATA.quick,
+        startFunc: () => Algos.runQuickSort(algoHelpers),
+        description: 'Efficient partition-based sorting.',
+        practiceProblems: [{ title: 'Quick Sort (GFG)', url: 'https://www.geeksforgeeks.org/problems/quick-sort/1', difficulty: 'Medium' }],
+        solutions: ALGO_SOLUTIONS.quick
     },
     linear: {
         ...ALGO_METADATA.linear,
-        startFunc: linearSearch,
+        startFunc: () => Algos.runLinearSearch(algoHelpers),
         description: 'Sequentially checks elements.',
         practiceProblems: [
             { title: 'Linear Search (GFG)', url: 'https://www.geeksforgeeks.org/problems/search-an-element-in-an-array-1587115621/1', difficulty: 'Easy' }
         ],
-        solutions: {
-            JavaScript: `function linearSearch(arr, target) {\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] === target) return i;\n  }\n  return -1;\n}`
-        }
+        solutions: ALGO_SOLUTIONS.linear
     },
     binary: {
         ...ALGO_METADATA.binary,
-        startFunc: binarySearch,
+        startFunc: () => Algos.runBinarySearch(algoHelpers),
         description: 'Search in sorted array.',
         practiceProblems: [
             { title: 'Binary Search (LeetCode)', url: 'https://leetcode.com/problems/binary-search/', difficulty: 'Easy' },
             { title: 'Search Insert Position (LeetCode)', url: 'https://leetcode.com/problems/search-insert-position/', difficulty: 'Easy' }
         ],
-        solutions: {
-            JavaScript: `function binarySearch(arr, target) {\n  let low = 0, high = arr.length - 1;\n  while (low <= high) {\n    let mid = Math.floor((low + high) / 2);\n    if (arr[mid] === target) return mid;\n    if (arr[mid] < target) low = mid + 1;\n    else high = mid - 1;\n  }\n  return -1;\n}`
-        }
+        solutions: ALGO_SOLUTIONS.binary
     },
     bfs: {
         ...ALGO_METADATA.bfs,
-        startFunc: runBFS,
+        startFunc: () => Algos.runBFS(algoHelpers),
         description: 'Explores neighbors level by level.',
         practiceProblems: [
             { title: 'BFS of Graph (GFG)', url: 'https://www.geeksforgeeks.org/problems/bfs-traversal-of-graph/1', difficulty: 'Easy' },
             { title: 'Number of Islands (LeetCode)', url: 'https://leetcode.com/problems/number-of-islands/', difficulty: 'Medium' }
         ],
-        solutions: {
-            JavaScript: `function bfs(graph, start) {\n  let queue = [start];\n  let visited = new Set([start]);\n  while (queue.length > 0) {\n    let u = queue.shift();\n    console.log(u);\n    for (let v of graph[u]) {\n      if (!visited.has(v)) {\n        visited.add(v);\n        queue.push(v);\n      }\n    }\n  }\n}`
-        }
+        solutions: ALGO_SOLUTIONS.bfs
     },
     dfs: {
         ...ALGO_METADATA.dfs,
-        startFunc: runDFS,
+        startFunc: () => Algos.runDFS(algoHelpers),
         description: 'Explores path as deep as possible.',
         practiceProblems: [
             { title: 'DFS of Graph (GFG)', url: 'https://www.geeksforgeeks.org/problems/depth-first-traversal-for-a-graph/1', difficulty: 'Easy' },
             { title: 'Path Sum (LeetCode)', url: 'https://leetcode.com/problems/path-sum/', difficulty: 'Easy' }
         ],
-        solutions: {
-            JavaScript: `function dfs(graph, u, visited = new Set()) {\n  visited.add(u);\n  console.log(u);\n  for (let v of graph[u]) {\n    if (!visited.has(v)) {\n      dfs(graph, v, visited);\n    }\n  }\n}`
-        }
+        solutions: ALGO_SOLUTIONS.dfs
+    },
+    dijkstra: {
+        ...ALGO_METADATA.dijkstra,
+        startFunc: () => Algos.runDijkstra(algoHelpers),
+        description: 'Finds shortest path in grid.',
+        practiceProblems: [{ title: 'Dijkstra (GFG)', url: 'https://www.geeksforgeeks.org/problems/implementing-dijkstra-set-1-adjacency-matrix/1', difficulty: 'Medium' }],
+        solutions: ALGO_SOLUTIONS.dijkstra
+    },
+    fibonacci: {
+        ...ALGO_METADATA.fibonacci,
+        startFunc: () => Algos.runFibonacciDP(algoHelpers),
+        description: 'Efficient calculation using memoization.',
+        practiceProblems: [{ title: 'Fibonacci (LeetCode)', url: 'https://leetcode.com/problems/fibonacci-number/', difficulty: 'Easy' }],
+        solutions: ALGO_SOLUTIONS.fibonacci
+    },
+    gcd: {
+        ...ALGO_METADATA.gcd,
+        startFunc: () => Algos.runEuclideanGCD(algoHelpers),
+        description: 'Fastest way to find GCD.',
+        practiceProblems: [{ title: 'GCD (GFG)', url: 'https://www.geeksforgeeks.org/problems/gcd-of-two-numbers3459/1', difficulty: 'Easy' }],
+        solutions: ALGO_SOLUTIONS.gcd
+    },
+    jump: {
+        ...ALGO_METADATA.jump,
+        startFunc: () => Algos.runJumpSearch(algoHelpers),
+        description: 'Jump through blocks to find target.',
+        practiceProblems: [{ title: 'Jump Search (GFG)', url: 'https://www.geeksforgeeks.org/jump-search/', difficulty: 'Easy' }],
+        solutions: ALGO_SOLUTIONS.jump
+    },
+    heap: {
+        ...ALGO_METADATA.heap,
+        startFunc: () => Algos.runHeapSort(algoHelpers),
+        description: 'Sort using a binary heap structure.',
+        practiceProblems: [{ title: 'Heap Sort (GFG)', url: 'https://www.geeksforgeeks.org/problems/heap-sort/1', difficulty: 'Medium' }],
+        solutions: ALGO_SOLUTIONS.heap
+    },
+    shell: {
+        ...ALGO_METADATA.shell,
+        startFunc: () => Algos.runShellSort(algoHelpers),
+        description: 'Generalized insertion sort.',
+        practiceProblems: [{ title: 'Shell Sort (GFG)', url: 'https://www.geeksforgeeks.org/shell-sort/', difficulty: 'Medium' }],
+        solutions: ALGO_SOLUTIONS.shell
+    },
+    nqueens: {
+        ...ALGO_METADATA.nqueens,
+        startFunc: () => Algos.runNQueens(algoHelpers),
+        description: 'Recursive backtracking puzzle.',
+        practiceProblems: [{ title: 'N-Queens (LeetCode)', url: 'https://leetcode.com/problems/n-queens/', difficulty: 'Hard' }],
+        solutions: ALGO_SOLUTIONS.nqueens
+    },
+    sudoku: {
+        ...ALGO_METADATA.sudoku,
+        startFunc: () => Algos.runSudoku(algoHelpers),
+        description: 'Constraint satisfaction solver.',
+        practiceProblems: [{ title: 'Sudoku Solver (LeetCode)', url: 'https://leetcode.com/problems/sudoku-solver/', difficulty: 'Hard' }],
+        solutions: ALGO_SOLUTIONS.sudoku
+    },
+    sieve: {
+        ...ALGO_METADATA.sieve,
+        startFunc: () => Algos.runSieve(algoHelpers),
+        description: 'Finding primes by elimination.',
+        practiceProblems: [{ title: 'Count Primes (LeetCode)', url: 'https://leetcode.com/problems/count-primes/', difficulty: 'Medium' }],
+        solutions: ALGO_SOLUTIONS.sieve
+    },
+    knapsack: {
+        ...ALGO_METADATA.knapsack,
+        startFunc: () => Algos.runKnapsack(algoHelpers),
+        description: 'Classic optimization problem.',
+        practiceProblems: [{ title: '0/1 Knapsack (GFG)', url: 'https://www.geeksforgeeks.org/problems/0-1-knapsack-problem0945/1', difficulty: 'Medium' }],
+        solutions: ALGO_SOLUTIONS.knapsack
     }
-  };
+  }), [algoHelpers]);
 
   const algoCategories = [
-    { name: 'Sorting', icon: List, keys: ['bubble', 'selection', 'insertion'] },
-    { name: 'Searching', icon: Binary, keys: ['linear', 'binary'] },
-    { name: 'Graph/Grid', icon: LayoutGrid, keys: ['bfs', 'dfs'] }
+    { name: 'Sorting', icon: List, keys: ['bubble', 'selection', 'insertion', 'merge', 'quick', 'heap', 'shell'] },
+    { name: 'Searching', icon: Binary, keys: ['linear', 'binary', 'jump'] },
+    { name: 'Graph/Grid', icon: Network, keys: ['bfs', 'dfs', 'dijkstra'] },
+    { name: 'Dynamic Programming', icon: Table, keys: ['fibonacci', 'knapsack'] },
+    { name: 'Backtracking', icon: Brain, keys: ['nqueens', 'sudoku'] },
+    { name: 'Math & Logic', icon: Hash, keys: ['gcd', 'sieve'] }
   ];
 
   const resetVis = useCallback(() => {
@@ -345,7 +298,6 @@ const Visualizers = ({ onBack }) => {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen text-slate-200 font-sans pb-20 overflow-x-hidden">
-
       <div className="max-w-7xl mx-auto px-4 mt-12">
         <header className="mb-12">
           <h1 className="text-5xl font-black text-white tracking-tighter mb-4">Algo<span className="text-orange-600">Lab</span></h1>
@@ -358,7 +310,7 @@ const Visualizers = ({ onBack }) => {
                 {algoCategories.map((cat) => (
                   <div key={cat.name} className="p-4 rounded-3xl bg-white/[0.02] border border-white/5 w-64 lg:w-full shrink-0">
                       <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4 flex items-center gap-2">
-                          <cat.icon size={12} /> {cat.name}
+                          <cat.icon size={12} title={cat.name} /> {cat.name}
                       </h4>
                       <div className="space-y-1">
                           {cat.keys.map(key => (
@@ -375,7 +327,7 @@ const Visualizers = ({ onBack }) => {
            <div className="lg:col-span-9 space-y-6">
               <div className="flex gap-1.5 p-1.5 bg-white/[0.02] rounded-2xl border border-white/5 overflow-x-auto scrollbar-hide">
                  {[{ id: 'visualizer', name: 'Visualize', icon: Play }, { id: 'problem', name: 'Practice', icon: HelpCircle }, { id: 'solution', name: 'Standard Code', icon: Code2 }].map(tab => (
-                    <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                    <button key={tab.id} onClick={() => setActiveTab(tab.id)} title={tab.name}
                         className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all shrink-0 ${activeTab === tab.id ? 'bg-orange-600 text-black' : 'text-slate-500 hover:text-slate-300'}`}
                     > <tab.icon size={14} /> {tab.name} </button>
                  ))}
@@ -422,10 +374,35 @@ const Visualizers = ({ onBack }) => {
 
                     <div className="flex-1 flex flex-col items-center justify-center py-6 sm:py-10 min-h-[300px] sm:min-h-[350px]">
                         {algoData[visType]?.type === 'grid' ? (
-                            <div className="grid grid-cols-10 gap-0.5 sm:gap-1 w-full max-w-[350px] sm:max-w-[400px]">
+                            <div className="grid grid-cols-10 gap-0.5 sm:gap-1 w-full max-w-full sm:max-w-[400px]">
                                 {(gridData || []).map((val, i) => (
-                                    <div key={i} className={`aspect-square rounded-[1px] sm:rounded-sm border ${val === 1 ? 'bg-orange-600 border-orange-400' : val === 2 ? 'bg-rose-500 border-rose-400' : val === 3 ? 'bg-emerald-500 border-emerald-400' : 'bg-white/5 border-white/10'}`} />
+                                    <div key={i} className={`aspect-square rounded-[1px] sm:rounded-sm border flex items-center justify-center relative ${val === 1 ? 'bg-orange-600 border-orange-400' : val === 2 ? 'bg-rose-500 border-rose-400' : val === 3 ? 'bg-emerald-500 border-emerald-400' : 'bg-white/5 border-white/10'}`}>
+                                        {visType === 'sieve' && <span className="text-[8px] sm:text-[10px] font-bold text-slate-500">{i + 1}</span>}
+                                        {visType === 'sudoku' && val !== 0 && val !== 1 && val !== 2 && val !== 3 && <span className="text-[10px] sm:text-xs font-bold text-white">{val}</span>}
+                                        {visType === 'nqueens' && val === 1 && <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-white animate-pulse shadow-[0_0_10px_white]" />}
+                                    </div>
                                 ))}
+                            </div>
+                        ) : algoData[visType]?.type === 'table' ? (
+                            <div className="overflow-auto max-w-full custom-scrollbar p-4 bg-white/[0.01] rounded-2xl border border-white/5">
+                                <table className="border-collapse">
+                                    <thead>
+                                        <tr>
+                                            <th className="p-2 border border-white/10 bg-white/5" />
+                                            {tableData.cols.map((c, i) => <th key={i} className="p-2 border border-white/10 text-[10px] font-black text-slate-500">{c}</th>)}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {tableData.data.map((row, i) => (
+                                            <tr key={i}>
+                                                <th className="p-2 border border-white/10 text-[10px] font-black text-slate-500">{tableData.rows[i]}</th>
+                                                {row.map((cell, j) => (
+                                                    <td key={j} className={`p-2 sm:p-3 border border-white/10 text-[10px] sm:text-xs font-bold text-center transition-all ${visPointers.mid === i && visPointers.left === j ? 'bg-orange-600 text-black' : 'text-slate-400'}`}>{cell}</td>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
                         ) : (
                             <div className="flex items-end gap-1 sm:gap-2 h-48 sm:h-64 w-full max-w-4xl px-2 sm:px-4">
@@ -439,7 +416,7 @@ const Visualizers = ({ onBack }) => {
                     </div>
 
                     <div className="mt-8 p-6 bg-black/40 rounded-3xl border border-white/5 flex items-start gap-4">
-                        <Terminal size={14} className="text-orange-600 mt-1" />
+                        <Terminal size={14} className="text-orange-600 mt-1" title="Execution Log" />
                         <div>
                              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 block mb-1">Step Explanation</span>
                              <p className="text-sm font-medium text-slate-300 leading-relaxed">{stepDescription}</p>
@@ -452,14 +429,14 @@ const Visualizers = ({ onBack }) => {
                     <motion.div key={`prob-${visType}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="p-10 rounded-[3rem] bg-white/[0.02] border border-white/5 space-y-8">
                         <div className="flex justify-between items-center">
                             <h3 className="text-3xl font-black text-white">Practice Lab</h3>
-                            <div className="p-4 bg-orange-600/10 rounded-2xl"><Cpu size={24} className="text-orange-600" /></div>
+                            <div className="p-4 bg-orange-600/10 rounded-2xl"><Cpu size={24} className="text-orange-600" title="Algorithm Logic" /></div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {(algoData[visType]?.practiceProblems || []).map((prob, idx) => (
                                 <a key={idx} href={prob.url} target="_blank" rel="noopener noreferrer" className="group p-6 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-orange-600/50 transition-all flex flex-col gap-4">
                                     <div className="flex justify-between items-start">
                                         <h4 className="font-bold text-white group-hover:text-orange-500">{prob.title}</h4>
-                                        <ExternalLink size={16} className="text-slate-600 group-hover:text-orange-600" />
+                                        <ExternalLink size={16} className="text-slate-600 group-hover:text-orange-600" title="Open Practice Problem" />
                                     </div>
                                     <span className="px-3 py-1 rounded-full text-[10px] font-black bg-white/5 text-slate-400 w-fit">{prob.difficulty}</span>
                                 </a>
@@ -470,12 +447,21 @@ const Visualizers = ({ onBack }) => {
 
                 {activeTab === 'solution' && (
                     <motion.div key={`sol-${visType}`} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="p-10 rounded-[3rem] bg-white/[0.02] border border-white/5">
-                         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+                         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
                             <h3 className="text-2xl font-black text-white">Reference Solution</h3>
-                            <button onClick={() => { navigator.clipboard.writeText(algoData[visType]?.solutions?.JavaScript || ""); showToast("Copied!"); }} className="px-4 py-2 bg-white/5 rounded-xl text-[10px] font-black uppercase text-slate-400 border border-white/5 hover:text-white transition-all">Copy Code</button>
+                            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 w-full sm:w-auto">
+                               <select value={solLang} onChange={(e) => setSolLang(e.target.value)} className="flex-1 sm:flex-none bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase px-4 py-2.5 rounded-xl outline-none focus:ring-1 focus:ring-orange-600 cursor-pointer appearance-none min-w-[100px]">
+                                  {['JavaScript', 'CPP', 'Python', 'Java'].map(l => <option key={l} value={l} className="bg-[#111]">{l === 'CPP' ? 'C++' : l}</option>)}
+                               </select>
+                               <button onClick={() => { navigator.clipboard.writeText(algoData[visType]?.solutions?.[solLang] || ""); showToast("Copied!"); }} className="flex-1 sm:flex-none px-6 py-2.5 bg-white/5 rounded-xl text-[10px] font-black uppercase text-slate-400 border border-white/5 hover:text-white transition-all">Copy Code</button>
+                            </div>
                          </div>
                          <div className="p-8 bg-[#1a1412] rounded-[2rem] border border-white/5 overflow-auto max-h-[500px]">
-                            <pre className="text-xs leading-relaxed"><code dangerouslySetInnerHTML={{ __html: highlight(algoData[visType]?.solutions?.JavaScript || "// Solution coming soon...", prismLanguages.javascript) }} /></pre>
+                            <pre className="text-xs leading-relaxed"><code dangerouslySetInnerHTML={{ __html: highlight(algoData[visType]?.solutions?.[solLang] || "// Solution coming soon...",
+                                solLang === 'JavaScript' ? prismLanguages.javascript :
+                                solLang === 'CPP' ? prismLanguages.cpp :
+                                solLang === 'Python' ? prismLanguages.python : prismLanguages.java
+                            ) }} /></pre>
                          </div>
                     </motion.div>
                 )}
