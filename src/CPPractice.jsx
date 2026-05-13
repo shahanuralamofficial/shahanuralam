@@ -209,21 +209,13 @@ const CPPractice = ({ onBack }) => {
   };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-screen bg-[#0a0604] text-slate-200 font-sans pb-20 overflow-x-hidden">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-screen text-slate-200 font-sans pb-20 overflow-x-hidden">
       <style>{`
         .custom-scrollbar::-webkit-scrollbar { height: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(234, 88, 12, 0.2); border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(234, 88, 12, 0.4); }
       `}</style>
-      <nav className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center bg-black/40 backdrop-blur-xl border-b border-orange-600/10 sticky top-0">
-        <button onClick={onBack} className="flex items-center gap-2 text-slate-400 hover:text-orange-500 transition-all bg-white/5 px-3 py-1.5 rounded-xl border border-white/10">
-          <ArrowLeft className="w-4 h-4" /> <span className="text-xs font-bold hidden sm:inline">Portfolio</span>
-        </button>
-        <button onClick={fetchProblems} className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-orange-600/10 text-slate-400 transition-all">
-          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-        </button>
-      </nav>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 mt-8 sm:mt-12">
         {/* Upcoming Contests Section */}
@@ -264,13 +256,18 @@ const CPPractice = ({ onBack }) => {
            </div>
         </div>
 
-        <header className="mb-8">
-          <h1 className="text-4xl sm:text-7xl font-black text-white tracking-tighter mb-4 leading-none">
-            Zen <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-rose-500 to-rose-600">Workspace</span>
-          </h1>
-          <p className="text-slate-500 text-xs sm:text-lg max-w-2xl font-medium leading-relaxed">
-            Exploring {problems.length > 0 ? problems.length.toLocaleString() : 'thousands of'} problems across multiple platforms for distraction-free practice.
-          </p>
+        <header className="mb-8 flex justify-between items-start">
+          <div>
+            <h1 className="text-4xl sm:text-7xl font-black text-white tracking-tighter mb-4 leading-none">
+              Zen <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-rose-500 to-rose-600">Workspace</span>
+            </h1>
+            <p className="text-slate-500 text-xs sm:text-lg max-w-2xl font-medium leading-relaxed">
+              Exploring {problems.length > 0 ? problems.length.toLocaleString() : 'thousands of'} problems across multiple platforms for distraction-free practice.
+            </p>
+          </div>
+          <button onClick={fetchProblems} title="Refresh Problems" className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-orange-500/50 hover:bg-orange-500/10 text-slate-400 transition-all">
+            <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
+          </button>
         </header>
 
         {/* Search & Filter Bar */}

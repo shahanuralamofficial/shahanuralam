@@ -244,13 +244,87 @@ const Visualizers = ({ onBack }) => {
   };
 
   const algoData = {
-    bubble: { ...ALGO_METADATA.bubble, startFunc: bubbleSort, description: 'Compares adjacent elements and swaps if needed.', practiceProblems: [{ title: 'Bubble Sort (GFG)', url: 'https://www.geeksforgeeks.org/problems/bubble-sort/1', difficulty: 'Easy' }], solutions: { JavaScript: '...' } },
-    selection: { ...ALGO_METADATA.selection, startFunc: selectionSort, description: 'Finds min element and puts it at front.' },
-    insertion: { ...ALGO_METADATA.insertion, startFunc: insertionSort, description: 'Inserts each element into its place.' },
-    linear: { ...ALGO_METADATA.linear, startFunc: linearSearch, description: 'Sequentially checks elements.' },
-    binary: { ...ALGO_METADATA.binary, startFunc: binarySearch, description: 'Search in sorted array.' },
-    bfs: { ...ALGO_METADATA.bfs, startFunc: runBFS, description: 'Explores neighbors level by level.' },
-    dfs: { ...ALGO_METADATA.dfs, startFunc: runDFS, description: 'Explores path as deep as possible.' }
+    bubble: {
+        ...ALGO_METADATA.bubble,
+        startFunc: bubbleSort,
+        description: 'Compares adjacent elements and swaps if needed.',
+        practiceProblems: [
+            { title: 'Bubble Sort (GFG)', url: 'https://www.geeksforgeeks.org/problems/bubble-sort/1', difficulty: 'Easy' },
+            { title: 'Sort Colors (LeetCode)', url: 'https://leetcode.com/problems/sort-colors/', difficulty: 'Medium' }
+        ],
+        solutions: {
+            JavaScript: `function bubbleSort(arr) {\n  let n = arr.length;\n  for (let i = 0; i < n; i++) {\n    for (let j = 0; j < n - i - 1; j++) {\n      if (arr[j] > arr[j + 1]) {\n        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];\n      }\n    }\n  }\n  return arr;\n}`
+        }
+    },
+    selection: {
+        ...ALGO_METADATA.selection,
+        startFunc: selectionSort,
+        description: 'Finds min element and puts it at front.',
+        practiceProblems: [
+            { title: 'Selection Sort (GFG)', url: 'https://www.geeksforgeeks.org/problems/selection-sort/1', difficulty: 'Easy' }
+        ],
+        solutions: {
+            JavaScript: `function selectionSort(arr) {\n  let n = arr.length;\n  for (let i = 0; i < n; i++) {\n    let min = i;\n    for (let j = i + 1; j < n; j++) {\n      if (arr[j] < arr[min]) min = j;\n    }\n    [arr[i], arr[min]] = [arr[min], arr[i]];\n  }\n  return arr;\n}`
+        }
+    },
+    insertion: {
+        ...ALGO_METADATA.insertion,
+        startFunc: insertionSort,
+        description: 'Inserts each element into its place.',
+        practiceProblems: [
+            { title: 'Insertion Sort (GFG)', url: 'https://www.geeksforgeeks.org/problems/insertion-sort/1', difficulty: 'Easy' }
+        ],
+        solutions: {
+            JavaScript: `function insertionSort(arr) {\n  for (let i = 1; i < arr.length; i++) {\n    let key = arr[i];\n    let j = i - 1;\n    while (j >= 0 && arr[j] > key) {\n      arr[j + 1] = arr[j];\n      j--;\n    }\n    arr[j + 1] = key;\n  }\n  return arr;\n}`
+        }
+    },
+    linear: {
+        ...ALGO_METADATA.linear,
+        startFunc: linearSearch,
+        description: 'Sequentially checks elements.',
+        practiceProblems: [
+            { title: 'Linear Search (GFG)', url: 'https://www.geeksforgeeks.org/problems/search-an-element-in-an-array-1587115621/1', difficulty: 'Easy' }
+        ],
+        solutions: {
+            JavaScript: `function linearSearch(arr, target) {\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] === target) return i;\n  }\n  return -1;\n}`
+        }
+    },
+    binary: {
+        ...ALGO_METADATA.binary,
+        startFunc: binarySearch,
+        description: 'Search in sorted array.',
+        practiceProblems: [
+            { title: 'Binary Search (LeetCode)', url: 'https://leetcode.com/problems/binary-search/', difficulty: 'Easy' },
+            { title: 'Search Insert Position (LeetCode)', url: 'https://leetcode.com/problems/search-insert-position/', difficulty: 'Easy' }
+        ],
+        solutions: {
+            JavaScript: `function binarySearch(arr, target) {\n  let low = 0, high = arr.length - 1;\n  while (low <= high) {\n    let mid = Math.floor((low + high) / 2);\n    if (arr[mid] === target) return mid;\n    if (arr[mid] < target) low = mid + 1;\n    else high = mid - 1;\n  }\n  return -1;\n}`
+        }
+    },
+    bfs: {
+        ...ALGO_METADATA.bfs,
+        startFunc: runBFS,
+        description: 'Explores neighbors level by level.',
+        practiceProblems: [
+            { title: 'BFS of Graph (GFG)', url: 'https://www.geeksforgeeks.org/problems/bfs-traversal-of-graph/1', difficulty: 'Easy' },
+            { title: 'Number of Islands (LeetCode)', url: 'https://leetcode.com/problems/number-of-islands/', difficulty: 'Medium' }
+        ],
+        solutions: {
+            JavaScript: `function bfs(graph, start) {\n  let queue = [start];\n  let visited = new Set([start]);\n  while (queue.length > 0) {\n    let u = queue.shift();\n    console.log(u);\n    for (let v of graph[u]) {\n      if (!visited.has(v)) {\n        visited.add(v);\n        queue.push(v);\n      }\n    }\n  }\n}`
+        }
+    },
+    dfs: {
+        ...ALGO_METADATA.dfs,
+        startFunc: runDFS,
+        description: 'Explores path as deep as possible.',
+        practiceProblems: [
+            { title: 'DFS of Graph (GFG)', url: 'https://www.geeksforgeeks.org/problems/depth-first-traversal-for-a-graph/1', difficulty: 'Easy' },
+            { title: 'Path Sum (LeetCode)', url: 'https://leetcode.com/problems/path-sum/', difficulty: 'Easy' }
+        ],
+        solutions: {
+            JavaScript: `function dfs(graph, u, visited = new Set()) {\n  visited.add(u);\n  console.log(u);\n  for (let v of graph[u]) {\n    if (!visited.has(v)) {\n      dfs(graph, v, visited);\n    }\n  }\n}`
+        }
+    }
   };
 
   const algoCategories = [
@@ -270,13 +344,7 @@ const Visualizers = ({ onBack }) => {
   useEffect(() => { resetVis(); }, [resetVis]);
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-[#080605] text-slate-200 font-sans pb-20 overflow-x-hidden">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex justify-between items-center sticky top-0 bg-[#080605]/80 backdrop-blur-xl z-50 border-b border-white/5">
-        <button onClick={onBack} className="flex items-center gap-2 text-slate-400 hover:text-orange-600 transition-all bg-white/5 px-4 py-2 rounded-xl border border-white/5">
-          <ArrowLeft size={18} /> <span className="font-bold">Portfolio</span>
-        </button>
-        <span className="font-black uppercase tracking-widest text-sm text-orange-600 flex items-center gap-2"><Zap size={16} /> Algo Lab</span>
-      </nav>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen text-slate-200 font-sans pb-20 overflow-x-hidden">
 
       <div className="max-w-7xl mx-auto px-4 mt-12">
         <header className="mb-12">

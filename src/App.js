@@ -101,43 +101,12 @@ export default function ShahanurPortfolio() {
     }
   };
 
-  if (hash === '#cp') return <Suspense fallback={<LoadingScreen/>}><CPPractice onBack={() => window.location.hash = ''} /></Suspense>;
-  if (hash === '#visualizers') return <Suspense fallback={<LoadingScreen/>}><Visualizers onBack={() => window.location.hash = ''} /></Suspense>;
-  if (hash === '#analytics') return <Suspense fallback={<LoadingScreen/>}><Analytics onBack={() => window.location.hash = ''} /></Suspense>;
+  const mainContent = () => {
+    if (hash === '#cp') return <Suspense fallback={<LoadingScreen/>}><CPPractice onBack={() => window.location.hash = ''} /></Suspense>;
+    if (hash === '#visualizers') return <Suspense fallback={<LoadingScreen/>}><Visualizers onBack={() => window.location.hash = ''} /></Suspense>;
+    if (hash === '#analytics') return <Suspense fallback={<LoadingScreen/>}><Analytics onBack={() => window.location.hash = ''} /></Suspense>;
 
-  return (
-    <div className={`min-h-screen w-full transition-colors duration-500 antialiased relative overflow-x-hidden ${darkMode ? 'bg-[#0c0a09] text-stone-200' : 'bg-[#fcfaf9] text-stone-900'}`}>
-      <div className={`absolute inset-0 transition-opacity duration-1000 pointer-events-none ${darkMode ? 'opacity-100' : 'opacity-30'}`}>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(234,88,12,0.03),transparent_50%)] pointer-events-none"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(249,115,22,0.03),transparent_50%)] pointer-events-none"></div>
-      </div>
-
-      <header className={`w-full p-4 border-b sticky top-0 z-50 backdrop-blur-xl ${darkMode ? 'border-white/5 bg-black/40' : 'border-stone-200 bg-white/70 shadow-sm'}`}>
-        <nav className="max-w-6xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full border-2 border-orange-600/50 overflow-hidden shadow-lg shadow-orange-900/20">
-              <img src={profileImg} alt="Shahanur" className="w-full h-full object-cover scale-110" />
-            </div>
-            <div className="hidden sm:block text-left">
-               <h1 className="text-lg font-bold">Shahanur Alam</h1>
-               <p className="text-[10px] text-orange-600 font-black uppercase">Mobile Developer</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-xl border border-white/10">{darkMode ? <Sun size={18} /> : <Moon size={18} />}</button>
-            <button onClick={() => window.location.hash = '#cp'} className="hidden md:flex items-center gap-2 px-3 py-1.5 text-xs font-bold border border-white/10 rounded-lg transition-colors hover:border-orange-600/50">
-              <Code2 size={14} className="text-orange-600" />
-              CP Workspace
-            </button>
-            <button onClick={() => window.location.hash = '#visualizers'} className="hidden lg:flex items-center gap-2 px-3 py-1.5 text-xs font-bold border border-white/10 rounded-lg transition-colors hover:border-orange-500/50">
-              <Zap size={14} className="text-orange-500" />
-              Algo Lab & Challenges
-            </button>
-            <button onClick={() => window.location.hash = '#analytics'} className="p-2 rounded-xl border border-white/10"><BarChart2 size={18}/></button>
-          </div>
-        </nav>
-      </header>
-
+    return (
       <main className="max-w-6xl mx-auto px-4 py-12 space-y-24">
         {/* Hero */}
         <section className={`p-8 sm:p-12 rounded-[3rem] border transition-all ${darkMode ? 'bg-black/20 border-white/5 shadow-2xl' : 'bg-white border-stone-200 shadow-xl'}`}>
@@ -186,8 +155,12 @@ export default function ShahanurPortfolio() {
               {skills.map(s => <span key={s} className="px-4 py-2 bg-stone-800 rounded-xl text-xs font-bold border border-white/5 text-stone-300 transition-all hover:border-orange-600/50">{s}</span>)}
             </div>
             <div className="mt-8 pt-8 border-t border-white/5">
-               <h4 className="text-sm font-bold text-stone-500 mb-3">Other Technologies</h4>
-               <p className="text-sm text-stone-400">Android Studio, Firebase, MySQL, XAMPP, Postman, Git & GitHub, VS Code</p>
+               <h4 className="text-sm font-bold text-stone-500 mb-4 uppercase tracking-widest">Other Technologies</h4>
+               <div className="flex flex-wrap gap-2">
+                 {["Android Studio", "Firebase", "MySQL", "XAMPP", "Postman", "Git & GitHub", "VS Code"].map(tech => (
+                   <span key={tech} className="px-3 py-1.5 bg-white/[0.03] border border-white/5 rounded-lg text-[10px] text-stone-400 font-bold">{tech}</span>
+                 ))}
+               </div>
             </div>
           </div>
         </div>
@@ -273,10 +246,51 @@ export default function ShahanurPortfolio() {
           </div>
         </section>
       </main>
+    );
+  };
 
-      <footer className="p-12 text-center text-stone-600 border-t border-white/5 bg-black/20 backdrop-blur-xl">
-        <p className="text-xs font-black uppercase tracking-[0.3em]">© {new Date().getFullYear()} Shahanur Alam • Built with Passion</p>
-      </footer>
+  return (
+    <div className={`min-h-screen w-full transition-colors duration-500 antialiased relative overflow-x-hidden ${darkMode ? 'bg-[#0c0a09] text-stone-200' : 'bg-[#fcfaf9] text-stone-900'}`}>
+      <div className={`absolute inset-0 transition-opacity duration-1000 pointer-events-none ${darkMode ? 'opacity-100' : 'opacity-30'}`}>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(234,88,12,0.03),transparent_50%)] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(249,115,22,0.03),transparent_50%)] pointer-events-none"></div>
+      </div>
+
+      <header className={`w-full p-4 border-b sticky top-0 z-50 backdrop-blur-xl ${darkMode ? 'border-white/5 bg-black/40' : 'border-stone-200 bg-white/70 shadow-sm'}`}>
+        <nav className="max-w-6xl mx-auto flex justify-between items-center">
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.location.hash = ''}>
+            <div className="w-10 h-10 rounded-full border-2 border-orange-600/50 overflow-hidden shadow-lg shadow-orange-900/20 shrink-0">
+              <img src={profileImg} alt="Shahanur" className="w-full h-full object-cover scale-110" />
+            </div>
+            <div className="text-left">
+               <h1 className="text-sm sm:text-lg font-bold leading-tight">Shahanur Alam</h1>
+               <p className="text-[8px] sm:text-[10px] text-orange-600 font-black uppercase tracking-tighter sm:tracking-normal">Mobile Developer</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-xl border border-white/10 transition-colors hover:bg-white/5">{darkMode ? <Sun size={18} /> : <Moon size={18} />}</button>
+            <button onClick={() => window.location.hash = '#cp'} className={`flex items-center gap-2 px-2.5 sm:px-3 py-1.5 text-[10px] sm:text-xs font-bold border rounded-lg transition-colors bg-white/5 ${hash === '#cp' ? 'border-orange-600 bg-orange-600/10' : 'border-white/10 hover:border-orange-600/50'}`}>
+              <Code2 size={14} className="text-orange-600" />
+              <span className="hidden sm:inline">CP Workspace</span>
+              <span className="sm:hidden">CP</span>
+            </button>
+            <button onClick={() => window.location.hash = '#visualizers'} className={`flex items-center gap-2 px-2.5 sm:px-3 py-1.5 text-[10px] sm:text-xs font-bold border rounded-lg transition-colors bg-white/5 ${hash === '#visualizers' ? 'border-orange-500 bg-orange-500/10' : 'border-white/10 hover:border-orange-500/50'}`}>
+              <Zap size={14} className="text-orange-500" />
+              <span className="hidden sm:inline">Algo Lab</span>
+              <span className="sm:hidden">Lab</span>
+            </button>
+            <button onClick={() => window.location.hash = '#analytics'} className={`p-2 rounded-xl border transition-colors hover:bg-white/5 ${hash === '#analytics' ? 'border-orange-600 bg-orange-600/10' : 'border-white/10'}`}><BarChart2 size={18}/></button>
+          </div>
+        </nav>
+      </header>
+
+      {mainContent()}
+
+      {!hash && (
+        <footer className="p-12 text-center text-stone-600 border-t border-white/5 bg-black/20 backdrop-blur-xl">
+          <p className="text-xs font-black uppercase tracking-[0.3em]">© {new Date().getFullYear()} Shahanur Alam • Built with Passion</p>
+        </footer>
+      )}
     </div>
   );
 }
