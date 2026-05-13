@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, RefreshCw, Zap, Info, Play, RotateCcw,
   Code2, HelpCircle, CheckCircle2, Terminal, ExternalLink,
-  ChevronRight, ChevronLeft, FastForward, Cpu, Loader2, Save,
-  Volume2, VolumeX
+  ChevronRight, ChevronLeft, FastForward, Cpu, Volume2, VolumeX,
+  Pause, SkipForward, LayoutGrid, List, Binary, Layers
 } from 'lucide-react';
 import { highlight, languages as prismLanguages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
@@ -14,489 +14,260 @@ import 'prismjs/components/prism-cpp';
 import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-java';
 import 'prismjs/themes/prism-tomorrow.css';
-import Editor from 'react-simple-code-editor';
 
-const langSkeletons = {
-  'JavaScript': (name) => `function ${name}(arr) {\n  // Write your logic here\n  \n  return arr;\n}`,
-  'Python 3': (name) => `def ${name}(arr):\n    # Write your logic here\n    \n    return arr`,
-  'C++ 17': (name) => `#include <iostream>\n#include <vector>\nusing namespace std;\n\nvector<int> ${name}(vector<int>& arr) {\n    // Write your logic here\n    \n    return arr;\n}`,
-  'Java': (name) => `import java.util.*;\n\npublic class Solution {\n    public int[] ${name}(int[] arr) {\n        // Write your logic here\n        \n        return arr;\n    }\n}`
-};
-
-const PISTON_CONFIG = {
-  'JavaScript': { language: 'javascript', version: '*' },
-  'Python 3': { language: 'python', version: '*' },
-  'C++ 17': { language: 'cpp', version: '*' },
-  'Java': { language: 'java', version: '*' }
+// Fixed metadata outside component to prevent dependency loops
+const ALGO_METADATA = {
+    bubble: { type: 'bars', name: 'Bubble Sort' },
+    selection: { type: 'bars', name: 'Selection Sort' },
+    insertion: { type: 'bars', name: 'Insertion Sort' },
+    merge: { type: 'bars', name: 'Merge Sort' },
+    quick: { type: 'bars', name: 'Quick Sort' },
+    heap: { type: 'bars', name: 'Heap Sort' },
+    shell: { type: 'bars', name: 'Shell Sort' },
+    linear: { type: 'bars', name: 'Linear Search' },
+    binary: { type: 'bars', name: 'Binary Search' },
+    jump: { type: 'bars', name: 'Jump Search' },
+    interpolation: { type: 'bars', name: 'Interpolation Search' },
+    bfs: { type: 'grid', name: 'Breadth-First Search' },
+    dfs: { type: 'grid', name: 'Depth-First Search' },
+    fibonacci: { type: 'bars', name: 'Fibonacci (DP)' },
+    gcd: { type: 'bars', name: 'Euclidean GCD' },
+    sieve: { type: 'bars', name: 'Sieve of Eratosthenes' },
+    pascals: { type: 'bars', name: 'Pascal Triangle' },
+    hanoi: { type: 'peg', name: 'Tower of Hanoi' },
+    nqueens: { type: 'grid', name: 'N-Queens' },
 };
 
 const Visualizers = ({ onBack }) => {
   const [visType, setVisType] = useState('bubble');
   const [visArray, setVisArray] = useState([]);
-  const [visPointers, setVisPointers] = useState({ left: -1, right: -1, mid: -1, active: [] });
+  const [visPointers, setVisPointers] = useState({ left: -1, right: -1, mid: -1, active: [], secondary: [] });
   const [isSorting, setIsVisSorting] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [toast, setToast] = useState(null);
-  const [stepDescription, setStepDescription] = useState('Select an algorithm and press Start to visualize.');
-  const [activeTab, setActiveTab] = useState('visualizer'); // 'visualizer', 'problem', 'solution'
-  const [speed, setSpeed] = useState(500);
-  const speedRef = useRef(500);
+  const [stepDescription, setStepDescription] = useState('Select an algorithm to start.');
+  const [activeTab, setActiveTab] = useState('visualizer');
+  const [speedMultiplier, setSpeedMultiplier] = useState(1);
+  const speedRef = useRef(800);
   const [isMuted, setIsMuted] = useState(false);
-
-  const [selectedLang, setSelectedLang] = useState('JavaScript');
+  const [volume, setVolume] = useState(0.5);
   const [ansSelectedLang, setAnsSelectedLang] = useState('JavaScript');
-  const [userCode, setUserCode] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null); // 'loading', 'success', 'error'
+
+  const [gridData, setVisGrid] = useState([]);
+  const [pegs, setVisPegs] = useState([[], [], []]);
 
   const audioCtx = useRef(null);
+  const isPausedRef = useRef(false);
+  const stepResolverRef = useRef(null);
 
-  useEffect(() => {
-    speedRef.current = speed;
-  }, [speed]);
+  useEffect(() => { speedRef.current = 800 / speedMultiplier; }, [speedMultiplier]);
+  useEffect(() => { isPausedRef.current = isPaused; }, [isPaused]);
 
-  const showToast = useCallback((msg) => {
-    setToast(msg);
-    setTimeout(() => setToast(null), 3000);
-  }, []);
+  const showToast = useCallback((msg) => { setToast(msg); setTimeout(() => setToast(null), 3000); }, []);
 
   const playTone = useCallback((freq, type = 'sine', duration = 0.1) => {
-    if (isMuted) return;
+    if (isMuted || volume === 0) return;
     try {
-      if (!audioCtx.current) {
-        audioCtx.current = new (window.AudioContext || window.webkitAudioContext)();
-      }
+      if (!audioCtx.current) audioCtx.current = new (window.AudioContext || window.webkitAudioContext)();
       const osc = audioCtx.current.createOscillator();
       const gain = audioCtx.current.createGain();
-
       osc.type = type;
       osc.frequency.setValueAtTime(freq, audioCtx.current.currentTime);
-
-      gain.gain.setValueAtTime(0.05, audioCtx.current.currentTime);
+      gain.gain.setValueAtTime(volume * 0.05, audioCtx.current.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.current.currentTime + duration);
-
-      osc.connect(gain);
-      gain.connect(audioCtx.current.destination);
-
-      osc.start();
-      osc.stop(audioCtx.current.currentTime + duration);
+      osc.connect(gain); gain.connect(audioCtx.current.destination);
+      osc.start(); osc.stop(audioCtx.current.currentTime + duration);
     } catch (e) {}
-  }, [isMuted]);
+  }, [isMuted, volume]);
 
   const playSuccessSound = useCallback(() => {
     if (isMuted) return;
-    [440, 554, 659].forEach((f, i) => {
-      setTimeout(() => playTone(f, 'sine', 0.2), i * 150);
-    });
+    [440, 554, 659].forEach((f, i) => setTimeout(() => playTone(f, 'sine', 0.2), i * 150));
   }, [isMuted, playTone]);
 
-  const delay = useCallback(() => new Promise(r => setTimeout(r, speedRef.current)), []);
+  const checkPause = useCallback(async () => {
+    if (isPausedRef.current) await new Promise(resolve => { stepResolverRef.current = resolve; });
+  }, []);
 
-  // --- Algorithms Implementation ---
+  const delay = useCallback(async () => {
+    await checkPause();
+    await new Promise(r => setTimeout(r, speedRef.current));
+  }, [checkPause]);
 
-  const bubbleSort = useCallback(async () => {
-    setIsVisSorting(true);
+  const handleStep = () => {
+    if (stepResolverRef.current) {
+        const resolve = stepResolverRef.current;
+        stepResolverRef.current = null;
+        resolve();
+    }
+  };
+
+  const togglePlayPause = () => {
+    setIsPaused(!isPaused);
+    if (isPaused && stepResolverRef.current) handleStep();
+  };
+
+  // --- Algorithms ---
+  const bubbleSort = async () => {
+    setIsVisSorting(true); setIsPaused(false);
     let arr = [...visArray];
-    setStepDescription('Starting Bubble Sort: Comparing adjacent elements and swapping if needed.');
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < arr.length - i - 1; j++) {
-        setVisPointers({ active: [j, j + 1] });
-        setStepDescription(`Comparing ${arr[j]} and ${arr[j + 1]}...`);
-        playTone(200 + arr[j] * 5);
-        await delay();
+        setVisPointers(prev => ({ ...prev, active: [j, j + 1] }));
+        setStepDescription(`Comparing ${arr[j]} and ${arr[j+1]}`);
+        playTone(200 + arr[j] * 5); await delay();
         if (arr[j] > arr[j + 1]) {
-          setStepDescription(`${arr[j]} > ${arr[j+1]}, swapping them.`);
-          playTone(400 + arr[j] * 5, 'square', 0.05);
           [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-          setVisArray([...arr]);
-          await delay();
+          setVisArray([...arr]); await delay();
         }
       }
     }
-    setVisPointers({ active: [] });
-    setIsVisSorting(false);
-    setStepDescription('Bubble Sort Complete! The array is now sorted.');
-    playSuccessSound();
-    showToast("Sorting Complete!");
-  }, [visArray, delay, playTone, playSuccessSound]);
+    setVisPointers(prev => ({ ...prev, active: [] })); setIsVisSorting(false);
+    setStepDescription('Bubble Sort Complete!'); playSuccessSound();
+  };
 
-  const linearSearch = useCallback(async () => {
-    setIsVisSorting(true);
+  const selectionSort = async () => {
+    setIsVisSorting(true); setIsPaused(false);
+    let arr = [...visArray];
+    for (let i = 0; i < arr.length; i++) {
+        let min = i;
+        for (let j = i + 1; j < arr.length; j++) {
+            setVisPointers(prev => ({ ...prev, active: [j], mid: min, left: i }));
+            setStepDescription(`Looking for min. Current: ${arr[min]}`);
+            playTone(300 + j * 10); await delay();
+            if (arr[j] < arr[min]) min = j;
+        }
+        [arr[i], arr[min]] = [arr[min], arr[i]];
+        setVisArray([...arr]); await delay();
+    }
+    setIsVisSorting(false); playSuccessSound();
+  };
+
+  const insertionSort = async () => {
+    setIsVisSorting(true); setIsPaused(false);
+    let arr = [...visArray];
+    for (let i = 1; i < arr.length; i++) {
+        let key = arr[i]; let j = i - 1;
+        setStepDescription(`Inserting ${key}`);
+        while (j >= 0 && arr[j] > key) {
+            setVisPointers(prev => ({ ...prev, active: [j, j+1] }));
+            arr[j + 1] = arr[j]; setVisArray([...arr]);
+            playTone(300 + j * 10); await delay(); j--;
+        }
+        arr[j + 1] = key; setVisArray([...arr]);
+    }
+    setIsVisSorting(false); playSuccessSound();
+  };
+
+  const linearSearch = async () => {
+    setIsVisSorting(true); setIsPaused(false);
     let arr = [...visArray];
     let target = arr[Math.floor(Math.random() * arr.length)];
-    setStepDescription(`Starting Linear Search: Looking for value ${target} sequentially.`);
-    showToast(`Searching for: ${target}`);
-
+    setStepDescription(`Searching for: ${target}`);
     for (let i = 0; i < arr.length; i++) {
-        setVisPointers({ active: [i] });
-        setStepDescription(`Checking element at index ${i}: ${arr[i]}`);
-        playTone(300 + i * 20);
-        await delay();
+        setVisPointers(prev => ({ ...prev, active: [i] }));
+        setStepDescription(`Checking index ${i}: ${arr[i]}`);
+        playTone(300 + i * 20); await delay();
         if (arr[i] === target) {
-            setVisPointers({ active: [i] });
-            setStepDescription(`Match found! ${target} is at index ${i}.`);
-            playSuccessSound();
-            showToast("Element Found!");
-            setIsVisSorting(false);
-            return;
+            setStepDescription(`Match found at index ${i}!`);
+            playSuccessSound(); setIsVisSorting(false); return;
         }
     }
     setIsVisSorting(false);
-  }, [visArray, delay, playTone, playSuccessSound]);
+  };
 
-  const binarySearch = useCallback(async () => {
-    setIsVisSorting(true);
+  const binarySearch = async () => {
+    setIsVisSorting(true); setIsPaused(false);
     let arr = [...visArray].sort((a, b) => a - b);
     setVisArray(arr);
     let target = arr[Math.floor(Math.random() * arr.length)];
-    setStepDescription(`Starting Binary Search: Looking for ${target} in a sorted array.`);
-    showToast(`Searching for: ${target}`);
-
+    setStepDescription(`Searching for: ${target}`);
     let low = 0, high = arr.length - 1;
     while (low <= high) {
-      let mid = Math.floor((low + high) / 2);
-      setVisPointers({ left: low, right: high, mid: mid, active: [] });
-      setStepDescription(`Range: [${low}, ${high}]. Midpoint at index ${mid} is ${arr[mid]}.`);
-      playTone(400 + mid * 20);
-      await delay();
-
+      let mid = low + Math.floor((high - low) / 2);
+      setVisPointers(prev => ({ ...prev, left: low, right: high, mid: mid, active: [] }));
+      setStepDescription(`Checking index ${mid}: ${arr[mid]}`);
+      playTone(400 + mid * 20); await delay();
       if (arr[mid] === target) {
-        setVisPointers({ left: low, right: high, mid: mid, active: [mid] });
-        setStepDescription(`Match found! ${target} is at index ${mid}.`);
-        playSuccessSound();
-        showToast("Element Found!");
-        break;
+        setVisPointers(prev => ({ ...prev, active: [mid] }));
+        setStepDescription(`Found ${target} at index ${mid}!`);
+        playSuccessSound(); break;
       } else if (arr[mid] < target) {
-        setStepDescription(`${arr[mid]} < ${target}, searching the right half.`);
         low = mid + 1;
       } else {
-        setStepDescription(`${arr[mid]} > ${target}, searching the left half.`);
         high = mid - 1;
       }
       await delay();
     }
     setIsVisSorting(false);
-  }, [visArray, delay, playTone, playSuccessSound]);
-
-  const sieveVisualizer = useCallback(async () => {
-    setIsVisSorting(true);
-    let n = 50;
-    let primes = new Array(n + 1).fill(true);
-    setVisArray(primes.map((_, i) => i));
-    setStepDescription('Starting Sieve of Eratosthenes: Finding all primes up to 50.');
-
-    for (let p = 2; p * p <= n; p++) {
-      if (primes[p]) {
-        setVisPointers({ active: [p] });
-        setStepDescription(`${p} is prime. Marking all its multiples as non-prime.`);
-        playTone(300 + p * 10);
-        await delay();
-        for (let i = p * p; i <= n; i += p) {
-          primes[i] = false;
-          setVisArray([...primes.map((val, idx) => val ? idx : -1)]);
-          setVisPointers({ active: [p, i] });
-          playTone(200, 'sine', 0.05);
-          await delay();
-        }
-      }
-    }
-    setVisPointers({ active: [] });
-    setIsVisSorting(false);
-    setStepDescription('Sieve Complete! Remaining numbers are prime.');
-    playSuccessSound();
-    showToast("Sieve Complete!");
-  }, [delay, playTone, playSuccessSound]);
-
-  const euclideanGCD = useCallback(async () => {
-    setIsVisSorting(true);
-    let a = Math.floor(Math.random() * 80) + 20;
-    let b = Math.floor(Math.random() * 80) + 20;
-    setVisArray([a, b]);
-    setStepDescription(`Calculating GCD of ${a} and ${b} using Euclidean Algorithm.`);
-
-    while (b !== 0) {
-        setVisPointers({ active: [0, 1] });
-        setStepDescription(`a = ${a}, b = ${b}. Calculating a % b...`);
-        playTone(300);
-        await delay();
-        let temp = b;
-        b = a % b;
-        a = temp;
-        setVisArray([a, b]);
-        setStepDescription(`New state: a = ${a}, b = ${b}.`);
-        playTone(400);
-        await delay();
-    }
-    setStepDescription(`GCD is ${a}.`);
-    playSuccessSound();
-    showToast(`GCD is ${a}`);
-    setIsVisSorting(false);
-  }, [delay, playTone, playSuccessSound]);
-
-  const quickSortVisualizer = useCallback(async () => {
-    setIsVisSorting(true);
-    let arr = [...visArray];
-    setStepDescription('Starting Quick Sort: Selecting pivot and partitioning...');
-
-    const partition = async (l, r) => {
-        let pivot = arr[r];
-        setStepDescription(`Selecting pivot: ${pivot} at index ${r}`);
-        setVisPointers({ mid: r, active: [] });
-        playTone(500);
-        await delay();
-
-        let i = l - 1;
-        for (let j = l; j < r; j++) {
-            setVisPointers({ mid: r, active: [j, i >= l ? i : l] });
-            setStepDescription(`Comparing ${arr[j]} with pivot ${pivot}...`);
-            playTone(300 + arr[j] * 5);
-            await delay();
-            if (arr[j] < pivot) {
-                i++;
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-                setVisArray([...arr]);
-                setStepDescription(`${arr[i]} < pivot, moving to left partition.`);
-                playTone(400, 'square', 0.05);
-                await delay();
-            }
-        }
-        [arr[i + 1], arr[r]] = [arr[r], arr[i + 1]];
-        setVisArray([...arr]);
-        setStepDescription(`Placing pivot ${pivot} at its correct position.`);
-        playTone(600);
-        await delay();
-        return i + 1;
-    };
-
-    const sort = async (l, r) => {
-        if (l < r) {
-            let pi = await partition(l, r);
-            await sort(l, pi - 1);
-            await sort(pi + 1, r);
-        }
-    };
-
-    await sort(0, arr.length - 1);
-    setVisPointers({ active: [], mid: -1 });
-    setIsVisSorting(false);
-    setStepDescription('Quick Sort Complete! The array is fully sorted.');
-    playSuccessSound();
-    showToast("Quick Sort Complete!");
-  }, [visArray, delay, playTone, playSuccessSound]);
-
-  // --- Utility ---
-
-  const resetVis = () => {
-    if (visType === 'sieve') {
-        setVisArray(Array.from({length: 51}, (_, i) => i));
-    } else if (visType === 'gcd') {
-        setVisArray([48, 18]);
-    } else {
-        setVisArray(Array.from({length: 12}, () => Math.floor(Math.random() * 90) + 10));
-    }
-    setVisPointers({ left: -1, right: -1, mid: -1, active: [] });
-    setStepDescription('Select an algorithm and press Start to visualize.');
   };
 
-  useEffect(() => { resetVis(); }, [visType]);
-
-  const algoData = useMemo(() => ({
-    bubble: {
-        id: 'bubble',
-        name: 'Bubble Sort',
-        funcName: 'bubbleSort',
-        link: 'https://www.geeksforgeeks.org/bubble-sort/',
-        description: 'Bubble Sort repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order.',
-        problem: 'Given an array of integers, sort them in ascending order using the Bubble Sort algorithm. The algorithm should have O(n^2) time complexity.',
-        solutions: {
-          'JavaScript': `function bubbleSort(arr) {\n  let n = arr.length;\n  for (let i = 0; i < n; i++) {\n    for (let j = 0; j < n - i - 1; j++) {\n      if (arr[j] > arr[j + 1]) {\n        let temp = arr[j];\n        arr[j] = arr[j + 1];\n        arr[j + 1] = temp;\n      }\n    }\n  }\n  return arr;\n}`,
-          'Python 3': `def bubbleSort(arr):\n    n = len(arr)\n    for i in range(n):\n        for j in range(0, n - i - 1):\n            if arr[j] > arr[j + 1]:\n                arr[j], arr[j + 1] = arr[j + 1], arr[j]\n    return arr`,
-          'C++ 17': `vector<int> bubbleSort(vector<int> arr) {\n    int n = arr.size();\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < n - i - 1; j++) {\n            if (arr[j] > arr[j + 1]) {\n                swap(arr[j], arr[j + 1]);\n            }\n        }\n    }\n    return arr;\n}`,
-          'Java': `public int[] bubbleSort(int[] arr) {\n    int n = arr.length;\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < n - i - 1; j++) {\n            if (arr[j] > arr[j + 1]) {\n                int temp = arr[j];\n                arr[j] = arr[j + 1];\n                arr[j + 1] = temp;\n            }\n        }\n    }\n    return arr;\n}`
-        },
-        startFunc: bubbleSort
-    },
-    linear: {
-        id: 'linear',
-        name: 'Linear Search',
-        funcName: 'linearSearch',
-        link: 'https://www.geeksforgeeks.org/linear-search/',
-        description: 'Linear Search finds an element in a list by checking each element sequentially until a match is found.',
-        problem: 'Implement a function that takes an array and a target value, and returns the index of the target if it exists, otherwise -1.',
-        solutions: {
-          'JavaScript': `function linearSearch(arr, target) {\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] === target) return i;\n  }\n  return -1;\n}`,
-          'Python 3': `def linearSearch(arr, target):\n    for i in range(len(arr)):\n        if arr[i] == target:\n            return i\n    return -1`,
-          'C++ 17': `int linearSearch(vector<int>& arr, int target) {\n    for (int i = 0; i < arr.size(); i++) {\n        if (arr[i] == target) return i;\n    }\n    return -1;\n}`,
-          'Java': `public int linearSearch(int[] arr, int target) {\n    for (int i = 0; i < arr.length; i++) {\n        if (arr[i] == target) return i;\n    }\n    return -1;\n}`
-        },
-        startFunc: linearSearch
-    },
-    binary: {
-        id: 'binary',
-        name: 'Binary Search',
-        funcName: 'binarySearch',
-        link: 'https://www.geeksforgeeks.org/binary-search/',
-        description: 'Binary Search finds the position of a target value within a sorted array by repeatedly dividing the search interval in half.',
-        problem: 'Search for a target value in a sorted array. Return the index. The time complexity should be O(log n).',
-        solutions: {
-          'JavaScript': `function binarySearch(arr, target) {\n  let low = 0, high = arr.length - 1;\n  while (low <= high) {\n    let mid = Math.floor((low + high) / 2);\n    if (arr[mid] === target) return mid;\n    if (arr[mid] < target) low = mid + 1;\n    else high = mid - 1;\n  }\n  return -1;\n}`,
-          'Python 3': `def binarySearch(arr, target):\n    low = 0\n    high = len(arr) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            low = mid + 1\n        else:\n            high = mid - 1\n    return -1`,
-          'C++ 17': `int binarySearch(vector<int>& arr, int target) {\n    int low = 0, high = arr.size() - 1;\n    while (low <= high) {\n        int mid = low + (high - low) / 2;\n        if (arr[mid] == target) return mid;\n        if (arr[mid] < target) low = mid + 1;\n        else high = mid - 1;\n    }\n    return -1;\n}`,
-          'Java': `public int binarySearch(int[] arr, int target) {\n    int low = 0, high = arr.length - 1;\n    while (low <= high) {\n        int mid = low + (high - low) / 2;\n        if (arr[mid] == target) return mid;\n        if (arr[mid] < target) low = mid + 1;\n        else high = mid - 1;\n    }\n    return -1;\n}`
-        },
-        startFunc: binarySearch
-    },
-    sieve: {
-        id: 'sieve',
-        name: 'Sieve of Eratosthenes',
-        funcName: 'sieve',
-        link: 'https://www.geeksforgeeks.org/sieve-of-eratosthenes/',
-        description: 'An ancient algorithm for finding all prime numbers up to any given limit.',
-        problem: 'Write a program to find all prime numbers less than or equal to a given integer n.',
-        solutions: {
-          'JavaScript': `function sieve(n) {\n  let primes = new Array(n + 1).fill(true);\n  primes[0] = primes[1] = false;\n  for (let p = 2; p * p <= n; p++) {\n    if (primes[p]) {\n      for (let i = p * p; i <= n; i += p)\n        primes[i] = false;\n    }\n  }\n  return primes.map((isP, i) => isP ? i : -1).filter(i => i !== -1);\n}`,
-          'Python 3': `def sieve(n):\n    primes = [True for i in range(n+1)]\n    p = 2\n    while (p * p <= n):\n        if (primes[p] == True):\n            for i in range(p * p, n+1, p):\n                primes[i] = False\n        p += 1\n    return [p for p in range(2, n+1) if primes[p]]`,
-          'C++ 17': `vector<int> sieve(int n) {\n    vector<bool> prime(n + 1, true);\n    for (int p = 2; p * p <= n; p++) {\n        if (prime[p]) {\n            for (int i = p * p; i <= n; i += p)\n                prime[i] = false;\n        }\n    }\n    vector<int> result;\n    for (int p = 2; p <= n; p++)\n        if (prime[p]) result.push_back(p);\n    return result;\n}`,
-          'Java': `public List<Integer> sieve(int n) {\n    boolean[] prime = new boolean[n + 1];\n    Arrays.fill(prime, true);\n    for (int p = 2; p * p <= n; p++) {\n        if (prime[p]) {\n            for (int i = p * p; i <= n; i += p)\n                prime[i] = false;\n        }\n    }\n    List<Integer> result = new ArrayList<>();\n    for (int i = 2; i <= n; i++)\n        if (prime[i]) result.add(i);\n    return result;\n}`
-        },
-        startFunc: sieveVisualizer
-    },
-    gcd: {
-        id: 'gcd',
-        name: 'Euclidean Algorithm (GCD)',
-        funcName: 'gcd',
-        link: 'https://www.geeksforgeeks.org/euclidean-algorithms-basic-and-extended/',
-        description: 'An efficient method for computing the greatest common divisor (GCD) of two integers.',
-        problem: 'Find the greatest common divisor of two positive integers a and b.',
-        solutions: {
-          'JavaScript': `function gcd(a, b) {\n  while (b !== 0) {\n    let temp = b;\n    b = a % b;\n    a = temp;\n  }\n  return a;\n}`,
-          'Python 3': `def gcd(a, b):\n    while b:\n        a, b = b, a % b\n    return a`,
-          'C++ 17': `int gcd(int a, int b) {\n    while (b != 0) {\n        int temp = b;\n        b = a % b;\n        a = temp;\n    }\n    return a;\n}`,
-          'Java': `public int gcd(int a, int b) {\n    while (b != 0) {\n        int temp = b;\n        b = a % b;\n        a = temp;\n    }\n    return a;\n}`
-        },
-        startFunc: euclideanGCD
-    },
-    quick: {
-        id: 'quick',
-        name: 'Quick Sort',
-        funcName: 'quickSort',
-        link: 'https://www.geeksforgeeks.org/quick-sort/',
-        description: 'Quick Sort is a divide-and-conquer algorithm that picks an element as pivot and partitions the given array around the picked pivot.',
-        problem: 'Implement the Quick Sort algorithm to sort an array in O(n log n) average time complexity.',
-        solutions: {
-          'JavaScript': `function quickSort(arr) {\n  if (arr.length <= 1) return arr;\n  let pivot = arr[arr.length - 1];\n  let left = [], right = [];\n  for (let i = 0; i < arr.length - 1; i++) {\n    if (arr[i] < pivot) left.push(arr[i]);\n    else right.push(arr[i]);\n  }\n  return [...quickSort(left), pivot, ...quickSort(right)];\n}`,
-          'Python 3': `def quickSort(arr):\n    if len(arr) <= 1: return arr\n    pivot = arr[len(arr)-1]\n    left = [x for x in arr[:-1] if x < pivot]\n    right = [x for x in arr[:-1] if x >= pivot]\n    return quickSort(left) + [pivot] + quickSort(right)`,
-          'C++ 17': `void quickSort(vector<int>& arr, int low, int high) {\n    if (low < high) {\n        int pi = partition(arr, low, high);\n        quickSort(arr, low, pi - 1);\n        quickSort(arr, pi + 1, high);\n    }\n}`,
-          'Java': `public void quickSort(int[] arr, int low, int high) {\n    if (low < high) {\n        int pi = partition(arr, low, high);\n        quickSort(arr, low, pi - 1);\n        quickSort(arr, pi + 1, high);\n    }\n}`
-        },
-        startFunc: quickSortVisualizer
-    }
-  }), [bubbleSort, linearSearch, binarySearch, sieveVisualizer, euclideanGCD, quickSortVisualizer]);
-
-  // --- Code Editor for "Submit" simulation ---
-  const handleRunChallenge = async () => {
-    setIsSubmitting(true);
-    setSubmitStatus('loading');
-
-    const config = PISTON_CONFIG[selectedLang];
-    const funcName = algoData[visType].funcName;
-
-    // These test cases match the UI examples for better clarity
-    const testCases = {
-        bubble: { input: '[12, 45, 2, 8, 30]', expected: '[2,8,12,30,45]' },
-        linear: { input: '[12, 45, 2, 8, 30], 2', expected: '2' },
-        binary: { input: '[2, 8, 12, 30, 45], 12', expected: '2' },
-        sieve: { input: '10', expected: '[2,3,5,7]' },
-        gcd: { input: '48, 18', expected: '6' },
-        quick: { input: '[12, 45, 2, 8, 30]', expected: '[2,8,12,30,45]' }
+  const runBFS = async () => {
+    setIsVisSorting(true); setIsPaused(false);
+    let grid = Array(100).fill(0); const start = 0, end = 99;
+    let queue = [start]; let visited = new Set([start]);
+    grid[start] = 1; grid[end] = 2;
+    const neighbors = (u) => {
+        let n = []; let r = Math.floor(u / 10), c = u % 10;
+        if (r > 0) n.push(u - 10); if (r < 9) n.push(u + 10);
+        if (c > 0) n.push(u - 1); if (c < 9) n.push(u + 1);
+        return n;
     };
-    const tc = testCases[visType];
-
-    const getTestWrapper = () => {
-        if (selectedLang === 'JavaScript') {
-            return `
-${userCode}
-const res = ${funcName}(${tc.input});
-const out = JSON.stringify(res).replace(/\\s/g, "");
-if (out === "${tc.expected}") {
-    console.log("RESULT_OK");
-} else {
-    console.log("RESULT_FAIL: Got " + out + " but expected ${tc.expected}");
-}`;
-        }
-        if (selectedLang === 'Python 3') {
-            return `
-${userCode}
-import json
-res = ${funcName}(${tc.input})
-out = json.dumps(res, separators=(',', ':'))
-if out == "${tc.expected}":
-    print("RESULT_OK")
-else:
-    print(f"RESULT_FAIL: Got {out} but expected ${tc.expected}")`;
-        }
-        if (selectedLang === 'C++ 17') {
-            let wrapper = "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n";
-            wrapper += userCode.replace(/#include <iostream>|#include <vector>|using namespace std;/g, "");
-
-            if (visType === 'bubble' || visType === 'quick') {
-                wrapper += `\nint main() { vector<int> t={12, 45, 2, 8, 30}; auto r=${funcName}(t); sort(t.begin(),t.end()); if(r==t) cout<<"RESULT_OK"; else cout<<"RESULT_FAIL"; return 0; }`;
-            } else if (visType === 'gcd') {
-                wrapper += `\nint main() { if(${funcName}(48,18)==6) cout<<"RESULT_OK"; else cout<<"RESULT_FAIL"; return 0; }`;
-            } else if (visType === 'linear') {
-                wrapper += `\nint main() { vector<int> t={12, 45, 2, 8, 30}; if(${funcName}(t, 2)==2) cout<<"RESULT_OK"; else cout<<"RESULT_FAIL"; return 0; }`;
-            } else if (visType === 'binary') {
-                wrapper += `\nint main() { vector<int> t={2, 8, 12, 30, 45}; if(${funcName}(t, 12)==2) cout<<"RESULT_OK"; else cout<<"RESULT_FAIL"; return 0; }`;
-            } else {
-                wrapper += `\nint main() { cout << "RESULT_OK"; return 0; }`;
+    while (queue.length > 0) {
+        let u = queue.shift(); if (u === end) break;
+        setVisPointers(prev => ({ ...prev, active: [u] }));
+        for (let v of neighbors(u)) {
+            if (!visited.has(v)) {
+                visited.add(v); grid[v] = grid[v] === 2 ? 2 : 3;
+                setVisGrid([...grid]); playTone(400 + v * 5); await delay();
+                queue.push(v);
             }
-            return wrapper;
         }
-        if (selectedLang === 'Java') {
-            return `import java.util.*;\npublic class Solution {\n${userCode}\npublic static void main(String[] args) { System.out.println("RESULT_OK"); }\n}`;
-        }
-        return userCode;
-    };
-
-    try {
-        const response = await fetch("https://emkc.org/api/v2/piston/execute", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                language: config.language,
-                version: config.version,
-                files: [{ content: getTestWrapper() }]
-            })
-        });
-
-        const data = await response.json();
-        const run = data.run || {};
-        const output = (run.output || "").trim();
-        const stderr = (run.stderr || "").trim();
-
-        if (output.includes("RESULT_OK")) {
-            setSubmitStatus('success');
-            showToast("Challenge Solved! All test cases passed.");
-        } else {
-            console.error("Piston Output:", output, "Stderr:", stderr);
-            setSubmitStatus('error');
-            showToast(stderr ? "Runtime/Compilation Error!" : "Wrong Answer! Check Console/Logic.");
-        }
-    } catch (e) {
-        console.error("Submission Error:", e);
-        setSubmitStatus('error');
-        showToast("Server Connection Failed!");
-    } finally {
-        setIsSubmitting(false);
     }
+    setIsVisSorting(false); playSuccessSound();
   };
 
-  useEffect(() => {
-    if (algoData[visType]) {
-      const skeleton = langSkeletons[selectedLang](algoData[visType].funcName);
-      setUserCode(skeleton);
-      setSubmitStatus(null);
-    }
-  }, [visType, selectedLang]);
+  const runDFS = async () => {
+    setIsVisSorting(true); setIsPaused(false);
+    let grid = Array(100).fill(0); const end = 99;
+    let visited = new Set(); grid[end] = 2;
+    const neighbors = (u) => {
+        let n = []; let r = Math.floor(u / 10), c = u % 10;
+        if (r < 9) n.push(u + 10); if (c < 9) n.push(u + 1);
+        if (r > 0) n.push(u - 10); if (c > 0) n.push(u - 1);
+        return n;
+    };
+    const dfs = async (u) => {
+        if (u === end || visited.has(u)) return u === end;
+        visited.add(u); grid[u] = 3; setVisGrid([...grid]);
+        playTone(300 + u * 5); await delay();
+        for (let v of neighbors(u)) if (await dfs(v)) return true;
+        return false;
+    };
+    await dfs(0); setIsVisSorting(false); playSuccessSound();
+  };
+
+  const algoData = {
+    bubble: { ...ALGO_METADATA.bubble, startFunc: bubbleSort, description: 'Compares adjacent elements and swaps if needed.', solutions: { JavaScript: '...' } },
+    selection: { ...ALGO_METADATA.selection, startFunc: selectionSort, description: 'Finds min element and puts it at front.' },
+    insertion: { ...ALGO_METADATA.insertion, startFunc: insertionSort, description: 'Inserts each element into its place.' },
+    linear: { ...ALGO_METADATA.linear, startFunc: linearSearch, description: 'Sequentially checks elements.' },
+    binary: { ...ALGO_METADATA.binary, startFunc: binarySearch, description: 'Search in sorted array.' },
+    bfs: { ...ALGO_METADATA.bfs, startFunc: runBFS, description: 'Explores neighbors level by level.' },
+    dfs: { ...ALGO_METADATA.dfs, startFunc: runDFS, description: 'Explores path as deep as possible.' },
+    gcd: { ...ALGO_METADATA.gcd, startFunc: bubbleSort, description: 'Euclidean GCD algorithm.' },
+    fibonacci: { ...ALGO_METADATA.fibonacci, startFunc: bubbleSort, description: 'Dynamic Programming Fibonacci.' }
+  };
+
+  const resetVis = useCallback(() => {
+    const type = ALGO_METADATA[visType]?.type;
+    if (type === 'bars') setVisArray(Array.from({length: 12}, () => Math.floor(Math.random() * 90) + 10));
+    else if (type === 'grid') setVisGrid(Array(100).fill(0));
+    setVisPointers({ left: -1, right: -1, mid: -1, active: [], secondary: [] });
+    setStepDescription('Ready to visualize.');
+  }, [visType]);
+
+  useEffect(() => { resetVis(); }, [resetVis]);
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-[#080605] text-slate-200 font-sans pb-20 overflow-x-hidden">
@@ -504,347 +275,123 @@ else:
         <button onClick={onBack} className="flex items-center gap-2 text-slate-400 hover:text-orange-600 transition-all bg-white/5 px-4 py-2 rounded-xl border border-white/5">
           <ArrowLeft size={18} /> <span className="font-bold">Portfolio</span>
         </button>
-        <span className="font-black uppercase tracking-widest text-sm text-orange-600 flex items-center gap-2">
-            <Zap size={16} /> Algo Lab
-        </span>
+        <span className="font-black uppercase tracking-widest text-sm text-orange-600 flex items-center gap-2"><Zap size={16} /> Algo Lab</span>
       </nav>
 
-      <div className="max-w-6xl mx-auto px-4 mt-12">
+      <div className="max-w-7xl mx-auto px-4 mt-12">
         <header className="mb-12">
-          <h1 className="text-5xl font-black text-white tracking-tighter mb-4">Master the <span className="text-orange-600">Algorithms</span></h1>
-          <p className="text-slate-500 max-w-2xl">Interactive simulations and challenges for core computer science algorithms. Learn, visualize, and solve.</p>
+          <h1 className="text-5xl font-black text-white tracking-tighter mb-4">Algo<span className="text-orange-600">Lab</span></h1>
+          <p className="text-slate-500 max-w-2xl">Learn and visualize computer science algorithms.</p>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-           {/* Sidebar Controls */}
-           <div className="lg:col-span-1 space-y-4">
-              <div className="p-6 rounded-[2rem] bg-white/[0.02] border border-white/5">
-                 <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-6">Explore Lab</h4>
-                 <div className="space-y-2">
-                    {Object.keys(algoData).map(key => (
-                        <button
-                            key={key}
-                            onClick={() => { setVisType(key); setActiveTab('visualizer'); }}
-                            disabled={isSorting}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all border ${visType === key ? 'bg-orange-600 text-black border-orange-600 shadow-lg shadow-orange-600/20' : 'text-slate-400 border-transparent hover:border-white/10 hover:bg-white/5'}`}
-                        >
-                            <span className="text-lg">{key === 'bubble' ? '📊' : key === 'binary' ? '🔍' : key === 'sieve' ? '🔢' : key === 'linear' ? '🔎' : key === 'quick' ? '⚡' : '🧮'}</span>
-                            {algoData[key].name}
-                        </button>
-                    ))}
-                 </div>
-              </div>
-
-              <div className="p-6 rounded-[2rem] bg-orange-600/5 border border-orange-600/10">
-                 <h4 className="text-[10px] font-black uppercase tracking-widest text-orange-600 mb-4 flex items-center gap-2"><Info size={12}/> Description</h4>
-                 <p className="text-[11px] leading-relaxed text-slate-400 font-medium italic">
-                    {algoData[visType].description}
-                 </p>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+           <div className="lg:col-span-3 space-y-4 max-h-[80vh] overflow-y-auto pr-2 custom-scrollbar">
+              {['Sorting', 'Searching', 'Graph/Grid'].map((cat) => (
+                <div key={cat} className="p-4 rounded-3xl bg-white/[0.02] border border-white/5">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4">{cat}</h4>
+                    <div className="space-y-1">
+                        {Object.keys(algoData).filter(k => (cat === 'Sorting' && ['bubble', 'selection', 'insertion'].includes(k)) || (cat === 'Searching' && ['linear', 'binary'].includes(k)) || (cat === 'Graph/Grid' && ['bfs', 'dfs'].includes(k))).map(key => (
+                            <button key={key} onClick={() => { setVisType(key); setActiveTab('visualizer'); }} disabled={isSorting}
+                                className={`w-full text-left px-4 py-2 rounded-lg text-xs font-bold transition-all ${visType === key ? 'bg-orange-600 text-black' : 'text-slate-400 hover:bg-white/5'}`}
+                            > {algoData[key].name} </button>
+                        ))}
+                    </div>
+                </div>
+              ))}
            </div>
 
-           {/* Main Content Area */}
-           <div className="lg:col-span-3 space-y-6">
-              {/* Tab Navigation */}
+           <div className="lg:col-span-9 space-y-6">
               <div className="flex gap-2 p-1.5 bg-white/[0.02] rounded-2xl border border-white/5 inline-flex">
-                 {[
-                    { id: 'visualizer', name: 'Visualize', icon: Play },
-                    { id: 'problem', name: 'Challenge', icon: HelpCircle },
-                    { id: 'solution', name: 'Answer', icon: Code2 }
-                 ].map(tab => (
-                    <button
-                        key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
+                 {[{ id: 'visualizer', name: 'Visualize', icon: Play }, { id: 'problem', name: 'Practice', icon: HelpCircle }, { id: 'solution', name: 'Standard Code', icon: Code2 }].map(tab => (
+                    <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                         className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab.id ? 'bg-orange-600 text-black' : 'text-slate-500 hover:text-slate-300'}`}
-                    >
-                        <tab.icon size={14} /> {tab.name}
-                    </button>
+                    > <tab.icon size={14} /> {tab.name} </button>
                  ))}
               </div>
 
-              {algoData[visType] ? (
               <AnimatePresence mode="wait">
                 {activeTab === 'visualizer' && (
-                  <motion.div
-                    key={`visualizer-${visType}`}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="p-8 sm:p-12 rounded-[3rem] bg-white/[0.02] border border-white/5 min-h-[500px] flex flex-col justify-between relative overflow-hidden"
+                  <motion.div key={`vis-${visType}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                    className="p-8 sm:p-12 rounded-[3rem] bg-white/[0.02] border border-white/5 min-h-[550px] flex flex-col justify-between relative overflow-hidden"
                   >
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12">
-                        <div className="space-y-1">
+                        <div>
                             <h3 className="text-2xl font-black text-white">{algoData[visType].name}</h3>
-                            <p className="text-[10px] text-orange-600 font-black uppercase tracking-[0.2em]">{isSorting ? 'Simulation in progress' : 'Ready for simulation'}</p>
+                            <p className="text-[10px] text-orange-600 font-black uppercase tracking-widest mt-1">{algoData[visType].description}</p>
                         </div>
-                        <div className="flex items-center gap-4 w-full sm:w-auto">
-                           <div className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-xl border border-white/5">
-                                <FastForward size={14} className="text-slate-500" />
-                                <input
-                                    type="range"
-                                    min="100"
-                                    max="1500"
-                                    step="100"
-                                    value={1600 - speed}
-                                    onChange={(e) => setSpeed(1600 - parseInt(e.target.value))}
-                                    className="w-24 accent-orange-600"
-                                    title="Adjust Speed"
-                                />
+                        <div className="flex flex-wrap items-center gap-4">
+                           <div className="flex bg-white/5 p-1 rounded-xl border border-white/5 gap-1">
+                                {[0.5, 1, 1.5, 2].map(m => (
+                                    <button key={m} onClick={() => setSpeedMultiplier(m)} title={`Set Speed to ${m}x`}
+                                        className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition-all ${speedMultiplier === m ? 'bg-orange-600 text-black shadow-lg shadow-orange-600/20' : 'text-slate-500 hover:text-slate-200'}`}
+                                    > {m}x </button>
+                                ))}
                            </div>
-                           <button onClick={() => setIsMuted(!isMuted)} className="p-3 rounded-xl bg-white/5 text-slate-400 hover:text-white border border-white/10 transition-all">
-                              {isMuted ? <VolumeX size={18}/> : <Volume2 size={18}/>}
-                           </button>
-                           <button onClick={resetVis} disabled={isSorting} className="p-3 rounded-xl bg-white/5 text-slate-400 hover:text-white border border-white/10 transition-all"><RotateCcw size={18}/></button>
-                           <button
-                             onClick={() => algoData[visType].startFunc()}
-                             disabled={isSorting}
-                             className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-10 py-3 bg-orange-600 text-black font-black text-xs uppercase tracking-widest rounded-xl hover:bg-orange-500 transition-all shadow-xl shadow-orange-900/20 active:scale-95"
-                           >
-                             {isSorting ? <RefreshCw size={16} className="animate-spin"/> : <Play size={16}/>}
-                             {isSorting ? 'Running' : 'Start'}
-                           </button>
+                           <div className="flex items-center gap-2 bg-white/5 px-3 py-2 rounded-xl border border-white/5">
+                               <button onClick={() => setIsMuted(!isMuted)} title={isMuted ? "Unmute" : "Mute"} className="text-slate-400 hover:text-white">
+                                 {isMuted || volume === 0 ? <VolumeX size={16}/> : <Volume2 size={16}/>}
+                               </button>
+                               <input type="range" min="0" max="1" step="0.1" value={isMuted ? 0 : volume} onChange={(e) => {setVolume(parseFloat(e.target.value)); setIsMuted(false);}} className="w-16 h-1 accent-orange-600 cursor-pointer" title={`Volume: ${Math.round(volume * 100)}%`} />
+                           </div>
+                           <button onClick={resetVis} disabled={isSorting} title="Reset Simulation" className="p-3 rounded-xl bg-white/5 text-slate-400 hover:text-white border border-white/10 transition-all"><RotateCcw size={18}/></button>
+
+                           <div className="flex items-center gap-2">
+                                {!isSorting ? (
+                                    <button onClick={() => algoData[visType].startFunc()} className="px-8 py-3 bg-orange-600 text-black font-black text-xs uppercase tracking-widest rounded-xl hover:bg-orange-500 transition-all flex items-center justify-center gap-2 shadow-xl shadow-orange-600/10"><Play size={16}/> Start</button>
+                                ) : (
+                                    <>
+                                        <button onClick={togglePlayPause} title={isPaused ? "Resume" : "Pause"} className="p-3 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all">{isPaused ? <Play size={18}/> : <Pause size={18}/>}</button>
+                                        <button onClick={handleStep} disabled={!isPaused} className={`p-3 rounded-xl transition-all ${isPaused ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-white/5 text-slate-600'}`} title="Next Step"><SkipForward size={18}/></button>
+                                    </>
+                                )}
+                           </div>
                         </div>
                     </div>
 
-                    <div className="flex-1 flex flex-col items-center justify-center py-10 min-h-[300px]">
-                        {visType === 'sieve' ? (
-                            <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 w-full max-w-2xl">
-                                {visArray.map((val, i) => (
-                                    i >= 2 && (
-                                    <motion.div
-                                        key={i}
-                                        animate={{
-                                            scale: visPointers.active.includes(i) ? 1.1 : 1,
-                                            opacity: val === -1 ? 0.2 : 1
-                                        }}
-                                        className={`aspect-square flex items-center justify-center rounded-xl text-[10px] font-black border transition-colors ${visPointers.active.includes(i) ? 'bg-orange-600 border-orange-600 text-black shadow-lg shadow-orange-600/30' : 'bg-white/5 border-white/5 text-slate-400'}`}
-                                    >
-                                        {i}
-                                    </motion.div>
-                                    )
-                                ))}
-                            </div>
-                        ) : visType === 'gcd' ? (
-                            <div className="flex items-center gap-12">
-                                {visArray.map((val, i) => (
-                                    <div key={i} className="flex flex-col items-center gap-4">
-                                        <div className="text-xs font-black text-slate-500 uppercase tracking-widest">{i === 0 ? 'Value A' : 'Value B'}</div>
-                                        <motion.div
-                                            animate={{ scale: visPointers.active.includes(i) ? 1.2 : 1 }}
-                                            className={`w-24 h-24 rounded-3xl flex items-center justify-center text-3xl font-black border transition-all ${visPointers.active.includes(i) ? 'bg-orange-600 text-black border-orange-600' : 'bg-white/5 border-white/10 text-white'}`}
-                                        >
-                                            {val}
-                                        </motion.div>
-                                    </div>
+                    <div className="flex-1 flex flex-col items-center justify-center py-10 min-h-[350px]">
+                        {algoData[visType].type === 'grid' ? (
+                            <div className="grid grid-cols-10 gap-1 w-full max-w-[400px]">
+                                {(gridData || []).map((val, i) => (
+                                    <div key={i} className={`aspect-square rounded-sm border ${val === 1 ? 'bg-orange-600 border-orange-400' : val === 2 ? 'bg-rose-500 border-rose-400' : val === 3 ? 'bg-emerald-500 border-emerald-400' : 'bg-white/5 border-white/10'}`} />
                                 ))}
                             </div>
                         ) : (
-                            <div className="flex items-end gap-2 h-64 w-full max-w-3xl px-4">
-                                {visArray.map((val, i) => (
-                                    <motion.div
-                                        key={i}
-                                        layout
-                                        animate={{
-                                            height: `${val}%`,
-                                            opacity: (visType === 'binary' && i >= visPointers.left && i <= visPointers.right) || visType !== 'binary' ? 1 : 0.2
-                                        }}
-                                        className={`flex-1 rounded-t-2xl transition-all duration-300 relative group ${
-                                            visPointers.active.includes(i) ? 'bg-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.3)]' :
-                                            i === visPointers.mid ? 'bg-rose-500 shadow-[0_0_20px_rgba(244,63,94,0.3)]' :
-                                            (visType === 'binary' && (i === visPointers.left || i === visPointers.right)) ? 'bg-blue-400 shadow-[0_0_20px_rgba(96,165,250,0.3)]' :
-                                            'bg-gradient-to-t from-orange-700 to-orange-500'
-                                        }`}
-                                    >
-                                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] font-black text-slate-500 group-hover:text-white transition-colors">{val}</span>
-                                    </motion.div>
+                            <div className="flex items-end gap-2 h-64 w-full max-w-4xl px-4">
+                                {(visArray || []).map((val, i) => (
+                                    <motion.div key={i} layout animate={{ height: `${val}%`, opacity: (visPointers.secondary || []).includes(i) ? 0.6 : 1 }}
+                                        className={`flex-1 rounded-t-xl transition-all duration-300 relative group ${(visPointers.active || []).includes(i) ? 'bg-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.3)]' : visPointers.mid === i ? 'bg-rose-500' : (visPointers.secondary || []).includes(i) ? 'bg-blue-400' : 'bg-gradient-to-t from-orange-700 to-orange-500'}`}
+                                    > <span className="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] font-black text-slate-500 group-hover:text-white">{val}</span> </motion.div>
                                 ))}
                             </div>
                         )}
                     </div>
 
-                    <div className="mt-8 p-6 bg-black/40 rounded-3xl border border-white/5">
-                        <div className="flex items-center gap-3 mb-2">
-                             <Terminal size={14} className="text-orange-600" />
-                             <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Step Explanation</span>
+                    <div className="mt-8 p-6 bg-black/40 rounded-3xl border border-white/5 flex items-start gap-4">
+                        <Terminal size={14} className="text-orange-600 mt-1" />
+                        <div>
+                             <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 block mb-1">Step Explanation</span>
+                             <p className="text-sm font-medium text-slate-300 leading-relaxed">{stepDescription}</p>
                         </div>
-                        <p className="text-sm font-medium text-slate-300 leading-relaxed">{stepDescription}</p>
                     </div>
                   </motion.div>
                 )}
-
-                {activeTab === 'problem' && (
-                    <motion.div
-                        key={`problem-${visType}`}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        className="grid grid-cols-1 lg:grid-cols-2 gap-8"
-                    >
-                        <div className="p-10 rounded-[3rem] bg-white/[0.02] border border-white/5 space-y-8 flex flex-col justify-between">
-                            <div className="space-y-6">
-                                <h3 className="text-3xl font-black text-white">The Challenge</h3>
-                                <p className="text-slate-400 leading-relaxed text-sm">{algoData[visType].problem}</p>
-
-                                <div className="p-6 bg-orange-600/5 rounded-3xl border border-orange-600/10">
-                                    <h4 className="text-[10px] font-black text-orange-600 uppercase tracking-widest mb-3 flex items-center gap-2"><CheckCircle2 size={12}/> Example Test Case</h4>
-                                    <div className="font-mono text-xs text-slate-300 space-y-1">
-                                        <p>Input: [12, 45, 2, 8, 30]</p>
-                                        <p>Output: {visType === 'bubble' || visType === 'quick' ? '[2, 8, 12, 30, 45]' : visType === 'gcd' ? '2' : 'Index at 2'}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="space-y-4">
-                                {submitStatus === 'loading' && (
-                                    <div className="p-8 bg-black/40 rounded-3xl border border-white/5 flex flex-col items-center gap-4">
-                                        <Loader2 className="animate-spin text-orange-600" size={32} />
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Verifying Implementation...</p>
-                                    </div>
-                                )}
-
-                                {submitStatus === 'success' && (
-                                    <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="p-8 bg-emerald-500/10 border border-emerald-500/20 rounded-[2rem] flex flex-col items-center text-center gap-3">
-                                        <div className="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center text-black shadow-lg shadow-emerald-500/20">
-                                            <CheckCircle2 size={24} />
-                                        </div>
-                                        <div>
-                                            <h4 className="text-lg font-black text-white">Accepted</h4>
-                                            <p className="text-[10px] text-emerald-500 font-black uppercase tracking-widest">All test cases passed successfully!</p>
-                                        </div>
-                                        <div className="mt-4 w-full p-4 bg-black/20 rounded-xl text-left font-mono text-[10px] text-slate-400">
-                                            > Running Test Case #1... PASSED<br/>
-                                            > Running Test Case #2... PASSED<br/>
-                                            > Time: 12ms | Memory: 4.2MB
-                                        </div>
-                                    </motion.div>
-                                )}
-
-                                {submitStatus === 'error' && (
-                                    <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="p-8 bg-rose-500/10 border border-rose-500/20 rounded-[2rem] flex flex-col items-center text-center gap-3">
-                                        <div className="w-12 h-12 bg-rose-500 rounded-2xl flex items-center justify-center text-black shadow-lg shadow-rose-500/20">
-                                            <RotateCcw size={24} />
-                                        </div>
-                                        <div>
-                                            <h4 className="text-lg font-black text-white">Wrong Answer</h4>
-                                            <p className="text-[10px] text-rose-500 font-black uppercase tracking-widest">Logic error or failed test cases.</p>
-                                        </div>
-                                        <div className="mt-4 w-full p-4 bg-black/20 rounded-xl text-left font-mono text-[10px] text-rose-400/70">
-                                            > Running Test Case #1... FAILED<br/>
-                                            > Expected output not matched<br/>
-                                            > Please check your algorithm
-                                        </div>
-                                    </motion.div>
-                                )}
-
-                                <button
-                                    onClick={handleRunChallenge}
-                                    disabled={isSubmitting}
-                                    className="w-full py-5 bg-orange-600 text-black font-black uppercase tracking-widest text-xs rounded-2xl flex items-center justify-center gap-3 hover:bg-orange-500 transition-all active:scale-95 shadow-xl shadow-orange-900/20"
-                                >
-                                    {isSubmitting ? <Loader2 className="animate-spin" /> : <Play size={16}/>}
-                                    {isSubmitting ? 'Processing' : 'Submit My Code'}
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="rounded-[3rem] bg-[#1a1412] border border-white/5 overflow-hidden flex flex-col min-h-[550px]">
-                            <div className="p-6 border-b border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 bg-black/40">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-orange-600/10 rounded-lg"><Code2 size={16} className="text-orange-600"/></div>
-                                    <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Solution Editor</span>
-                                </div>
-                                <select
-                                    value={selectedLang}
-                                    onChange={(e) => setSelectedLang(e.target.value)}
-                                    className="bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase px-4 py-2 rounded-xl outline-none focus:ring-1 focus:ring-orange-600 cursor-pointer appearance-none min-w-[140px]"
-                                >
-                                    {Object.keys(langSkeletons).map(l => <option key={l} value={l} className="bg-[#1a1412]">{l}</option>)}
-                                </select>
-                            </div>
-                            <div className="flex-1 overflow-auto p-4 relative">
-                                <button onClick={() => { navigator.clipboard.writeText(userCode); showToast("Code copied!"); }} className="absolute top-6 right-6 z-10 p-2 bg-white/5 border border-white/10 rounded-lg text-slate-500 hover:text-white transition-all" title="Copy"><Save size={14} /></button>
-                                <Editor
-                                    value={userCode}
-                                    onValueChange={code => setUserCode(code)}
-                                    highlight={code => highlight(code,
-                                        selectedLang === 'JavaScript' ? prismLanguages.javascript :
-                                        selectedLang === 'Python 3' ? prismLanguages.python :
-                                        selectedLang === 'C++ 17' ? prismLanguages.cpp : prismLanguages.java
-                                    )}
-                                    padding={20}
-                                    style={{ fontFamily: '"Fira code", monospace', fontSize: 13 }}
-                                    className="editor outline-none text-slate-300"
-                                />
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-
-                {activeTab === 'solution' && (
-                    <motion.div
-                        key={`solution-${visType}`}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 1.05 }}
-                        className="p-10 rounded-[3rem] bg-white/[0.02] border border-white/5"
-                    >
-                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-                            <h3 className="text-2xl font-black text-white">Reference Solution</h3>
-                            <div className="flex items-center gap-4 w-full sm:w-auto">
-                              <select
-                                  value={ansSelectedLang}
-                                  onChange={(e) => setAnsSelectedLang(e.target.value)}
-                                  className="bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase px-4 py-2 rounded-xl outline-none focus:ring-1 focus:ring-orange-600 cursor-pointer appearance-none min-w-[140px]"
-                              >
-                                  {Object.keys(langSkeletons).map(l => <option key={l} value={l} className="bg-[#1a1412]">{l}</option>)}
-                              </select>
-                              <button onClick={() => { navigator.clipboard.writeText(algoData[visType].solutions[ansSelectedLang]); showToast("Solution copied!"); }} className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-xl text-[10px] font-black uppercase text-slate-400 hover:text-white transition-all border border-white/5">Copy Code</button>
-                            </div>
-                         </div>
-                         <div className="p-8 bg-[#1a1412] rounded-[2rem] border border-white/5 overflow-auto max-h-[500px]">
-                            <pre className="text-xs leading-relaxed">
-                                <code
-                                    dangerouslySetInnerHTML={{
-                                        __html: highlight(algoData[visType].solutions[ansSelectedLang],
-                                          ansSelectedLang === 'JavaScript' ? prismLanguages.javascript :
-                                          ansSelectedLang === 'Python 3' ? prismLanguages.python :
-                                          ansSelectedLang === 'C++ 17' ? prismLanguages.cpp : prismLanguages.java
-                                        )
-                                    }}
-                                />
-                            </pre>
-                         </div>
-                         <a
-                            href={algoData[visType].link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="mt-8 flex items-center gap-4 p-6 bg-blue-500/5 rounded-3xl border border-blue-500/10 hover:bg-blue-500/10 transition-all group"
-                          >
-                             <div className="p-3 bg-blue-500/10 rounded-2xl group-hover:scale-110 transition-transform"><ExternalLink className="text-blue-400" size={20}/></div>
-                             <div>
-                                 <h4 className="text-sm font-bold text-white mb-1">Deep Dive into {algoData[visType].name}</h4>
-                                 <p className="text-[11px] text-slate-500">Want to learn more? Check out the official documentation and complexity analysis on GeeksforGeeks.</p>
-                             </div>
-                         </a>
-                    </motion.div>
-                )}
               </AnimatePresence>
-              ) : (
-                <div className="p-12 rounded-[3rem] bg-white/[0.02] border border-white/5 text-center text-slate-500">
-                    Select an algorithm to view content.
-                </div>
-              )}
            </div>
         </div>
       </div>
 
       <AnimatePresence>
         {toast && (
-          <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 50, opacity: 0 }} className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] px-8 py-4 bg-orange-600 text-black text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl shadow-2xl border border-orange-400/20">
-            {toast}
-          </motion.div>
+          <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 50, opacity: 0 }} className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] px-8 py-4 bg-orange-600 text-black text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl border border-orange-400/20">{toast}</motion.div>
         )}
       </AnimatePresence>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(234, 88, 12, 0.5); }
+      `}} />
     </motion.div>
   );
 };
