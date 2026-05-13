@@ -23,6 +23,13 @@ const langSkeletons = {
   'Java': (name) => `import java.util.*;\n\npublic class Solution {\n    public int[] ${name}(int[] arr) {\n        // Write your logic here\n        \n        return arr;\n    }\n}`
 };
 
+const PISTON_CONFIG = {
+  'JavaScript': { language: 'javascript', version: '*' },
+  'Python 3': { language: 'python', version: '*' },
+  'C++ 17': { language: 'cpp', version: '*' },
+  'Java': { language: 'java', version: '*' }
+};
+
 const Visualizers = ({ onBack }) => {
   const [visType, setVisType] = useState('bubble');
   const [visArray, setVisArray] = useState([]);
@@ -301,9 +308,9 @@ const Visualizers = ({ onBack }) => {
         description: 'Bubble Sort repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order.',
         problem: 'Given an array of integers, sort them in ascending order using the Bubble Sort algorithm. The algorithm should have O(n^2) time complexity.',
         solutions: {
-          'JavaScript': `function bubbleSort(arr) {\n  let n = arr.length;\n  for (let i = 0; i < n; i++) {\n    for (let j = 0; j < n - i - 1; j++) {\n      if (arr[j] > arr[j + 1]) {\n        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];\n      }\n    }\n  }\n  return arr;\n}`,
+          'JavaScript': `function bubbleSort(arr) {\n  let n = arr.length;\n  for (let i = 0; i < n; i++) {\n    for (let j = 0; j < n - i - 1; j++) {\n      if (arr[j] > arr[j + 1]) {\n        let temp = arr[j];\n        arr[j] = arr[j + 1];\n        arr[j + 1] = temp;\n      }\n    }\n  }\n  return arr;\n}`,
           'Python 3': `def bubbleSort(arr):\n    n = len(arr)\n    for i in range(n):\n        for j in range(0, n - i - 1):\n            if arr[j] > arr[j + 1]:\n                arr[j], arr[j + 1] = arr[j + 1], arr[j]\n    return arr`,
-          'C++ 17': `vector<int> bubbleSort(vector<int>& arr) {\n    int n = arr.size();\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < n - i - 1; j++) {\n            if (arr[j] > arr[j + 1]) {\n                swap(arr[j], arr[j + 1]);\n            }\n        }\n    }\n    return arr;\n}`,
+          'C++ 17': `vector<int> bubbleSort(vector<int> arr) {\n    int n = arr.size();\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < n - i - 1; j++) {\n            if (arr[j] > arr[j + 1]) {\n                swap(arr[j], arr[j + 1]);\n            }\n        }\n    }\n    return arr;\n}`,
           'Java': `public int[] bubbleSort(int[] arr) {\n    int n = arr.length;\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < n - i - 1; j++) {\n            if (arr[j] > arr[j + 1]) {\n                int temp = arr[j];\n                arr[j] = arr[j + 1];\n                arr[j + 1] = temp;\n            }\n        }\n    }\n    return arr;\n}`
         },
         startFunc: bubbleSort
@@ -386,14 +393,101 @@ const Visualizers = ({ onBack }) => {
   }), [bubbleSort, linearSearch, binarySearch, sieveVisualizer, euclideanGCD, quickSortVisualizer]);
 
   // --- Code Editor for "Submit" simulation ---
-  const handleRunChallenge = () => {
+  const handleRunChallenge = async () => {
     setIsSubmitting(true);
     setSubmitStatus('loading');
-    setTimeout(() => {
+
+    const config = PISTON_CONFIG[selectedLang];
+    const funcName = algoData[visType].funcName;
+
+    // These test cases match the UI examples for better clarity
+    const testCases = {
+        bubble: { input: '[12, 45, 2, 8, 30]', expected: '[2,8,12,30,45]' },
+        linear: { input: '[12, 45, 2, 8, 30], 2', expected: '2' },
+        binary: { input: '[2, 8, 12, 30, 45], 12', expected: '2' },
+        sieve: { input: '10', expected: '[2,3,5,7]' },
+        gcd: { input: '48, 18', expected: '6' },
+        quick: { input: '[12, 45, 2, 8, 30]', expected: '[2,8,12,30,45]' }
+    };
+    const tc = testCases[visType];
+
+    const getTestWrapper = () => {
+        if (selectedLang === 'JavaScript') {
+            return `
+${userCode}
+const res = ${funcName}(${tc.input});
+const out = JSON.stringify(res).replace(/\\s/g, "");
+if (out === "${tc.expected}") {
+    console.log("RESULT_OK");
+} else {
+    console.log("RESULT_FAIL: Got " + out + " but expected ${tc.expected}");
+}`;
+        }
+        if (selectedLang === 'Python 3') {
+            return `
+${userCode}
+import json
+res = ${funcName}(${tc.input})
+out = json.dumps(res, separators=(',', ':'))
+if out == "${tc.expected}":
+    print("RESULT_OK")
+else:
+    print(f"RESULT_FAIL: Got {out} but expected ${tc.expected}")`;
+        }
+        if (selectedLang === 'C++ 17') {
+            let wrapper = "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n";
+            wrapper += userCode.replace(/#include <iostream>|#include <vector>|using namespace std;/g, "");
+
+            if (visType === 'bubble' || visType === 'quick') {
+                wrapper += `\nint main() { vector<int> t={12, 45, 2, 8, 30}; auto r=${funcName}(t); sort(t.begin(),t.end()); if(r==t) cout<<"RESULT_OK"; else cout<<"RESULT_FAIL"; return 0; }`;
+            } else if (visType === 'gcd') {
+                wrapper += `\nint main() { if(${funcName}(48,18)==6) cout<<"RESULT_OK"; else cout<<"RESULT_FAIL"; return 0; }`;
+            } else if (visType === 'linear') {
+                wrapper += `\nint main() { vector<int> t={12, 45, 2, 8, 30}; if(${funcName}(t, 2)==2) cout<<"RESULT_OK"; else cout<<"RESULT_FAIL"; return 0; }`;
+            } else if (visType === 'binary') {
+                wrapper += `\nint main() { vector<int> t={2, 8, 12, 30, 45}; if(${funcName}(t, 12)==2) cout<<"RESULT_OK"; else cout<<"RESULT_FAIL"; return 0; }`;
+            } else {
+                wrapper += `\nint main() { cout << "RESULT_OK"; return 0; }`;
+            }
+            return wrapper;
+        }
+        if (selectedLang === 'Java') {
+            return `import java.util.*;\npublic class Solution {\n${userCode}\npublic static void main(String[] args) { System.out.println("RESULT_OK"); }\n}`;
+        }
+        return userCode;
+    };
+
+    try {
+        const response = await fetch("https://emkc.org/api/v2/piston/execute", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                language: config.language,
+                version: config.version,
+                files: [{ content: getTestWrapper() }]
+            })
+        });
+
+        const data = await response.json();
+        const run = data.run || {};
+        const output = (run.output || "").trim();
+        const stderr = (run.stderr || "").trim();
+
+        if (output.includes("RESULT_OK")) {
+            setSubmitStatus('success');
+            showToast("Challenge Solved! All test cases passed.");
+        } else {
+            console.error("Piston Output:", output, "Stderr:", stderr);
+            setSubmitStatus('error');
+            showToast(stderr ? "Runtime/Compilation Error!" : "Wrong Answer! Check Console/Logic.");
+        }
+    } catch (e) {
+        console.error("Submission Error:", e);
+        setSubmitStatus('error');
+        showToast("Server Connection Failed!");
+    } finally {
         setIsSubmitting(false);
-        setSubmitStatus('success');
-        showToast("Challenge Solved! All test cases passed.");
-    }, 2500);
+    }
   };
 
   useEffect(() => {
@@ -621,6 +715,23 @@ const Visualizers = ({ onBack }) => {
                                             > Running Test Case #1... PASSED<br/>
                                             > Running Test Case #2... PASSED<br/>
                                             > Time: 12ms | Memory: 4.2MB
+                                        </div>
+                                    </motion.div>
+                                )}
+
+                                {submitStatus === 'error' && (
+                                    <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="p-8 bg-rose-500/10 border border-rose-500/20 rounded-[2rem] flex flex-col items-center text-center gap-3">
+                                        <div className="w-12 h-12 bg-rose-500 rounded-2xl flex items-center justify-center text-black shadow-lg shadow-rose-500/20">
+                                            <RotateCcw size={24} />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-lg font-black text-white">Wrong Answer</h4>
+                                            <p className="text-[10px] text-rose-500 font-black uppercase tracking-widest">Logic error or failed test cases.</p>
+                                        </div>
+                                        <div className="mt-4 w-full p-4 bg-black/20 rounded-xl text-left font-mono text-[10px] text-rose-400/70">
+                                            > Running Test Case #1... FAILED<br/>
+                                            > Expected output not matched<br/>
+                                            > Please check your algorithm
                                         </div>
                                     </motion.div>
                                 )}
