@@ -125,14 +125,30 @@ const CPPractice = ({ onBack }) => {
       const data = await res.json();
 
       const filtered = data
-        .filter(c => ['CodeForces', 'AtCoder', 'LeetCode', 'CodeChef'].includes(c.site))
-        .map(c => ({
-          id: c.name + c.start_time,
-          name: c.name,
-          platform: c.site === 'CodeForces' ? 'Codeforces' : c.site,
-          startTime: c.start_time ? new Date(c.start_time).getTime() : 0,
-          link: c.url
-        }))
+        .filter(c => {
+          const site = c.site.toLowerCase();
+          return site.includes('codeforces') ||
+                 site.includes('at_coder') ||
+                 site.includes('atcoder') ||
+                 site.includes('leetcode') ||
+                 site.includes('codechef');
+        })
+        .map(c => {
+          let platform = c.site;
+          const site = c.site.toLowerCase();
+          if (site.includes('codeforces')) platform = 'Codeforces';
+          else if (site.includes('atcoder') || site.includes('at_coder')) platform = 'AtCoder';
+          else if (site.includes('leetcode')) platform = 'LeetCode';
+          else if (site.includes('codechef')) platform = 'CodeChef';
+
+          return {
+            id: c.name + c.start_time,
+            name: c.name,
+            platform,
+            startTime: c.start_time ? new Date(c.start_time).getTime() : 0,
+            link: c.url
+          };
+        })
         .filter(c => c.startTime > Date.now() || c.startTime === 0)
         .sort((a, b) => a.startTime - b.startTime);
 
@@ -207,48 +223,51 @@ const CPPractice = ({ onBack }) => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-screen text-slate-200 font-sans pb-20 overflow-x-hidden">
       <style>{`
-        .custom-scrollbar::-webkit-scrollbar { height: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(234, 88, 12, 0.2); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(234, 88, 12, 0.4); }
+        .custom-scrollbar::-webkit-scrollbar { height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(234, 88, 12, 0.4); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(234, 88, 12, 0.6); }
       `}</style>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 mt-8 sm:mt-12">
         {/* Upcoming Contests Section */}
-        <div className="mb-12 overflow-x-auto pb-4 custom-scrollbar">
+        <div className="mb-12">
            <div className="flex items-center gap-3 mb-6">
               <div className="w-2 h-8 bg-orange-600 rounded-full" />
               <h2 className="text-xl font-black uppercase tracking-tighter text-white">Upcoming Contests</h2>
               {contestsLoading && <Loader2 className="w-4 h-4 animate-spin text-orange-600" title="Fetching upcoming contests..." />}
            </div>
-           <div className="flex gap-4 min-w-max px-2">
-              {contests.length > 0 ? contests.map(c => {
-                const date = new Date(c.startTime);
-                return (
-                  <div key={c.id} className="p-6 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:border-orange-500/20 transition-all w-[18rem] sm:w-80 flex flex-col justify-between shrink-0">
-                    <div>
-                      <div className="flex justify-between items-start mb-4">
-                        <span className={`px-2 py-1 rounded-lg text-[9px] font-black uppercase border ${platformColors[c.platform] || 'bg-white/10 text-white border-white/20'}`}>{c.platform}</span>
-                        <CountdownTimer startTime={c.startTime} />
-                      </div>
-                      <h4 className="text-white font-bold text-sm mb-6 line-clamp-2 leading-relaxed h-10">{c.name}</h4>
-                    </div>
-                    <div className="flex items-center justify-between mt-2 pt-4 border-t border-white/5">
-                       <div className="flex flex-col">
-                         <span className="text-[10px] text-white font-black">
-                           {c.startTime > 0 ? date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'TBA'}
-                         </span>
-                         <span className="text-[9px] text-slate-500 font-bold">
-                           {c.startTime > 0 ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Date TBA'}
-                         </span>
+
+           <div className="overflow-x-auto pb-6 custom-scrollbar scroll-smooth touch-pan-x">
+              <div className="flex gap-4 min-w-max px-2">
+                 {contests.length > 0 ? contests.map(c => {
+                   const date = new Date(c.startTime);
+                   return (
+                     <div key={c.id} className="p-6 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:border-orange-500/20 transition-all w-[18rem] sm:w-80 flex flex-col justify-between shrink-0">
+                       <div>
+                         <div className="flex justify-between items-start mb-4">
+                           <span className={`px-2 py-1 rounded-lg text-[9px] font-black uppercase border ${platformColors[c.platform] || 'bg-white/10 text-white border-white/20'}`}>{c.platform}</span>
+                           <CountdownTimer startTime={c.startTime} />
+                         </div>
+                         <h4 className="text-white font-bold text-sm mb-6 line-clamp-2 leading-relaxed h-10">{c.name}</h4>
                        </div>
-                       <a href={c.link} target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-xl bg-orange-600/10 text-orange-600 text-[9px] font-black uppercase hover:bg-orange-600 hover:text-black transition-all border border-orange-600/20">Register</a>
-                    </div>
-                  </div>
-                );
-              }) : !contestsLoading && (
-                <p className="text-slate-600 text-[10px] font-black uppercase tracking-widest pl-4">No upcoming contests found.</p>
-              )}
+                       <div className="flex items-center justify-between mt-2 pt-4 border-t border-white/5">
+                          <div className="flex flex-col">
+                            <span className="text-[10px] text-white font-black">
+                              {c.startTime > 0 ? date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'TBA'}
+                            </span>
+                            <span className="text-[9px] text-slate-500 font-bold">
+                              {c.startTime > 0 ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Date TBA'}
+                            </span>
+                          </div>
+                          <a href={c.link} target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-xl bg-orange-600/10 text-orange-600 text-[9px] font-black uppercase hover:bg-orange-600 hover:text-black transition-all border border-orange-600/20">Register</a>
+                       </div>
+                     </div>
+                   );
+                 }) : !contestsLoading && (
+                   <p className="text-slate-600 text-[10px] font-black uppercase tracking-widest pl-4">No upcoming contests found.</p>
+                 )}
+              </div>
            </div>
         </div>
 
