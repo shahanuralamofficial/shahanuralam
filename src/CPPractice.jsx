@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   Flame, Bookmark, CheckCircle2, ExternalLink, Heart, Ban, Dices, Filter,
   Sparkles, ArrowLeft, Loader2, RefreshCw, Code2, X, Copy, Terminal,
@@ -55,12 +55,38 @@ const CPPractice = ({ onBack }) => {
   const [filter, setFilter] = useState('all');
   const [platformFilter, setPlatformFilter] = useState('All Platforms');
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeCodeProblem, setActiveCodeProblem] = useState(null);
-  const [isRunning, setIsRunning] = useState(false);
+  const [isSorting, setIsVisSorting] = useState(false);
   const [output, setOutput] = useState('');
   const [isFullScreenEditor, setIsFullScreenEditor] = useState(false);
   const [toast, setToast] = useState(null);
   const [visibleCount, setVisibleCount] = useState(12);
+
+  // Scroll logic for contests
+  const scrollRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const startDragging = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  };
+
+  const stopDragging = () => {
+    setIsDragging(false);
+  };
+
+  const move = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // scroll-speed
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const [activeCodeProblem, setActiveCodeProblem] = useState(null);
+  const [isRunning, setIsRunning] = useState(false);
 
   const showToast = (msg) => {
     setToast(msg);
@@ -238,7 +264,14 @@ const CPPractice = ({ onBack }) => {
               {contestsLoading && <Loader2 className="w-4 h-4 animate-spin text-orange-600" title="Fetching upcoming contests..." />}
            </div>
 
-           <div className="overflow-x-auto pb-6 custom-scrollbar scroll-smooth touch-pan-x">
+           <div
+              ref={scrollRef}
+              onMouseDown={startDragging}
+              onMouseLeave={stopDragging}
+              onMouseUp={stopDragging}
+              onMouseMove={move}
+              className={`overflow-x-auto pb-6 custom-scrollbar scroll-smooth touch-pan-x cursor-grab active:cursor-grabbing ${isDragging ? 'select-none' : ''}`}
+           >
               <div className="flex gap-4 min-w-max px-2">
                  {contests.length > 0 ? contests.map(c => {
                    const date = new Date(c.startTime);
