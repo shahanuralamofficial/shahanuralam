@@ -286,12 +286,13 @@ export const runSudoku = async (helpers) => {
 };
 
 export const runSieve = async (helpers) => {
-    const { setVisGrid, setStepDescription, playTone, delay, playSuccessSound, setIsVisSorting } = helpers;
+    const { setVisGrid, setStepDescription, playTone, delay, playSuccessSound, setIsVisSorting, setVisPointers } = helpers;
     setIsVisSorting(true);
     let n = 100; let grid = Array(n).fill(0); grid[0] = 2; // 1 is not prime
     setVisGrid([...grid]);
     for (let p = 2; p * p <= n; p++) {
         if (grid[p - 1] === 0) {
+            setVisPointers(prev => ({ ...prev, mid: p }));
             setStepDescription(`Checking multiples of ${p}`);
             playTone(400 + p * 5);
             for (let i = p * p; i <= n; i += p) {
@@ -300,6 +301,7 @@ export const runSieve = async (helpers) => {
             }
         }
     }
+    setVisPointers(prev => ({ ...prev, mid: -1 }));
     for (let i = 0; i < n; i++) if (grid[i] === 0) grid[i] = 3; // Primes
     setVisGrid([...grid]);
     setStepDescription("Primes highlighted in Green!"); playSuccessSound(); setIsVisSorting(false);

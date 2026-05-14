@@ -67,6 +67,7 @@ const Visualizers = ({ onBack }) => {
   const audioCtx = useRef(null);
   const isPausedRef = useRef(false);
   const stepResolverRef = useRef(null);
+  const stopSignalRef = useRef(false);
 
   useEffect(() => { speedRef.current = 800 / speedMultiplier; }, [speedMultiplier]);
   useEffect(() => { isPausedRef.current = isPaused; }, [isPaused]);
@@ -98,8 +99,10 @@ const Visualizers = ({ onBack }) => {
   }, []);
 
   const delay = useCallback(async () => {
+    if (stopSignalRef.current) throw new Error('STOP');
     await checkPause();
     await new Promise(r => setTimeout(r, speedRef.current));
+    if (stopSignalRef.current) throw new Error('STOP');
   }, [checkPause]);
 
   const handleStep = () => {
@@ -122,6 +125,44 @@ const Visualizers = ({ onBack }) => {
     setStepDescription, playTone, delay, playSuccessSound, setVisGrid, gridData,
     tableData, setTableData
   };
+
+  const startAlgo = async () => {
+    stopSignalRef.current = false;
+    setIsPaused(false);
+    try {
+        await algoData[visType]?.startFunc();
+    } catch (e) {
+        if (e.message !== 'STOP') console.error(e);
+        setIsVisSorting(false);
+        setVisPointers({ left: -1, right: -1, mid: -1, active: [], secondary: [] });
+    }
+  };
+
+  const resetVis = useCallback(() => {
+    stopSignalRef.current = true;
+    if (stepResolverRef.current) handleStep();
+    setIsVisSorting(false);
+    setIsPaused(false);
+
+    const type = ALGO_METADATA[visType]?.type;
+    if (type === 'bars') setVisArray(Array.from({length: 12}, () => Math.floor(Math.random() * 90) + 10));
+    else if (type === 'grid') setVisGrid(Array(100).fill(0));
+    setVisPointers({ left: -1, right: -1, mid: -1, active: [], secondary: [] });
+    setStepDescription('Ready to visualize.');
+  }, [visType]);
+
+  const handleAlgoSwitch = (key) => {
+    if (visType === key) return;
+    stopSignalRef.current = true;
+    if (stepResolverRef.current) handleStep();
+    setVisType(key);
+    setActiveTab('visualizer');
+  };
+
+  useEffect(() => {
+    resetVis();
+    return () => { stopSignalRef.current = true; };
+  }, [visType]);
 
   const algoData = useMemo(() => ({
     bubble: {
@@ -286,16 +327,6 @@ const Visualizers = ({ onBack }) => {
     { name: 'Math & Logic', icon: Hash, keys: ['gcd', 'sieve'] }
   ];
 
-  const resetVis = useCallback(() => {
-    const type = ALGO_METADATA[visType]?.type;
-    if (type === 'bars') setVisArray(Array.from({length: 12}, () => Math.floor(Math.random() * 90) + 10));
-    else if (type === 'grid') setVisGrid(Array(100).fill(0));
-    setVisPointers({ left: -1, right: -1, mid: -1, active: [], secondary: [] });
-    setStepDescription('Ready to visualize.');
-  }, [visType]);
-
-  useEffect(() => { resetVis(); }, [resetVis]);
-
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen text-slate-200 font-sans pb-20 overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-4 mt-12">
@@ -314,7 +345,7 @@ const Visualizers = ({ onBack }) => {
                       </h4>
                       <div className="space-y-1">
                           {cat.keys.map(key => (
-                              <button key={key} onClick={() => { setVisType(key); setActiveTab('visualizer'); }} disabled={isSorting}
+                              <button key={key} onClick={() => handleAlgoSwitch(key)}
                                   className={`w-full text-left px-4 py-2 rounded-lg text-xs font-bold transition-all ${visType === key ? 'bg-orange-600 text-black' : 'text-slate-400 hover:bg-white/5'}`}
                               > {algoData[key]?.name} </button>
                           ))}
@@ -357,11 +388,11 @@ const Visualizers = ({ onBack }) => {
                                </button>
                                <input type="range" min="0" max="1" step="0.1" value={isMuted ? 0 : volume} onChange={(e) => {setVolume(parseFloat(e.target.value)); setIsMuted(false);}} className="w-12 sm:w-16 h-1 accent-orange-600 cursor-pointer" title={`Volume: ${Math.round(volume * 100)}%`} />
                            </div>
-                           <button onClick={resetVis} disabled={isSorting} title="Reset Simulation" className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white/5 text-slate-400 hover:text-white border border-white/10 transition-all"><RotateCcw size={16}/></button>
+                           <button onClick={resetVis} title="Reset Simulation" className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white/5 text-slate-400 hover:text-white border border-white/10 transition-all"><RotateCcw size={16}/></button>
 
                            <div className="flex items-center gap-2 w-full sm:w-auto">
                                 {!isSorting ? (
-                                    <button onClick={() => algoData[visType]?.startFunc()} className="flex-1 sm:flex-none px-6 sm:px-8 py-2.5 sm:py-3 bg-orange-600 text-black font-black text-[10px] sm:text-xs uppercase tracking-widest rounded-lg sm:rounded-xl hover:bg-orange-500 transition-all flex items-center justify-center gap-2 shadow-xl shadow-orange-600/10"><Play size={14}/> Start</button>
+                                    <button onClick={startAlgo} className="flex-1 sm:flex-none px-6 sm:px-8 py-2.5 sm:py-3 bg-orange-600 text-black font-black text-[10px] sm:text-xs uppercase tracking-widest rounded-lg sm:rounded-xl hover:bg-orange-500 transition-all flex items-center justify-center gap-2 shadow-xl shadow-orange-600/10"><Play size={14}/> Start</button>
                                 ) : (
                                     <>
                                         <button onClick={togglePlayPause} title={isPaused ? "Resume" : "Pause"} className="flex-1 sm:flex-none p-2.5 sm:p-3 bg-white/10 text-white rounded-lg sm:rounded-xl hover:bg-white/20 transition-all flex justify-center">{isPaused ? <Play size={16}/> : <Pause size={16}/>}</button>
@@ -376,8 +407,8 @@ const Visualizers = ({ onBack }) => {
                         {algoData[visType]?.type === 'grid' ? (
                             <div className="grid grid-cols-10 gap-0.5 sm:gap-1 w-full max-w-full sm:max-w-[400px]">
                                 {(gridData || []).map((val, i) => (
-                                    <div key={i} className={`aspect-square rounded-[1px] sm:rounded-sm border flex items-center justify-center relative ${val === 1 ? 'bg-orange-600 border-orange-400' : val === 2 ? 'bg-rose-500 border-rose-400' : val === 3 ? 'bg-emerald-500 border-emerald-400' : 'bg-white/5 border-white/10'}`}>
-                                        {visType === 'sieve' && <span className="text-[8px] sm:text-[10px] font-bold text-slate-500">{i + 1}</span>}
+                                    <div key={i} className={`aspect-square rounded-[1px] sm:rounded-sm border flex items-center justify-center relative ${visType === 'sieve' && visPointers.mid === i + 1 ? 'bg-orange-400 border-amber-300 z-10 scale-110 shadow-[0_0_15px_rgba(251,146,60,0.5)]' : val === 1 ? 'bg-orange-600 border-orange-400' : val === 2 ? 'bg-rose-500 border-rose-400' : val === 3 ? 'bg-emerald-500 border-emerald-400' : 'bg-white/5 border-white/10'}`}>
+                                        {visType === 'sieve' && <span className={`text-[8px] sm:text-[10px] font-bold ${visPointers.mid === i + 1 ? 'text-black' : 'text-slate-500'}`}>{i + 1}</span>}
                                         {visType === 'sudoku' && val !== 0 && val !== 1 && val !== 2 && val !== 3 && <span className="text-[10px] sm:text-xs font-bold text-white">{val}</span>}
                                         {visType === 'nqueens' && val === 1 && <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-white animate-pulse shadow-[0_0_10px_white]" />}
                                     </div>
