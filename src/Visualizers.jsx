@@ -18,6 +18,7 @@ import 'prismjs/themes/prism-tomorrow.css';
 
 import * as Algos from './algoLogic';
 import { ALGO_SOLUTIONS } from './algoSolutions';
+import { trackEvent } from './firebase';
 
 const ALGO_METADATA = {
     // Sorting
@@ -129,6 +130,7 @@ const Visualizers = ({ onBack }) => {
   const startAlgo = async () => {
     stopSignalRef.current = false;
     setIsPaused(false);
+    trackEvent('algorithm_start', { algorithm: visType, algorithmName: algoData[visType]?.name });
     try {
         await algoData[visType]?.startFunc();
     } catch (e) {
@@ -157,6 +159,7 @@ const Visualizers = ({ onBack }) => {
     if (stepResolverRef.current) handleStep();
     setVisType(key);
     setActiveTab('visualizer');
+    trackEvent('algorithm_switch', { algorithm: key, algorithmName: ALGO_METADATA[key]?.name });
   };
 
   useEffect(() => {
@@ -358,7 +361,10 @@ const Visualizers = ({ onBack }) => {
            <div className="lg:col-span-9 space-y-6">
               <div className="flex gap-1.5 p-1.5 bg-white/[0.02] rounded-2xl border border-white/5 overflow-x-auto scrollbar-hide">
                  {[{ id: 'visualizer', name: 'Visualize', icon: Play }, { id: 'problem', name: 'Practice', icon: HelpCircle }, { id: 'solution', name: 'Standard Code', icon: Code2 }].map(tab => (
-                    <button key={tab.id} onClick={() => setActiveTab(tab.id)} title={tab.name}
+                    <button key={tab.id} onClick={() => {
+                      setActiveTab(tab.id);
+                      trackEvent('algo_lab_tab_switch', { tab: tab.id, algorithm: visType });
+                    }} title={tab.name}
                         className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all shrink-0 ${activeTab === tab.id ? 'bg-orange-600 text-black' : 'text-slate-500 hover:text-slate-300'}`}
                     > <tab.icon size={14} /> {tab.name} </button>
                  ))}
@@ -395,8 +401,8 @@ const Visualizers = ({ onBack }) => {
                                     <button onClick={startAlgo} className="flex-1 sm:flex-none px-6 sm:px-8 py-2.5 sm:py-3 bg-orange-600 text-black font-black text-[10px] sm:text-xs uppercase tracking-widest rounded-lg sm:rounded-xl hover:bg-orange-500 transition-all flex items-center justify-center gap-2 shadow-xl shadow-orange-600/10"><Play size={14}/> Start</button>
                                 ) : (
                                     <>
-                                        <button onClick={togglePlayPause} title={isPaused ? "Resume" : "Pause"} className="flex-1 sm:flex-none p-2.5 sm:p-3 bg-white/10 text-white rounded-lg sm:rounded-xl hover:bg-white/20 transition-all flex justify-center">{isPaused ? <Play size={16}/> : <Pause size={16}/>}</button>
-                                        <button onClick={handleStep} disabled={!isPaused} className={`flex-1 sm:flex-none p-2.5 sm:p-3 rounded-lg sm:rounded-xl transition-all flex justify-center ${isPaused ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-white/5 text-slate-600'}`} title="Next Step"><SkipForward size={16}/></button>
+                                        <button onClick={togglePlayPause} title={isPaused ? "Resume" : "Pause"} className="flex-1 sm:flex-none p-2.5 sm:p-3 bg-white/10 text-white rounded-lg sm:rounded-xl hover:bg-white/20 transition-all flex justify-center" onClickCapture={() => trackEvent('algorithm_pause_resume', { algorithm: visType, action: isPaused ? 'resume' : 'pause' })}>{isPaused ? <Play size={16}/> : <Pause size={16}/>}</button>
+                                        <button onClick={handleStep} disabled={!isPaused} className={`flex-1 sm:flex-none p-2.5 sm:p-3 rounded-lg sm:rounded-xl transition-all flex justify-center ${isPaused ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-white/5 text-slate-600'}`} title="Next Step" onClickCapture={() => isPaused && trackEvent('algorithm_step', { algorithm: visType })}><SkipForward size={16}/></button>
                                     </>
                                 )}
                            </div>
@@ -464,7 +470,7 @@ const Visualizers = ({ onBack }) => {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {(algoData[visType]?.practiceProblems || []).map((prob, idx) => (
-                                <a key={idx} href={prob.url} target="_blank" rel="noopener noreferrer" className="group p-6 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-orange-600/50 transition-all flex flex-col gap-4">
+                                <a key={idx} href={prob.url} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('practice_problem_click', { algorithm: visType, problem: prob.title })} className="group p-6 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-orange-600/50 transition-all flex flex-col gap-4">
                                     <div className="flex justify-between items-start">
                                         <h4 className="font-bold text-white group-hover:text-orange-500">{prob.title}</h4>
                                         <ExternalLink size={16} className="text-slate-600 group-hover:text-orange-600" title="Open Practice Problem" />
@@ -484,7 +490,7 @@ const Visualizers = ({ onBack }) => {
                                <select value={solLang} onChange={(e) => setSolLang(e.target.value)} className="flex-1 sm:flex-none bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase px-4 py-2.5 rounded-xl outline-none focus:ring-1 focus:ring-orange-600 cursor-pointer appearance-none min-w-[100px]">
                                   {['JavaScript', 'CPP', 'Python', 'Java'].map(l => <option key={l} value={l} className="bg-[#111]">{l === 'CPP' ? 'C++' : l}</option>)}
                                </select>
-                               <button onClick={() => { navigator.clipboard.writeText(algoData[visType]?.solutions?.[solLang] || ""); showToast("Copied!"); }} className="flex-1 sm:flex-none px-6 py-2.5 bg-white/5 rounded-xl text-[10px] font-black uppercase text-slate-400 border border-white/5 hover:text-white transition-all">Copy Code</button>
+                               <button onClick={() => { navigator.clipboard.writeText(algoData[visType]?.solutions?.[solLang] || ""); showToast("Copied!"); trackEvent('copy_solution_code', { algorithm: visType, language: solLang }); }} className="flex-1 sm:flex-none px-6 py-2.5 bg-white/5 rounded-xl text-[10px] font-black uppercase text-slate-400 border border-white/5 hover:text-white transition-all">Copy Code</button>
                             </div>
                          </div>
                          <div className="p-8 bg-[#1a1412] rounded-[2rem] border border-white/5 overflow-auto max-h-[500px]">

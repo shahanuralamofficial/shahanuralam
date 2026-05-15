@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useRef } from 'react';
 import {
   Github, Linkedin, Facebook, Mail, MapPin, Download,
   Code2, Globe, ExternalLink, Award, FileText, Layout,
@@ -11,7 +11,7 @@ import luminaPopLogo from "./assets/applogo/lumina_pop.png";
 import cvPdf from './assets/cv/CV.pdf';
 
 // Firebase
-import { db, ref, update, increment } from './firebase';
+import { db, ref, update, increment, trackEvent } from './firebase';
 
 // Components (Lazy Load for performance)
 const CPPractice = React.lazy(() => import('./CPPractice'));
@@ -78,13 +78,18 @@ export default function ShahanurPortfolio() {
   const [darkMode, setDarkMode] = useState(true);
   const [contactData, setContactData] = useState({ name: '', email: '', message: '' });
   const [contactStatus, setContactStatus] = useState({ loading: false, success: '', error: '' });
+  const visitTrackedRef = useRef(false);
 
   useEffect(() => {
-    // Track Page Visit
-    try {
-      const statsRef = ref(db, 'stats');
-      update(statsRef, { visits: increment(1) }).catch(() => { });
-    } catch (e) { }
+    // Track Page Visit (only once, prevent double counting on React Strict Mode)
+    if (!visitTrackedRef.current) {
+      visitTrackedRef.current = true;
+      try {
+        const statsRef = ref(db, 'stats');
+        update(statsRef, { visits: increment(1) }).catch(() => { });
+        trackEvent('page_view');
+      } catch (e) { }
+    }
 
     const handleHash = () => setHash(window.location.hash);
     window.addEventListener('hashchange', handleHash);
@@ -101,9 +106,11 @@ export default function ShahanurPortfolio() {
         });
         setContactStatus({ loading: false, success: 'Message sent successfully!', error: '' });
         setContactData({ name: '', email: '', message: '' });
+        trackEvent('contact_form_submit', { from_email: contactData.email });
       }
     } catch (error) {
       setContactStatus({ loading: false, success: '', error: 'Failed to send message.' });
+      trackEvent('contact_form_error', { error: error.message });
     }
   };
 
@@ -122,11 +129,18 @@ export default function ShahanurPortfolio() {
               <p className="text-xl text-stone-400">Mobile App Developer specializing in Java & Flutter.</p>
               <div className="flex flex-wrap gap-3 sm:gap-4 pt-4">
                 <button onClick={() => {
+                  update(ref(db, 'stats'), { cpWorkspaceClicks: increment(1) }).catch(() => { });
+                  trackEvent('cp_workspace_click');
                   window.location.hash = '#cp';
-                  update(ref(db, 'stats'), { projectClicks: increment(1) }).catch(() => { });
                 }} className="flex-1 sm:flex-none px-6 sm:px-8 py-3 bg-white text-black rounded-xl font-bold hover:scale-105 transition-all text-sm sm:text-base">CP Zen Workspace</button>
-                <a href="Shahanur_Alam_CV.html" target="_blank" onClick={() => update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => { })} className={`flex-1 sm:flex-none px-6 sm:px-8 py-3 border border-white/10 rounded-xl font-bold hover:bg-white/5 transition-all text-center text-sm sm:text-base`}>View CV</a>
-                <a href={cvPdf} download onClick={() => update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => { })} className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-500 transition-all flex items-center justify-center gap-2 text-sm sm:text-base" title="Download CV (PDF)"><Download size={18} /> Download</a>
+                <a href="Shahanur_Alam_CV.html" target="_blank" onClick={() => {
+                  update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => { });
+                  trackEvent('cv_view');
+                }} className={`flex-1 sm:flex-none px-6 sm:px-8 py-3 border border-white/10 rounded-xl font-bold hover:bg-white/5 transition-all text-center text-sm sm:text-base`}>View CV</a>
+                <a href={cvPdf} download onClick={() => {
+                  update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => { });
+                  trackEvent('cv_download');
+                }} className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-500 transition-all flex items-center justify-center gap-2 text-sm sm:text-base" title="Download CV (PDF)"><Download size={18} /> Download</a>
               </div>
               <div className="flex items-center gap-6 text-sm text-stone-500 pt-6">
                 <span className="flex items-center gap-2" title="Location"><MapPin size={14} className="text-orange-600" /> Rajshahi, BD</span>
@@ -198,13 +212,16 @@ export default function ShahanurPortfolio() {
             {projects.map((p, i) => (
               <div key={i} className={`p-6 sm:p-8 bg-white/[0.02] border border-white/5 rounded-[2rem] sm:rounded-[3rem] hover:border-orange-600/20 transition-all`}>
                 <div className="flex items-center gap-4 mb-6">
-                  {p.logo === "icon:code" ? <Code2 className="text-orange-600" size={32} title="Project Icon" /> : <img src={p.logo} className="w-14 h-14 rounded-2xl shadow-lg" alt="logo" title="Project Logo" />}
+                  {p.logo === "icon:code" ? <Code2 className="text-orange-600" size={32} title="Project Icon" /> : <img src={p.logo} className="w-14 h-14 rounded-2xl shadow-lg border border-orange-600/30 transition-all hover:border-orange-600 hover:shadow-orange-600/30 hover:scale-110" alt="logo" title="Project Logo" />}
                   <h4 className="text-xl font-bold">{p.title}</h4>
                 </div>
                 <p className="text-stone-400 text-sm mb-8 leading-relaxed">{p.description}</p>
                 <div className="flex gap-6">
-                  <a href={p.playstoreLink || p.demoLink} target="_blank" className="text-orange-600 font-bold flex items-center gap-2 text-sm uppercase tracking-widest hover:text-orange-500 hover:scale-105 transition-all duration-300">{p.playstoreLink ? 'Play Store' : 'Live Demo'} <Globe size={16} title={p.playstoreLink ? 'Play Store' : 'Live Demo'} /></a>
-                  {p.sourceLink && <a href={p.sourceLink} target="_blank" className="text-stone-500 font-bold text-sm uppercase tracking-widest underline underline-offset-8 hover:text-stone-300 hover:scale-105 transition-all duration-300">Source</a>}
+                  <a href={p.playstoreLink || p.demoLink} target="_blank" onClick={() => {
+                    update(ref(db, 'stats'), { projectClicks: increment(1) }).catch(() => { });
+                    trackEvent('project_link_click', { project: p.title, type: p.playstoreLink ? 'playstore' : 'demo' });
+                  }} className="text-orange-600 font-bold flex items-center gap-2 text-sm uppercase tracking-widest hover:text-orange-500 hover:scale-105 transition-all duration-300">{p.playstoreLink ? 'Play Store' : 'Live Demo'} <span className="p-2 border border-orange-600/30 rounded-lg transition-all hover:border-orange-600 hover:bg-orange-600/10 hover:shadow-lg hover:shadow-orange-600/20"><Globe size={16} title={p.playstoreLink ? 'Play Store' : 'Live Demo'} /></span></a>
+                  {p.sourceLink && <a href={p.sourceLink} target="_blank" onClick={() => trackEvent('source_link_click', { project: p.title })} className="text-stone-500 font-bold text-sm uppercase tracking-widest underline underline-offset-8 hover:text-stone-300 hover:scale-105 transition-all duration-300">Source</a>}
                 </div>
               </div>
             ))}
@@ -274,18 +291,30 @@ export default function ShahanurPortfolio() {
             </div>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-xl border border-white/10 transition-colors hover:bg-white/5" title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}>{darkMode ? <Sun size={18} /> : <Moon size={18} />}</button>
-            <button onClick={() => window.location.hash = '#cp'} className={`flex items-center gap-2 px-2.5 sm:px-3 py-1.5 text-[10px] sm:text-xs font-bold border rounded-lg transition-colors bg-white/5 ${hash === '#cp' ? 'border-orange-600 bg-orange-600/10' : 'border-white/10 hover:border-orange-600/50'}`} title="Competitive Programming Workspace">
+            <button onClick={() => {
+              setDarkMode(!darkMode);
+              trackEvent('theme_toggle', { theme: darkMode ? 'light' : 'dark' });
+            }} className="p-2 rounded-xl border border-white/10 transition-colors hover:bg-white/5" title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}>{darkMode ? <Sun size={18} /> : <Moon size={18} />}</button>
+            <button onClick={() => {
+              window.location.hash = '#cp';
+              trackEvent('nav_cp_click');
+            }} className={`flex items-center gap-2 px-2.5 sm:px-3 py-1.5 text-[10px] sm:text-xs font-bold border rounded-lg transition-colors bg-white/5 ${hash === '#cp' ? 'border-orange-600 bg-orange-600/10' : 'border-white/10 hover:border-orange-600/50'}`} title="Competitive Programming Workspace">
               <Code2 size={14} className="text-orange-600" />
               <span className="hidden sm:inline">CP Workspace</span>
               <span className="sm:hidden">CP</span>
             </button>
-            <button onClick={() => window.location.hash = '#visualizers'} className={`flex items-center gap-2 px-2.5 sm:px-3 py-1.5 text-[10px] sm:text-xs font-bold border rounded-lg transition-colors bg-white/5 ${hash === '#visualizers' ? 'border-orange-500 bg-orange-600/10' : 'border-white/10 hover:border-orange-500/50'}`} title="Algorithm Visualizer Lab">
+            <button onClick={() => {
+              window.location.hash = '#visualizers';
+              trackEvent('nav_visualizers_click');
+            }} className={`flex items-center gap-2 px-2.5 sm:px-3 py-1.5 text-[10px] sm:text-xs font-bold border rounded-lg transition-colors bg-white/5 ${hash === '#visualizers' ? 'border-orange-500 bg-orange-600/10' : 'border-white/10 hover:border-orange-500/50'}`} title="Algorithm Visualizer Lab">
               <Zap size={14} className="text-orange-500" />
               <span className="hidden sm:inline">Algo Lab</span>
               <span className="sm:hidden">Lab</span>
             </button>
-            <button onClick={() => window.location.hash = '#analytics'} className={`p-2 rounded-xl border transition-colors hover:bg-white/5 ${hash === '#analytics' ? 'border-orange-600 bg-orange-600/10' : 'border-white/10'}`} title="Live Portfolio Analytics"><BarChart2 size={18} /></button>
+            <button onClick={() => {
+              window.location.hash = '#analytics';
+              trackEvent('nav_analytics_click');
+            }} className={`p-2 rounded-xl border transition-colors hover:bg-white/5 ${hash === '#analytics' ? 'border-orange-600 bg-orange-600/10' : 'border-white/10'}`} title="Live Portfolio Analytics"><BarChart2 size={18} /></button>
           </div>
         </nav>
       </header>

@@ -8,6 +8,7 @@ const Analytics = ({ onBack }) => {
     visits: 0,
     cvViews: 0,
     projectClicks: 0,
+    cpWorkspaceClicks: 0,
     solvedProblems: 0
   });
   const [loading, setLoading] = useState(true);
@@ -21,6 +22,7 @@ const Analytics = ({ onBack }) => {
           visits: data.visits || 0,
           cvViews: data.cvViews || 0,
           projectClicks: data.projectClicks || 0,
+          cpWorkspaceClicks: data.cpWorkspaceClicks || 0,
           solvedProblems: data.solvedProblems || 0
         });
       }

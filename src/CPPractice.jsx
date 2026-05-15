@@ -17,6 +17,7 @@ import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-java';
 import 'prismjs/themes/prism-tomorrow.css';
 import { CP_TEMPLATES } from './algoSolutions';
+import { db, ref, update, increment, trackEvent } from './firebase';
 
 const CountdownTimer = ({ startTime }) => {
   const [timeLeft, setTimeLeft] = useState(startTime - Date.now());
@@ -466,7 +467,10 @@ const CPPractice = ({ onBack }) => {
                 </div>
               </div>
               <div className="p-4 sm:p-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-end gap-6 bg-black/40">
-                <a href={activeCodeProblem.link} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-12 py-5 bg-gradient-to-r from-orange-600 to-rose-600 text-white text-[10px] font-black uppercase tracking-widest rounded-[1.5rem] shadow-2xl transition-all flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95">Go to Submit <ExternalLink className="w-4 h-4" /></a>
+                <a href={activeCodeProblem.link} target="_blank" rel="noopener noreferrer" onClick={() => {
+                  update(ref(db, 'stats'), { solvedProblems: increment(1) }).catch(() => { });
+                  trackEvent('cp_problem_submit', { problem: activeCodeProblem.title, platform: activeCodeProblem.platform });
+                }} className="w-full sm:w-auto px-12 py-5 bg-gradient-to-r from-orange-600 to-rose-600 text-white text-[10px] font-black uppercase tracking-widest rounded-[1.5rem] shadow-2xl transition-all flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95">Go to Submit <ExternalLink className="w-4 h-4" /></a>
               </div>
             </motion.div>
           </div>

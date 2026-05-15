@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set, increment, update } from "firebase/database";
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAFC7pdhy-eFXw3_xP15kAEGTtequtVKNU",
@@ -13,5 +14,15 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const analytics = getAnalytics(app);
 
-export { db, ref, onValue, set, increment, update };
+// Track event with both Analytics and Database
+const trackEvent = (eventName, data = {}) => {
+  try {
+    logEvent(analytics, eventName, data);
+  } catch (e) {
+    console.error('Analytics error:', e);
+  }
+};
+
+export { db, ref, onValue, set, increment, update, analytics, logEvent, trackEvent };
