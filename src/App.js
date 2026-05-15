@@ -7,6 +7,7 @@ import {
 import profileImg from "./assets/ShahanurAlam.png";
 import bloodDonateLogo from "./assets/applogo/blood_donate.png";
 import badalgachiLogo from "./assets/applogo/Badalgachi Net.png";
+import luminaPopLogo from "./assets/applogo/lumina_pop.png";
 import cvPdf from './assets/cv/CV.pdf';
 
 // Firebase
@@ -45,17 +46,22 @@ const projects = [
     title: "Blood Donate — Donor Matching",
     description: "Donor matching application built with Flutter and Firebase for urgent blood needs.",
     stack: ["Flutter", "Firebase"],
-    demoLink: "https://play.google.com/store/apps/details?id=com.blood_donate_app.bd",
-    sourceLink: "#",
+    playstoreLink: "https://play.google.com/store/apps/details?id=com.blood_donate_app.bd",
     logo: bloodDonateLogo,
   },
   {
     title: "Badalgachi Net — ISP App",
     description: "ISP management app for local internet service providers, billing, and support.",
     stack: ["Java", "Android", "Firebase"],
-    demoLink: "https://play.google.com/store/apps/details?id=com.careconnectstudio.badalgachinet",
-    sourceLink: "#",
+    playstoreLink: "https://play.google.com/store/apps/details?id=com.careconnectstudio.badalgachinet",
     logo: badalgachiLogo,
+  },
+  {
+    title: "Lumina Pop — Premium Bubble Shooter",
+    description: "A high-performance casual game featuring 1500+ levels, stunning glassmorphism UI, and real-time cloud synchronization.",
+    stack: ["Flutter", "Firebase", "AdMob", "Advanced Physics"],
+    playstoreLink: "https://play.google.com/store/apps/details?id=com.careconnectstudio.luminapop",
+    logo: luminaPopLogo,
   },
 ];
 
@@ -77,8 +83,8 @@ export default function ShahanurPortfolio() {
     // Track Page Visit
     try {
       const statsRef = ref(db, 'stats');
-      update(statsRef, { visits: increment(1) }).catch(() => {});
-    } catch (e) {}
+      update(statsRef, { visits: increment(1) }).catch(() => { });
+    } catch (e) { }
 
     const handleHash = () => setHash(window.location.hash);
     window.addEventListener('hashchange', handleHash);
@@ -102,9 +108,9 @@ export default function ShahanurPortfolio() {
   };
 
   const mainContent = () => {
-    if (hash === '#cp') return <Suspense fallback={<LoadingScreen/>}><CPPractice onBack={() => window.location.hash = ''} /></Suspense>;
-    if (hash === '#visualizers') return <Suspense fallback={<LoadingScreen/>}><Visualizers onBack={() => window.location.hash = ''} /></Suspense>;
-    if (hash === '#analytics') return <Suspense fallback={<LoadingScreen/>}><Analytics onBack={() => window.location.hash = ''} /></Suspense>;
+    if (hash === '#cp') return <Suspense fallback={<LoadingScreen />}><CPPractice onBack={() => window.location.hash = ''} /></Suspense>;
+    if (hash === '#visualizers') return <Suspense fallback={<LoadingScreen />}><Visualizers onBack={() => window.location.hash = ''} /></Suspense>;
+    if (hash === '#analytics') return <Suspense fallback={<LoadingScreen />}><Analytics onBack={() => window.location.hash = ''} /></Suspense>;
 
     return (
       <main className="max-w-6xl mx-auto px-4 py-12 space-y-24">
@@ -117,14 +123,14 @@ export default function ShahanurPortfolio() {
               <div className="flex flex-wrap gap-3 sm:gap-4 pt-4">
                 <button onClick={() => {
                   window.location.hash = '#cp';
-                  update(ref(db, 'stats'), { projectClicks: increment(1) }).catch(() => {});
+                  update(ref(db, 'stats'), { projectClicks: increment(1) }).catch(() => { });
                 }} className="flex-1 sm:flex-none px-6 sm:px-8 py-3 bg-white text-black rounded-xl font-bold hover:scale-105 transition-all text-sm sm:text-base">CP Zen Workspace</button>
-                <a href="Shahanur_Alam_CV.html" target="_blank" onClick={() => update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => {})} className={`flex-1 sm:flex-none px-6 sm:px-8 py-3 border border-white/10 rounded-xl font-bold hover:bg-white/5 transition-all text-center text-sm sm:text-base`}>View CV</a>
-                <a href={cvPdf} download onClick={() => update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => {})} className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-500 transition-all flex items-center justify-center gap-2 text-sm sm:text-base" title="Download CV (PDF)"><Download size={18}/> Download</a>
+                <a href="Shahanur_Alam_CV.html" target="_blank" onClick={() => update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => { })} className={`flex-1 sm:flex-none px-6 sm:px-8 py-3 border border-white/10 rounded-xl font-bold hover:bg-white/5 transition-all text-center text-sm sm:text-base`}>View CV</a>
+                <a href={cvPdf} download onClick={() => update(ref(db, 'stats'), { cvViews: increment(1) }).catch(() => { })} className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-500 transition-all flex items-center justify-center gap-2 text-sm sm:text-base" title="Download CV (PDF)"><Download size={18} /> Download</a>
               </div>
               <div className="flex items-center gap-6 text-sm text-stone-500 pt-6">
-                 <span className="flex items-center gap-2" title="Location"><MapPin size={14} className="text-orange-600"/> Rajshahi, BD</span>
-                 <span className="flex items-center gap-2" title="Status"><Award size={14} className="text-orange-600"/> Open to Internships</span>
+                <span className="flex items-center gap-2" title="Location"><MapPin size={14} className="text-orange-600" /> Rajshahi, BD</span>
+                <span className="flex items-center gap-2" title="Status"><Award size={14} className="text-orange-600" /> Open to Internships</span>
               </div>
             </div>
             <div className="flex justify-center lg:justify-end">
@@ -141,12 +147,12 @@ export default function ShahanurPortfolio() {
             <h3 className="text-2xl font-bold text-orange-600 border-l-4 border-orange-600 pl-4">About Me</h3>
             <p className="text-stone-400 leading-relaxed text-lg">I am a motivated computer science undergraduate passionate about mobile development. Proficient in Java and Flutter, with hands-on experience building real-world Android apps.</p>
             <div className="p-6 bg-white/[0.02] border border-white/5 rounded-3xl">
-               <h4 className="font-bold text-stone-100">Education</h4>
-               <p className="text-sm text-stone-500">B.Sc. in CSE, Varendra University (Expected graduation 2026)</p>
+              <h4 className="font-bold text-stone-100">Education</h4>
+              <p className="text-sm text-stone-500">B.Sc. in CSE, Varendra University (Expected graduation 2026)</p>
             </div>
             <div className="p-6 bg-white/[0.02] border border-white/5 rounded-3xl">
-               <h4 className="font-bold text-stone-100">Achievement</h4>
-               <p className="text-sm text-stone-500">Winner — University Innovation Hub Competition (Team Project)</p>
+              <h4 className="font-bold text-stone-100">Achievement</h4>
+              <p className="text-sm text-stone-500">Winner — University Innovation Hub Competition (Team Project)</p>
             </div>
           </div>
           <div className="space-y-6">
@@ -155,12 +161,12 @@ export default function ShahanurPortfolio() {
               {skills.map(s => <span key={s} className="px-4 py-2 bg-stone-800 rounded-xl text-xs font-bold border border-white/5 text-stone-300 transition-all hover:border-orange-600/50">{s}</span>)}
             </div>
             <div className="mt-8 pt-8 border-t border-white/5">
-               <h4 className="text-sm font-bold text-stone-500 mb-4 uppercase tracking-widest">Other Technologies</h4>
-               <div className="flex flex-wrap gap-2">
-                 {["Android Studio", "Firebase", "MySQL", "XAMPP", "Postman", "Git & GitHub", "VS Code"].map(tech => (
-                   <span key={tech} className="px-3 py-1.5 bg-white/[0.03] border border-white/5 rounded-lg text-[10px] text-stone-400 font-bold">{tech}</span>
-                 ))}
-               </div>
+              <h4 className="text-sm font-bold text-stone-500 mb-4 uppercase tracking-widest">Other Technologies</h4>
+              <div className="flex flex-wrap gap-2">
+                {["Android Studio", "Firebase", "MySQL", "XAMPP", "Postman", "Git & GitHub", "VS Code"].map(tech => (
+                  <span key={tech} className="px-3 py-1.5 bg-white/[0.03] border border-white/5 rounded-lg text-[10px] text-stone-400 font-bold">{tech}</span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -172,11 +178,11 @@ export default function ShahanurPortfolio() {
             {certificates.map((cert, i) => (
               <div key={i} className={`p-6 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:border-orange-600/30 transition-all group`}>
                 <div className="flex justify-between items-start mb-6">
-                   <FileText size={24} className="text-stone-500 group-hover:text-orange-600 transition-all duration-500 group-hover:scale-110"/>
-                   <div className="flex gap-2">
-                      <a href={cert.file} target="_blank" title="View Certificate" className="p-2 rounded-lg bg-orange-600/10 text-orange-600 hover:bg-orange-600 hover:text-black transition-all duration-300 hover:scale-110 active:scale-90 shadow-lg shadow-orange-600/5"><ExternalLink size={16}/></a>
-                      <a href={cert.file} download title="Download Certificate" className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all duration-300 hover:scale-110 active:scale-90 shadow-lg shadow-emerald-500/5"><Download size={16}/></a>
-                   </div>
+                  <FileText size={24} className="text-stone-500 group-hover:text-orange-600 transition-all duration-500 group-hover:scale-110" />
+                  <div className="flex gap-2">
+                    <a href={cert.file} target="_blank" title="View Certificate" className="p-2 rounded-lg bg-orange-600/10 text-orange-600 hover:bg-orange-600 hover:text-black transition-all duration-300 hover:scale-110 active:scale-90 shadow-lg shadow-orange-600/5"><ExternalLink size={16} /></a>
+                    <a href={cert.file} download title="Download Certificate" className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all duration-300 hover:scale-110 active:scale-90 shadow-lg shadow-emerald-500/5"><Download size={16} /></a>
+                  </div>
                 </div>
                 <h4 className="font-bold text-sm mb-1">{cert.title}</h4>
                 <p className="text-[10px] uppercase font-black text-stone-600 tracking-widest">{cert.provider}</p>
@@ -187,22 +193,22 @@ export default function ShahanurPortfolio() {
 
         {/* Selected Projects */}
         <section id="projects">
-           <h3 className="text-2xl font-bold text-orange-600 border-l-4 border-orange-600 pl-4 mb-12">Selected Projects</h3>
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {projects.map((p, i) => (
-                <div key={i} className={`p-6 sm:p-8 bg-white/[0.02] border border-white/5 rounded-[2rem] sm:rounded-[3rem] hover:border-orange-600/20 transition-all`}>
-                   <div className="flex items-center gap-4 mb-6">
-                      {p.logo === "icon:code" ? <Code2 className="text-orange-600" size={32} title="Project Icon" /> : <img src={p.logo} className="w-14 h-14 rounded-2xl shadow-lg" alt="logo" title="Project Logo" />}
-                      <h4 className="text-xl font-bold">{p.title}</h4>
-                   </div>
-                   <p className="text-stone-400 text-sm mb-8 leading-relaxed">{p.description}</p>
-                   <div className="flex gap-6">
-                      <a href={p.demoLink} target="_blank" className="text-orange-600 font-bold flex items-center gap-2 text-sm uppercase tracking-widest hover:text-orange-500 hover:scale-105 transition-all duration-300">Live Demo <Globe size={16} title="Live Demo" /></a>
-                      <a href={p.sourceLink} target="_blank" className="text-stone-500 font-bold text-sm uppercase tracking-widest underline underline-offset-8 hover:text-stone-300 hover:scale-105 transition-all duration-300">Source</a>
-                   </div>
+          <h3 className="text-2xl font-bold text-orange-600 border-l-4 border-orange-600 pl-4 mb-12">Selected Projects</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {projects.map((p, i) => (
+              <div key={i} className={`p-6 sm:p-8 bg-white/[0.02] border border-white/5 rounded-[2rem] sm:rounded-[3rem] hover:border-orange-600/20 transition-all`}>
+                <div className="flex items-center gap-4 mb-6">
+                  {p.logo === "icon:code" ? <Code2 className="text-orange-600" size={32} title="Project Icon" /> : <img src={p.logo} className="w-14 h-14 rounded-2xl shadow-lg" alt="logo" title="Project Logo" />}
+                  <h4 className="text-xl font-bold">{p.title}</h4>
                 </div>
-              ))}
-           </div>
+                <p className="text-stone-400 text-sm mb-8 leading-relaxed">{p.description}</p>
+                <div className="flex gap-6">
+                  <a href={p.playstoreLink || p.demoLink} target="_blank" className="text-orange-600 font-bold flex items-center gap-2 text-sm uppercase tracking-widest hover:text-orange-500 hover:scale-105 transition-all duration-300">{p.playstoreLink ? 'Play Store' : 'Live Demo'} <Globe size={16} title={p.playstoreLink ? 'Play Store' : 'Live Demo'} /></a>
+                  {p.sourceLink && <a href={p.sourceLink} target="_blank" className="text-stone-500 font-bold text-sm uppercase tracking-widest underline underline-offset-8 hover:text-stone-300 hover:scale-105 transition-all duration-300">Source</a>}
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
 
         {/* Contact Section */}
@@ -215,29 +221,29 @@ export default function ShahanurPortfolio() {
                 <p className="text-stone-400 text-lg leading-relaxed">I’m available for internships, freelance projects, and junior roles. Send a note and I will reach out with a tailored reply.</p>
                 <div className="space-y-4 pt-4">
                   <a href="mailto:shahanuralam.dev@gmail.com" className="flex items-center gap-4 text-stone-300 font-medium hover:text-orange-600 transition-colors" title="Send Email">
-                    <Mail className="text-orange-600" size={20}/> shahanuralam.dev@gmail.com
+                    <Mail className="text-orange-600" size={20} /> shahanuralam.dev@gmail.com
                   </a>
                   <a href="tel:+8801518939114" className="flex items-center gap-4 text-stone-300 font-medium hover:text-orange-600 transition-colors" title="Call Shahanur">
-                    <Phone className="text-orange-600" size={20}/> +880 1518-939114
+                    <Phone className="text-orange-600" size={20} /> +880 1518-939114
                   </a>
                   <div className="flex items-center gap-4 text-stone-300 font-medium" title="Location">
-                    <MapPin className="text-orange-600" size={20}/> Rajshahi, Bangladesh
+                    <MapPin className="text-orange-600" size={20} /> Rajshahi, Bangladesh
                   </div>
                 </div>
                 <div className="flex gap-4 pt-6">
-                   <a href="https://github.com/shahanuralamofficial" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-orange-600 hover:text-black transition-all" title="GitHub Profile"><Github size={20}/></a>
-                   <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-blue-500 transition-all" title="LinkedIn Profile"><Linkedin size={20}/></a>
-                   <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-blue-600 transition-all" title="Facebook Profile"><Facebook size={20}/></a>
+                  <a href="https://github.com/shahanuralamofficial" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-orange-600 hover:text-black transition-all" title="GitHub Profile"><Github size={20} /></a>
+                  <a href="https://www.linkedin.com/in/shahanur-alam/" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-blue-500 transition-all" title="LinkedIn Profile"><Linkedin size={20} /></a>
+                  <a href="https://www.facebook.com/ShahanurAlam2k3" target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-blue-600 transition-all" title="Facebook Profile"><Facebook size={20} /></a>
                 </div>
               </div>
               <form onSubmit={handleContactSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                   <input name="name" value={contactData.name} onChange={e => setContactData({...contactData, name: e.target.value})} placeholder="Full Name" className={`w-full p-5 rounded-2xl outline-none border transition-all ${darkMode ? 'bg-black/40 border-white/10 focus:border-orange-600' : 'bg-stone-50 border-stone-200 focus:border-orange-600'}`} required />
-                   <input name="email" value={contactData.email} onChange={e => setContactData({...contactData, email: e.target.value})} placeholder="Email Address" className={`w-full p-5 rounded-2xl outline-none border transition-all ${darkMode ? 'bg-black/40 border-white/10 focus:border-orange-600' : 'bg-stone-50 border-stone-200 focus:border-orange-600'}`} required />
+                  <input name="name" value={contactData.name} onChange={e => setContactData({ ...contactData, name: e.target.value })} placeholder="Full Name" className={`w-full p-5 rounded-2xl outline-none border transition-all ${darkMode ? 'bg-black/40 border-white/10 focus:border-orange-600' : 'bg-stone-50 border-stone-200 focus:border-orange-600'}`} required />
+                  <input name="email" value={contactData.email} onChange={e => setContactData({ ...contactData, email: e.target.value })} placeholder="Email Address" className={`w-full p-5 rounded-2xl outline-none border transition-all ${darkMode ? 'bg-black/40 border-white/10 focus:border-orange-600' : 'bg-stone-50 border-stone-200 focus:border-orange-600'}`} required />
                 </div>
-                <textarea name="message" value={contactData.message} onChange={e => setContactData({...contactData, message: e.target.value})} placeholder="Tell me about your project..." rows={6} className={`w-full p-5 rounded-2xl outline-none border transition-all resize-none ${darkMode ? 'bg-black/40 border-white/10 focus:border-orange-600' : 'bg-stone-50 border-stone-200 focus:border-orange-600'}`} required />
+                <textarea name="message" value={contactData.message} onChange={e => setContactData({ ...contactData, message: e.target.value })} placeholder="Tell me about your project..." rows={6} className={`w-full p-5 rounded-2xl outline-none border transition-all resize-none ${darkMode ? 'bg-black/40 border-white/10 focus:border-orange-600' : 'bg-stone-50 border-stone-200 focus:border-orange-600'}`} required />
                 <button className="w-full py-5 bg-orange-600 text-stone-900 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-orange-500 flex items-center justify-center gap-3 shadow-xl shadow-orange-900/20 active:scale-95 transition-all">
-                  {contactStatus.loading ? <Loader2 className="animate-spin" size={20}/> : <Save size={18}/>} Send Message
+                  {contactStatus.loading ? <Loader2 className="animate-spin" size={20} /> : <Save size={18} />} Send Message
                 </button>
                 {contactStatus.success && <p className="text-emerald-500 text-xs font-bold text-center mt-4">{contactStatus.success}</p>}
                 {contactStatus.error && <p className="text-rose-500 text-xs font-bold text-center mt-4">{contactStatus.error}</p>}
@@ -263,8 +269,8 @@ export default function ShahanurPortfolio() {
               <img src={profileImg} alt="Shahanur" className="w-full h-full object-cover scale-110" />
             </div>
             <div className="hidden min-[400px]:block text-left">
-               <h1 className="text-sm sm:text-lg font-bold leading-tight">Shahanur Alam</h1>
-               <p className="text-[8px] sm:text-[10px] text-orange-600 font-black uppercase tracking-tighter sm:tracking-normal">Mobile Developer</p>
+              <h1 className="text-sm sm:text-lg font-bold leading-tight">Shahanur Alam</h1>
+              <p className="text-[8px] sm:text-[10px] text-orange-600 font-black uppercase tracking-tighter sm:tracking-normal">Mobile Developer</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2">
@@ -279,7 +285,7 @@ export default function ShahanurPortfolio() {
               <span className="hidden sm:inline">Algo Lab</span>
               <span className="sm:hidden">Lab</span>
             </button>
-            <button onClick={() => window.location.hash = '#analytics'} className={`p-2 rounded-xl border transition-colors hover:bg-white/5 ${hash === '#analytics' ? 'border-orange-600 bg-orange-600/10' : 'border-white/10'}`} title="Live Portfolio Analytics"><BarChart2 size={18}/></button>
+            <button onClick={() => window.location.hash = '#analytics'} className={`p-2 rounded-xl border transition-colors hover:bg-white/5 ${hash === '#analytics' ? 'border-orange-600 bg-orange-600/10' : 'border-white/10'}`} title="Live Portfolio Analytics"><BarChart2 size={18} /></button>
           </div>
         </nav>
       </header>
